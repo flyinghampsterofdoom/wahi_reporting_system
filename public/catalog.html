@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Item | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Add Item</h1>
+          <p>Add vendors and new liquor items to the inventory database.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <div class="grid two">
+          <form id="vendor-form" class="stack">
+            <h2>Add Vendor</h2>
+            <label>
+              Vendor Name
+              <input type="text" id="vendor-name" required />
+            </label>
+            <button type="submit">Add Vendor</button>
+          </form>
+
+          <form id="item-form" class="stack">
+            <h2>Add New Item</h2>
+            <label>
+              Item Name
+              <input type="text" id="item-name" required />
+            </label>
+            <label>
+              FOH or BOH Item
+              <select id="item-area-type" required>
+                <option value="FOH">FOH</option>
+                <option value="BOH">BOH</option>
+              </select>
+            </label>
+            <label>
+              Vendor
+              <select id="item-vendor" required></select>
+            </label>
+            <label>
+              Case Size (Qty)
+              <input type="number" id="item-case-size" min="1" value="12" required />
+            </label>
+
+            <div>
+              <div class="line">
+                <strong>Available Bottle Sizes</strong>
+                <button type="button" id="add-size-row" class="secondary">Add Size</button>
+              </div>
+              <div id="size-rows" class="stack"></div>
+            </div>
+
+            <button type="submit">Create Item</button>
+          </form>
+        </div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

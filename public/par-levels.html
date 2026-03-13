@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Par and Levels | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Par and Levels</h1>
+          <p>Set FOH and BOH par/level values used in reorder suggestions.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <h2>FOH Par and Levels</h2>
+        <div id="foh-par-table"></div>
+      </section>
+
+      <section class="card">
+        <h2>BOH Par and Levels</h2>
+        <div id="boh-par-table"></div>
+      </section>
+
+      <section class="card line">
+        <button id="save-par-levels">Save Par and Levels</button>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

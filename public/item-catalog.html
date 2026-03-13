@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Catalog | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Item Catalog</h1>
+          <p>View, sort, and edit existing items in the catalog.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <div class="line">
+          <label>
+            Filter Vendor
+            <select id="catalog-filter-vendor">
+              <option value="">All Vendors</option>
+            </select>
+          </label>
+          <label>
+            Filter FOH/BOH
+            <select id="catalog-filter-area">
+              <option value="">All</option>
+              <option value="FOH">FOH</option>
+              <option value="BOH">BOH</option>
+            </select>
+          </label>
+          <label>
+            Filter Item Name
+            <input type="text" id="catalog-filter-name" placeholder="Search item name" />
+          </label>
+          <label>
+            Sort By
+            <select id="catalog-sort-by">
+              <option value="vendor">Vendor</option>
+              <option value="areaType">FOH/BOH</option>
+              <option value="name">Item Name</option>
+            </select>
+          </label>
+          <label>
+            Direction
+            <select id="catalog-sort-direction">
+              <option value="asc">A to Z</option>
+              <option value="desc">Z to A</option>
+            </select>
+          </label>
+          <button id="refresh-catalog" class="secondary">Refresh</button>
+        </div>
+        <div id="catalog-list"></div>
+      </section>
+
+      <section class="card" id="edit-item-section" hidden>
+        <h2>Edit Item</h2>
+        <form id="edit-item-form" class="stack">
+          <input type="hidden" id="edit-item-id" />
+          <label>
+            Item Name
+            <input type="text" id="edit-item-name" required />
+          </label>
+          <label>
+            FOH or BOH Item
+            <select id="edit-item-area-type" required>
+              <option value="FOH">FOH</option>
+              <option value="BOH">BOH</option>
+            </select>
+          </label>
+          <label>
+            Vendor
+            <select id="edit-item-vendor" required></select>
+          </label>
+          <label>
+            Case Size (Qty)
+            <input type="number" id="edit-item-case-size" min="1" required />
+          </label>
+
+          <div>
+            <div class="line">
+              <strong>Item Bottle Sizes</strong>
+              <button type="button" id="edit-add-size-row" class="secondary">Add Size</button>
+            </div>
+            <div id="edit-size-rows" class="stack"></div>
+          </div>
+
+          <div class="line">
+            <button type="submit">Save Item Changes</button>
+            <button type="button" id="cancel-edit" class="secondary">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

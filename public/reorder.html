@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reorder Report | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Reorder Suggestions</h1>
+          <p>If par/level is not set, suggested order remains 0 for that line.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <div class="line">
+          <label>
+            Report Date
+            <input type="date" id="count-date" />
+          </label>
+          <button id="build-reorder-report">Generate Reorder Report</button>
+        </div>
+        <div id="reorder-report"></div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
