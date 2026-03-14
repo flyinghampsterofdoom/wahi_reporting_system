@@ -494,7 +494,10 @@ app.put("/api/items/:id", async (req, res) => {
 
   try {
     await db.transaction(async (tx) => {
-      const item = await tx.query("SELECT id FROM items WHERE id = $1", [itemId]);
+      const item = await tx.query(
+        "SELECT id, source_system, source_key FROM items WHERE id = $1",
+        [itemId]
+      );
       if (!item.rows.length) throw new Error("ITEM_NOT_FOUND");
 
       const vendor = await tx.query("SELECT id FROM vendors WHERE id = $1", [vendorId]);
@@ -504,6 +507,18 @@ app.put("/api/items/:id", async (req, res) => {
         "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, purchase_unit = $5, purchase_cost = $6 WHERE id = $7",
         [name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost ?? null, itemId]
       );
+
+      const sourceSystem = String(item.rows[0].source_system || "");
+      const sourceKey = String(item.rows[0].source_key || "");
+      if (sourceSystem === "pricebook" && sourceKey.startsWith("ingredient:")) {
+        const ingredientId = Number(sourceKey.split(":")[1]);
+        if (Number.isInteger(ingredientId) && ingredientId > 0) {
+          await tx.query(
+            "UPDATE pricebook_ingredients SET buy_price = $1 WHERE id = $2",
+            [purchaseCost ?? null, ingredientId]
+          );
+        }
+      }
 
       const existing = await tx.query("SELECT id FROM item_sizes WHERE item_id = $1", [itemId]);
       const existingIds = new Set(existing.rows.map((r) => Number(r.id)));

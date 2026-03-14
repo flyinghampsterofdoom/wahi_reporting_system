@@ -267,6 +267,27 @@ th {
   transform: translateY(0);
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 15, 10, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(960px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+}
+
 .recipe-line {
   border: 1px solid var(--border);
   border-radius: 0.55rem;

@@ -275,6 +275,7 @@ async function initItemCatalogPage() {
   const editSection = byId("edit-item-section");
   const editForm = byId("edit-item-form");
   const cancelEditButton = byId("cancel-edit");
+  const closeEditXButton = byId("close-edit-x");
   const editAddSizeRowButton = byId("edit-add-size-row");
   const editSizeRows = byId("edit-size-rows");
   const editItemId = byId("edit-item-id");
@@ -445,13 +446,14 @@ async function initItemCatalogPage() {
     refreshEditPreview();
 
     editSection.hidden = false;
-    editSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.body.classList.add("modal-open");
   }
 
   function closeEdit() {
     editSection.hidden = true;
     editForm.reset();
     editSizeRows.innerHTML = "";
+    document.body.classList.remove("modal-open");
   }
 
   async function reloadData() {
@@ -476,6 +478,12 @@ async function initItemCatalogPage() {
   filterAreaSelect.addEventListener("change", renderCatalog);
   filterNameInput.addEventListener("input", renderCatalog);
   cancelEditButton.addEventListener("click", closeEdit);
+  if (closeEditXButton) {
+    closeEditXButton.addEventListener("click", closeEdit);
+  }
+  editSection.addEventListener("click", (event) => {
+    if (event.target === editSection) closeEdit();
+  });
   editAddSizeRowButton.addEventListener("click", () =>
     addSizeRow(editSizeRows, { sizeLabel: "", volumeMl: 750, unitCost: null, isTracked: false }, "edit-size-track")
   );
