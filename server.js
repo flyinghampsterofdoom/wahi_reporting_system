@@ -133,6 +133,14 @@ function normalizeSqlError(error) {
   return "OTHER";
 }
 
+function roundTo(value, places = 4) {
+  if (value === null || value === undefined) return null;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const factor = 10 ** places;
+  return Math.round(n * factor) / factor;
+}
+
 function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
   if (purchaseCost === null || purchaseCost === undefined) return sizes;
   const tracked = sizes.find((size) => size.isTracked);
@@ -147,7 +155,7 @@ function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
     size.isTracked
       ? {
           ...size,
-          unitCost: Number.isFinite(perBottle) ? Number(perBottle.toFixed(4)) : size.unitCost ?? null,
+          unitCost: Number.isFinite(perBottle) ? roundTo(perBottle, 4) : roundTo(size.unitCost ?? null, 4),
         }
       : size
   );
@@ -450,7 +458,7 @@ app.get("/api/items", async (_req, res) => {
         measureType: row.measure_type || "FLUID",
         purchaseUnit: row.purchase_unit || "BOTTLE",
         purchaseCost:
-          row.purchase_cost === null || row.purchase_cost === undefined ? null : Number(row.purchase_cost),
+          row.purchase_cost === null || row.purchase_cost === undefined ? null : roundTo(row.purchase_cost, 2),
         vendor: {
           id: Number(row.vendor_id),
           name: row.vendor_name,
@@ -465,7 +473,7 @@ app.get("/api/items", async (_req, res) => {
         row.size_amount === null || row.size_amount === undefined ? Number(row.volume_ml) : Number(row.size_amount),
       sizeUnit: row.size_unit || "mL",
       volumeMl: Number(row.volume_ml),
-      unitCost: row.unit_cost === null || row.unit_cost === undefined ? null : Number(row.unit_cost),
+      unitCost: row.unit_cost === null || row.unit_cost === undefined ? null : roundTo(row.unit_cost, 4),
       isTracked: Number(row.is_tracked) === 1,
     });
   }
@@ -486,8 +494,12 @@ app.post("/api/items", async (req, res) => {
   const parsed = itemSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost } = parsed.data;
-  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
+  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit } = parsed.data;
+  const purchaseCost = roundTo(parsed.data.purchaseCost ?? null, 2);
+  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, parsed.data.sizes).map((size) => ({
+    ...size,
+    unitCost: roundTo(size.unitCost ?? null, 4),
+  }));
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
       .status(400)
@@ -501,7 +513,7 @@ app.post("/api/items", async (req, res) => {
 
       const inserted = await tx.query(
         "INSERT INTO items (name, vendor_id, case_size, area_type, measure_type, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost ?? null]
+        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost]
       );
 
       const id = Number(inserted.rows[0].id);
@@ -514,7 +526,7 @@ app.post("/api/items", async (req, res) => {
             size.sizeAmount,
             normalizeSizeUnit(size.sizeUnit),
             toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
-            size.unitCost ?? null,
+            roundTo(size.unitCost ?? null, 4),
             toBoolInt(size.isTracked),
           ]
         );
@@ -541,8 +553,12 @@ app.put("/api/items/:id", async (req, res) => {
   const parsed = itemUpdateSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost } = parsed.data;
-  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
+  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit } = parsed.data;
+  const purchaseCost = roundTo(parsed.data.purchaseCost ?? null, 2);
+  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, parsed.data.sizes).map((size) => ({
+    ...size,
+    unitCost: roundTo(size.unitCost ?? null, 4),
+  }));
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
       .status(400)
@@ -562,7 +578,7 @@ app.put("/api/items/:id", async (req, res) => {
 
       await tx.query(
         "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, measure_type = $5, purchase_unit = $6, purchase_cost = $7 WHERE id = $8",
-        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost ?? null, itemId]
+        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost, itemId]
       );
 
       const sourceSystem = String(item.rows[0].source_system || "");
@@ -572,7 +588,7 @@ app.put("/api/items/:id", async (req, res) => {
         if (Number.isInteger(ingredientId) && ingredientId > 0) {
           await tx.query(
             "UPDATE pricebook_ingredients SET buy_price = $1 WHERE id = $2",
-            [purchaseCost ?? null, ingredientId]
+            [purchaseCost, ingredientId]
           );
         }
       }
@@ -591,7 +607,7 @@ app.put("/api/items/:id", async (req, res) => {
               size.sizeAmount,
               normalizeSizeUnit(size.sizeUnit),
               toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
-              size.unitCost ?? null,
+              roundTo(size.unitCost ?? null, 4),
               toBoolInt(size.isTracked),
               size.id,
               itemId,
@@ -607,7 +623,7 @@ app.put("/api/items/:id", async (req, res) => {
               size.sizeAmount,
               normalizeSizeUnit(size.sizeUnit),
               toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
-              size.unitCost ?? null,
+              roundTo(size.unitCost ?? null, 4),
               toBoolInt(size.isTracked),
             ]
           );

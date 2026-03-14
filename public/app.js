@@ -23,6 +23,13 @@ function parseNullableNumber(value) {
   return Number.isFinite(num) ? num : null;
 }
 
+function formatNumberInput(value, places = 4) {
+  if (value === null || value === undefined || value === "") return "";
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "";
+  return String(Number(n.toFixed(places)));
+}
+
 const ITEM_UNIT_OPTIONS = {
   FLUID: ["mL", "L", "fl oz", "oz"],
   WEIGHT: ["g", "kg", "oz", "lb"],
@@ -106,7 +113,7 @@ function addSizeRow(
     <label>Label <input type="text" class="size-label" value="${defaults.sizeLabel}" placeholder="750ml" required /></label>
     <label>Amount <input type="number" class="size-amount" min="0.01" step="0.01" value="${defaults.sizeAmount}" required /></label>
     <label>Unit <select class="size-unit">${unitOptionsHtml(measureType, defaults.sizeUnit)}</select></label>
-    <label>Cost / Bottle <input type="number" class="size-cost" min="0" step="0.01" value="${defaults.unitCost ?? ""}" placeholder="optional" /></label>
+    <label>Cost / Bottle <input type="number" class="size-cost" min="0" step="0.0001" value="${formatNumberInput(defaults.unitCost, 4)}" placeholder="optional" /></label>
     <label class="track-label">Track Item Size <input type="radio" class="size-tracked" name="${trackGroup}" ${defaults.isTracked ? "checked" : ""} /></label>
     <button type="button" class="secondary remove-size">Remove</button>
   `;
@@ -496,7 +503,7 @@ async function initItemCatalogPage() {
     editItemMeasureType.value = item.measureType || "FLUID";
     editItemCaseSize.value = String(item.caseSize);
     editItemPurchaseUnit.value = item.purchaseUnit || "BOTTLE";
-    editItemPurchaseCost.value = item.purchaseCost ?? "";
+    editItemPurchaseCost.value = formatNumberInput(item.purchaseCost, 2);
     loadVendorOptions(editItemVendor);
     editItemVendor.value = String(item.vendor.id);
 
