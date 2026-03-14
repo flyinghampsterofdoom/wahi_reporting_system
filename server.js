@@ -374,6 +374,7 @@ async function getRecipeLines(tx, recipeId) {
       l.notes,
       i.name AS ingredient_item_name,
       i.measure_type AS ingredient_measure_type,
+      i.source_system AS ingredient_source_system,
       rr.name AS ingredient_recipe_name,
       tis.unit_cost AS ingredient_item_cost,
       tis.size_amount AS ingredient_size_amount,
@@ -396,6 +397,7 @@ async function getRecipeLines(tx, recipeId) {
     ingredientItemId: row.ingredient_item_id ? Number(row.ingredient_item_id) : null,
     ingredientItemName: row.ingredient_item_name || null,
     ingredientMeasureType: row.ingredient_measure_type || null,
+    ingredientSourceSystem: row.ingredient_source_system || null,
     ingredientItemCost:
       row.ingredient_item_cost === null || row.ingredient_item_cost === undefined
         ? null
@@ -474,6 +476,15 @@ function ingredientLineCost(line) {
   }
 
   const measureType = String(line.ingredientMeasureType || "").toUpperCase();
+  const isPricebookSource = String(line.ingredientSourceSystem || "").toLowerCase() === "pricebook";
+
+  if (isPricebookSource && line.ingredientSizeUnit) {
+    const qtyInSizeUnit = convertRecipeQuantity(qty, line.unit || line.ingredientSizeUnit, line.ingredientSizeUnit);
+    if (qtyInSizeUnit !== null) {
+      return qtyInSizeUnit * line.ingredientItemCost;
+    }
+  }
+
   const baseQtyPerTracked = trackedIngredientBaseQuantity(line);
   if (!baseQtyPerTracked || baseQtyPerTracked <= 0) return null;
 
@@ -505,6 +516,11 @@ async function calculateRecipeLineCost(tx, line, path = new Set(), totalCache = 
   const qty = line.quantity ?? 0;
   if (!Number.isFinite(qty) || qty <= 0) return 0;
   const sourceLineCost = parseSourceLineCost(line.notes);
+  const hasImportedSourceTag = String(line.notes || "").includes("Source:");
+
+  if (sourceLineCost !== null && hasImportedSourceTag) {
+    return Number(sourceLineCost.toFixed(4));
+  }
 
   if (line.lineType === "INGREDIENT" && line.ingredientItemCost !== null) {
     const derived = ingredientLineCost(line);
