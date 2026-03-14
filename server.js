@@ -1455,6 +1455,96 @@ app.put("/api/recipe-builder/recipes/:id/lines", async (req, res) => {
   }
 });
 
+app.post("/api/recipe-builder/import", async (req, res) => {
+  const parsed = z.object({ recipeName: z.string().trim().min(1) }).safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid recipe import payload." });
+  const recipeName = parsed.data.recipeName;
+
+  try {
+    const result = await db.transaction(async (tx) => {
+      const existing = await tx.query("SELECT id FROM recipe_builder_recipes WHERE name = $1", [recipeName]);
+      let recipeId;
+      if (existing.rows.length) {
+        recipeId = Number(existing.rows[0].id);
+      } else {
+        const source = await tx.query(
+          `
+          SELECT recipe_name, recipe_type, status, batch_yield_qty, batch_yield_unit
+          FROM pricebook_recipes
+          WHERE recipe_name = $1
+          `,
+          [recipeName]
+        );
+        if (!source.rows.length) throw new Error("RECIPE_NOT_FOUND");
+
+        const inserted = await tx.query(
+          `
+          INSERT INTO recipe_builder_recipes (name, category, status, yield_qty, yield_unit, notes, updated_at)
+          VALUES ($1, $2, $3, $4, $5, '', CURRENT_TIMESTAMP)
+          RETURNING id
+          `,
+          [
+            source.rows[0].recipe_name,
+            source.rows[0].recipe_type || "General",
+            source.rows[0].status || "Draft",
+            source.rows[0].batch_yield_qty ?? null,
+            source.rows[0].batch_yield_unit ?? null,
+          ]
+        );
+        recipeId = Number(inserted.rows[0].id);
+      }
+
+      await tx.query("DELETE FROM recipe_builder_lines WHERE recipe_id = $1", [recipeId]);
+      const sourceLines = await tx.query(
+        `
+        SELECT ingredient_name, qty, unit, line_cost, notes
+        FROM pricebook_recipe_lines
+        WHERE recipe_name = $1
+        ORDER BY id
+        `,
+        [recipeName]
+      );
+
+      let order = 1;
+      for (const line of sourceLines.rows) {
+        const ingredientName = String(line.ingredient_name || "").trim();
+        let ingredientItemId = null;
+        if (ingredientName) {
+          const item = await tx.query(
+            "SELECT id FROM items WHERE LOWER(name) = LOWER($1) ORDER BY id LIMIT 1",
+            [ingredientName]
+          );
+          if (item.rows.length) ingredientItemId = Number(item.rows[0].id);
+        }
+
+        const lineNotes = [ingredientName ? `Source: ${ingredientName}` : null, line.notes || null, line.line_cost !== null && line.line_cost !== undefined ? `LineCost: ${line.line_cost}` : null]
+          .filter(Boolean)
+          .join(" | ");
+
+        await tx.query(
+          `
+          INSERT INTO recipe_builder_lines
+          (recipe_id, sort_order, line_type, ingredient_item_id, ingredient_recipe_id, quantity, unit, direction_text, cook_temperature, cook_temperature_unit, time_value, time_unit, notes)
+          VALUES ($1, $2, 'INGREDIENT', $3, NULL, $4, $5, NULL, NULL, NULL, NULL, NULL, $6)
+          `,
+          [recipeId, order, ingredientItemId, line.qty ?? null, line.unit ?? null, lineNotes || null]
+        );
+        order += 1;
+      }
+
+      await tx.query("UPDATE recipe_builder_recipes SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [recipeId]);
+      return recipeId;
+    });
+
+    return res.json({ id: result, recipeName });
+  } catch (error) {
+    if (error.message === "RECIPE_NOT_FOUND") {
+      return res.status(404).json({ error: "Recipe not found in imported recipe catalog." });
+    }
+    return res.status(500).json({ error: "Failed to import recipe into recipe builder." });
+  }
+});
+
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/catalog", (_req, res) => res.redirect("/item-catalog"));
 app.get("/add-item", (_req, res) => res.redirect("/item-catalog"));

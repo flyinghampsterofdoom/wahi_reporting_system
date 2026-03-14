@@ -1380,6 +1380,11 @@ async function initRecipeBuilderPage() {
   addRecipeLine.addEventListener("click", () => addRecipeLineRow());
 
   await loadRecipes();
+  const params = new URLSearchParams(window.location.search);
+  const presetRecipeId = Number(params.get("recipeId") || 0);
+  if (Number.isInteger(presetRecipeId) && presetRecipeId > 0) {
+    await openRecipe(presetRecipeId);
+  }
 }
 
 async function initAdminReferencePage() {
@@ -1610,6 +1615,7 @@ async function initRecipeBooksPage() {
             <th>Margin %</th>
             <th>Profit</th>
             <th>Action</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <tbody>
@@ -1623,6 +1629,7 @@ async function initRecipeBooksPage() {
               <td>${row.marginPercent === null ? "n/a" : `${Number(row.marginPercent).toFixed(2)}%`}</td>
               <td>${row.profit === null ? "n/a" : `$${Number(row.profit).toFixed(2)}`}</td>
               <td><button type="button" class="secondary mini-btn rb-save-retail">Save</button></td>
+              <td><button type="button" class="mini-btn rb-edit-recipe">Edit Recipe</button></td>
             </tr>
           `
             )
@@ -1644,6 +1651,22 @@ async function initRecipeBooksPage() {
           });
           await loadBook();
           showToast("Retail price saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+
+    tableContainer.querySelectorAll(".rb-edit-recipe").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const recipeName = decodeURIComponent(tr.dataset.recipeName);
+        try {
+          const imported = await api("/api/recipe-builder/import", {
+            method: "POST",
+            body: JSON.stringify({ recipeName }),
+          });
+          window.location.href = `/recipe-builder?recipeId=${encodeURIComponent(imported.id)}`;
         } catch (error) {
           showToast(error.message, true);
         }
