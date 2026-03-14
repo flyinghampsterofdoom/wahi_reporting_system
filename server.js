@@ -26,13 +26,15 @@ const itemSchema = z.object({
   vendorId: z.number().int().positive(),
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
+  measureType: z.enum(["FLUID", "WEIGHT", "EA"]).optional().default("FLUID"),
   purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
   purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
     .array(
       z.object({
         sizeLabel: z.string().trim().min(1),
-        volumeMl: z.number().int().positive(),
+        sizeAmount: z.number().positive(),
+        sizeUnit: z.string().trim().min(1),
         isTracked: z.boolean(),
         unitCost: z.number().nonnegative().nullable().optional(),
       })
@@ -45,6 +47,7 @@ const itemUpdateSchema = z.object({
   vendorId: z.number().int().positive(),
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
+  measureType: z.enum(["FLUID", "WEIGHT", "EA"]).optional().default("FLUID"),
   purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
   purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
@@ -52,7 +55,8 @@ const itemUpdateSchema = z.object({
       z.object({
         id: z.number().int().positive().optional(),
         sizeLabel: z.string().trim().min(1),
-        volumeMl: z.number().int().positive(),
+        sizeAmount: z.number().positive(),
+        sizeUnit: z.string().trim().min(1),
         isTracked: z.boolean(),
         unitCost: z.number().nonnegative().nullable().optional(),
       })
@@ -147,6 +151,42 @@ function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
         }
       : size
   );
+}
+
+function normalizeSizeUnit(unit) {
+  const raw = String(unit || "").trim();
+  if (!raw) return "mL";
+  const lower = raw.toLowerCase();
+  if (lower === "ml") return "mL";
+  if (lower === "l") return "L";
+  if (lower === "fl oz" || lower === "floz") return "fl oz";
+  if (lower === "oz") return "oz";
+  if (lower === "lb" || lower === "lbs") return "lb";
+  if (lower === "g") return "g";
+  if (lower === "kg") return "kg";
+  if (lower === "ea" || lower === "each") return "ea";
+  return raw;
+}
+
+function toLegacyVolumeValue(measureType, sizeAmount, sizeUnit) {
+  const amount = Number(sizeAmount);
+  const unit = normalizeSizeUnit(sizeUnit).toLowerCase();
+  if (!Number.isFinite(amount) || amount <= 0) return 1;
+
+  if (measureType === "FLUID") {
+    if (unit === "ml") return Math.round(amount);
+    if (unit === "l") return Math.round(amount * 1000);
+    if (unit === "fl oz" || unit === "oz") return Math.round(amount * 29.5735);
+    return Math.round(amount);
+  }
+  if (measureType === "WEIGHT") {
+    if (unit === "g") return Math.round(amount);
+    if (unit === "kg") return Math.round(amount * 1000);
+    if (unit === "oz") return Math.round(amount * 28.3495);
+    if (unit === "lb") return Math.round(amount * 453.592);
+    return Math.round(amount);
+  }
+  return Math.round(amount);
 }
 
 async function getRecipeBaseRows(tx) {
@@ -381,12 +421,15 @@ app.get("/api/items", async (_req, res) => {
       i.name AS item_name,
       i.case_size,
       i.area_type,
+      i.measure_type,
       i.purchase_unit,
       i.purchase_cost,
       v.id AS vendor_id,
       v.name AS vendor_name,
       s.id AS size_id,
       s.size_label,
+      s.size_amount,
+      s.size_unit,
       s.volume_ml,
       s.unit_cost,
       s.is_tracked
@@ -404,6 +447,7 @@ app.get("/api/items", async (_req, res) => {
         name: row.item_name,
         caseSize: Number(row.case_size),
         areaType: row.area_type,
+        measureType: row.measure_type || "FLUID",
         purchaseUnit: row.purchase_unit || "BOTTLE",
         purchaseCost:
           row.purchase_cost === null || row.purchase_cost === undefined ? null : Number(row.purchase_cost),
@@ -417,6 +461,9 @@ app.get("/api/items", async (_req, res) => {
     grouped.get(row.item_id).sizes.push({
       id: Number(row.size_id),
       sizeLabel: row.size_label,
+      sizeAmount:
+        row.size_amount === null || row.size_amount === undefined ? Number(row.volume_ml) : Number(row.size_amount),
+      sizeUnit: row.size_unit || "mL",
       volumeMl: Number(row.volume_ml),
       unitCost: row.unit_cost === null || row.unit_cost === undefined ? null : Number(row.unit_cost),
       isTracked: Number(row.is_tracked) === 1,
@@ -425,9 +472,11 @@ app.get("/api/items", async (_req, res) => {
   const items = [...grouped.values()].map((item) => {
     const tracked = item.sizes.find((size) => size.isTracked);
     const trackedUnitCost = tracked?.unitCost ?? null;
-    const trackedCostPerMl =
-      tracked && trackedUnitCost !== null ? Number((trackedUnitCost / tracked.volumeMl).toFixed(6)) : null;
-    return { ...item, trackedUnitCost, trackedCostPerMl };
+    const trackedCostPerUnit =
+      tracked && trackedUnitCost !== null && tracked.sizeAmount
+        ? Number((trackedUnitCost / tracked.sizeAmount).toFixed(6))
+        : null;
+    return { ...item, trackedUnitCost, trackedCostPerUnit };
   });
 
   res.json(items);
@@ -437,7 +486,7 @@ app.post("/api/items", async (req, res) => {
   const parsed = itemSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost } = parsed.data;
+  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost } = parsed.data;
   const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
@@ -451,15 +500,23 @@ app.post("/api/items", async (req, res) => {
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
 
       const inserted = await tx.query(
-        "INSERT INTO items (name, vendor_id, case_size, area_type, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-        [name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost ?? null]
+        "INSERT INTO items (name, vendor_id, case_size, area_type, measure_type, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost ?? null]
       );
 
       const id = Number(inserted.rows[0].id);
       for (const size of sizes) {
         await tx.query(
-          "INSERT INTO item_sizes (item_id, size_label, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5)",
-          [id, size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked)]
+          "INSERT INTO item_sizes (item_id, size_label, size_amount, size_unit, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+          [
+            id,
+            size.sizeLabel,
+            size.sizeAmount,
+            normalizeSizeUnit(size.sizeUnit),
+            toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
+            size.unitCost ?? null,
+            toBoolInt(size.isTracked),
+          ]
         );
       }
 
@@ -484,7 +541,7 @@ app.put("/api/items/:id", async (req, res) => {
   const parsed = itemUpdateSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost } = parsed.data;
+  const { name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost } = parsed.data;
   const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
@@ -504,8 +561,8 @@ app.put("/api/items/:id", async (req, res) => {
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
 
       await tx.query(
-        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, purchase_unit = $5, purchase_cost = $6 WHERE id = $7",
-        [name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost ?? null, itemId]
+        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, measure_type = $5, purchase_unit = $6, purchase_cost = $7 WHERE id = $8",
+        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost ?? null, itemId]
       );
 
       const sourceSystem = String(item.rows[0].source_system || "");
@@ -528,14 +585,31 @@ app.put("/api/items/:id", async (req, res) => {
         if (size.id) {
           if (!existingIds.has(size.id)) throw new Error("SIZE_NOT_FOUND");
           await tx.query(
-            "UPDATE item_sizes SET size_label = $1, volume_ml = $2, unit_cost = $3, is_tracked = $4 WHERE id = $5 AND item_id = $6",
-            [size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked), size.id, itemId]
+            "UPDATE item_sizes SET size_label = $1, size_amount = $2, size_unit = $3, volume_ml = $4, unit_cost = $5, is_tracked = $6 WHERE id = $7 AND item_id = $8",
+            [
+              size.sizeLabel,
+              size.sizeAmount,
+              normalizeSizeUnit(size.sizeUnit),
+              toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
+              size.unitCost ?? null,
+              toBoolInt(size.isTracked),
+              size.id,
+              itemId,
+            ]
           );
           keepIds.add(size.id);
         } else {
           const inserted = await tx.query(
-            "INSERT INTO item_sizes (item_id, size_label, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-            [itemId, size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked)]
+            "INSERT INTO item_sizes (item_id, size_label, size_amount, size_unit, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+            [
+              itemId,
+              size.sizeLabel,
+              size.sizeAmount,
+              normalizeSizeUnit(size.sizeUnit),
+              toLegacyVolumeValue(measureType, size.sizeAmount, size.sizeUnit),
+              size.unitCost ?? null,
+              toBoolInt(size.isTracked),
+            ]
           );
           keepIds.add(Number(inserted.rows[0].id));
         }
@@ -601,6 +675,8 @@ app.get("/api/par-levels", async (req, res) => {
       i.area_type,
       s.id AS item_size_id,
       s.size_label,
+      s.size_amount,
+      s.size_unit,
       s.volume_ml,
       p.par_bottles,
       p.level_bottles
@@ -654,6 +730,8 @@ app.get("/api/counts", async (req, res) => {
       i.area_type,
       i.name AS item_name,
       s.size_label,
+      s.size_amount,
+      s.size_unit,
       s.volume_ml,
       COALESCE(c.full_bottles, 0) AS full_bottles,
       COALESCE(c.partial_percent, 0) AS partial_percent
@@ -709,6 +787,8 @@ app.get("/api/reorder", async (req, res) => {
       v.name AS vendor_name,
       s.id AS size_id,
       s.size_label,
+      s.size_amount,
+      s.size_unit,
       s.volume_ml,
       p.par_bottles,
       p.level_bottles,
@@ -736,6 +816,8 @@ app.get("/api/reorder", async (req, res) => {
       areaType: row.area_type,
       item: row.item_name,
       size: row.size_label,
+      sizeAmount: row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
+      sizeUnit: row.size_unit || null,
       volumeMl: Number(row.volume_ml),
       caseSize: Number(row.case_size),
       parLevelBottles: row.par_bottles,
@@ -823,7 +905,8 @@ app.get("/api/recipe-builder/options", async (req, res) => {
         v.name AS vendor_name,
         i.area_type,
         s.size_label,
-        s.volume_ml,
+        s.size_amount,
+        s.size_unit,
         s.unit_cost
       FROM items i
       JOIN vendors v ON v.id = i.vendor_id
@@ -839,7 +922,9 @@ app.get("/api/recipe-builder/options", async (req, res) => {
     vendorName: row.vendor_name,
     areaType: row.area_type,
     trackedSizeLabel: row.size_label,
-    trackedVolumeMl: Number(row.volume_ml),
+    trackedSizeAmount:
+      row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
+    trackedSizeUnit: row.size_unit || null,
     trackedUnitCost: row.unit_cost === null ? null : Number(row.unit_cost),
   }));
 

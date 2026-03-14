@@ -204,7 +204,7 @@ th {
 .size-row {
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr 1fr auto;
 }
 
 .size-row button {

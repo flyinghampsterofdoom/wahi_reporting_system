@@ -23,7 +23,20 @@ function parseNullableNumber(value) {
   return Number.isFinite(num) ? num : null;
 }
 
-function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedVolumeMl) {
+const ITEM_UNIT_OPTIONS = {
+  FLUID: ["mL", "L", "fl oz", "oz"],
+  WEIGHT: ["g", "kg", "oz", "lb"],
+  EA: ["ea"],
+};
+
+function unitOptionsHtml(measureType, selectedUnit) {
+  const options = ITEM_UNIT_OPTIONS[measureType] || ITEM_UNIT_OPTIONS.FLUID;
+  return options
+    .map((unit) => `<option value="${unit}" ${unit === selectedUnit ? "selected" : ""}>${unit}</option>`)
+    .join("");
+}
+
+function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedSizeAmount) {
   if (purchaseCost === null || purchaseCost === undefined) return null;
   let perBottle = Number(purchaseCost);
   if (purchaseUnit === "CASE") {
@@ -31,36 +44,38 @@ function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedV
     perBottle = Number(purchaseCost) / Number(caseSize);
   }
   if (!Number.isFinite(perBottle) || perBottle < 0) return null;
-  const perMl = Number(trackedVolumeMl) > 0 ? perBottle / Number(trackedVolumeMl) : null;
+  const perUnit = Number(trackedSizeAmount) > 0 ? perBottle / Number(trackedSizeAmount) : null;
   return {
     perBottle: Number(perBottle.toFixed(4)),
-    perMl: perMl === null ? null : Number(perMl.toFixed(6)),
+    perUnit: perUnit === null ? null : Number(perUnit.toFixed(6)),
   };
 }
 
-function trackedVolumeFromRows(container) {
+function trackedSizeInfoFromRows(container) {
   const tracked = [...container.querySelectorAll(".size-row")].find(
     (row) => row.querySelector(".size-tracked")?.checked
   );
-  if (!tracked) return null;
-  const vol = Number(tracked.querySelector(".size-volume")?.value);
-  return Number.isFinite(vol) && vol > 0 ? vol : null;
+  if (!tracked) return { amount: null, unit: null };
+  const amount = Number(tracked.querySelector(".size-amount")?.value);
+  const unit = tracked.querySelector(".size-unit")?.value || null;
+  return { amount: Number.isFinite(amount) && amount > 0 ? amount : null, unit };
 }
 
-function renderCostPreview(previewNode, caseSize, purchaseUnit, purchaseCost, trackedVolumeMl) {
+function renderCostPreview(previewNode, caseSize, purchaseUnit, purchaseCost, trackedSizeAmount, trackedSizeUnit) {
   if (!previewNode) return;
   if (purchaseCost === null || purchaseCost === undefined) {
-    previewNode.textContent = "Item Cost not set. Tracked size cost/ml will use manual bottle cost.";
+    previewNode.textContent = "Item Cost not set. Tracked size cost/unit will use manual bottle cost.";
     return;
   }
-  const breakdown = computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedVolumeMl);
+  const breakdown = computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedSizeAmount);
   if (!breakdown) {
-    previewNode.textContent = "Enter valid case size and tracked volume to calculate cost per bottle and per ml.";
+    previewNode.textContent = "Enter valid case size and tracked size amount to calculate cost per bottle and per unit.";
     return;
   }
   const sourceLabel = purchaseUnit === "CASE" ? "case" : "bottle";
-  const perMlText = breakdown.perMl === null ? "n/a" : `$${breakdown.perMl.toFixed(6)} / ml`;
-  previewNode.textContent = `From $${Number(purchaseCost).toFixed(2)} per ${sourceLabel}: $${breakdown.perBottle.toFixed(4)} per tracked bottle, ${perMlText}.`;
+  const unitLabel = trackedSizeUnit || "unit";
+  const perUnitText = breakdown.perUnit === null ? "n/a" : `$${breakdown.perUnit.toFixed(6)} / ${unitLabel}`;
+  previewNode.textContent = `From $${Number(purchaseCost).toFixed(2)} per ${sourceLabel}: $${breakdown.perBottle.toFixed(4)} per tracked bottle, ${perUnitText}.`;
 }
 
 async function api(url, options = {}) {
@@ -80,15 +95,17 @@ async function api(url, options = {}) {
 
 function addSizeRow(
   sizeRowsContainer,
-  defaults = { id: null, sizeLabel: "", volumeMl: 750, unitCost: null, isTracked: false },
-  trackGroup = `${sizeRowsContainer.id}-track`
+  defaults = { id: null, sizeLabel: "", sizeAmount: 750, sizeUnit: "mL", unitCost: null, isTracked: false },
+  trackGroup = `${sizeRowsContainer.id}-track`,
+  measureType = "FLUID"
 ) {
   const row = document.createElement("div");
   row.className = "size-row";
   row.innerHTML = `
     <input type="hidden" class="size-id" value="${defaults.id ?? ""}" />
     <label>Label <input type="text" class="size-label" value="${defaults.sizeLabel}" placeholder="750ml" required /></label>
-    <label>Volume ml <input type="number" class="size-volume" min="1" value="${defaults.volumeMl}" required /></label>
+    <label>Amount <input type="number" class="size-amount" min="0.01" step="0.01" value="${defaults.sizeAmount}" required /></label>
+    <label>Unit <select class="size-unit">${unitOptionsHtml(measureType, defaults.sizeUnit)}</select></label>
     <label>Cost / Bottle <input type="number" class="size-cost" min="0" step="0.01" value="${defaults.unitCost ?? ""}" placeholder="optional" /></label>
     <label class="track-label">Track Item Size <input type="radio" class="size-tracked" name="${trackGroup}" ${defaults.isTracked ? "checked" : ""} /></label>
     <button type="button" class="secondary remove-size">Remove</button>
@@ -112,9 +129,13 @@ function collectSizesFrom(container) {
 
   return [...container.querySelectorAll(".size-row")].map((row) => {
     const idValue = row.querySelector(".size-id")?.value || "";
+    const amount = Number(row.querySelector(".size-amount").value);
+    const unit = row.querySelector(".size-unit").value;
+    const labelText = row.querySelector(".size-label").value.trim();
     const payload = {
-      sizeLabel: row.querySelector(".size-label").value.trim(),
-      volumeMl: Number(row.querySelector(".size-volume").value),
+      sizeLabel: labelText || `${amount}${unit}`,
+      sizeAmount: amount,
+      sizeUnit: unit,
       unitCost: parseNullableNumber(row.querySelector(".size-cost").value),
       isTracked: row.querySelector(".size-tracked")?.checked || false,
     };
@@ -180,6 +201,7 @@ async function initAddItemPage() {
   const itemVendorSelect = byId("item-vendor");
   const itemCaseSizeInput = byId("item-case-size");
   const itemAreaTypeSelect = byId("item-area-type");
+  const itemMeasureType = byId("item-measure-type");
   const itemPurchaseUnit = byId("item-purchase-unit");
   const itemPurchaseCost = byId("item-purchase-cost");
   const itemCostPreview = byId("item-cost-preview");
@@ -187,12 +209,14 @@ async function initAddItemPage() {
   const addSizeRowButton = byId("add-size-row");
 
   function refreshAddPreview() {
+    const tracked = trackedSizeInfoFromRows(sizeRowsContainer);
     renderCostPreview(
       itemCostPreview,
       Number(itemCaseSizeInput.value),
       itemPurchaseUnit.value,
       parseNullableNumber(itemPurchaseCost.value),
-      trackedVolumeFromRows(sizeRowsContainer)
+      tracked.amount,
+      tracked.unit
     );
   }
 
@@ -223,6 +247,7 @@ async function initAddItemPage() {
           vendorId: Number(itemVendorSelect.value),
           caseSize: Number(itemCaseSizeInput.value),
           areaType: itemAreaTypeSelect.value,
+          measureType: itemMeasureType.value,
           purchaseUnit: itemPurchaseUnit.value,
           purchaseCost: parseNullableNumber(itemPurchaseCost.value),
           sizes: collectSizesFrom(sizeRowsContainer),
@@ -232,11 +257,22 @@ async function initAddItemPage() {
       itemNameInput.value = "";
       itemCaseSizeInput.value = 12;
       itemAreaTypeSelect.value = "FOH";
+      itemMeasureType.value = "FLUID";
       itemPurchaseUnit.value = "BOTTLE";
       itemPurchaseCost.value = "";
       sizeRowsContainer.innerHTML = "";
-      addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-      addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+      addSizeRow(
+        sizeRowsContainer,
+        { sizeLabel: "1L", sizeAmount: 1, sizeUnit: "L", isTracked: true },
+        undefined,
+        itemMeasureType.value
+      );
+      addSizeRow(
+        sizeRowsContainer,
+        { sizeLabel: "750mL", sizeAmount: 750, sizeUnit: "mL", isTracked: false },
+        undefined,
+        itemMeasureType.value
+      );
       refreshAddPreview();
       showToast("Item created and saved.");
       window.dispatchEvent(new CustomEvent("catalog-data-changed"));
@@ -246,7 +282,16 @@ async function initAddItemPage() {
   });
 
   addSizeRowButton.addEventListener("click", () => {
-    addSizeRow(sizeRowsContainer);
+    addSizeRow(sizeRowsContainer, undefined, undefined, itemMeasureType.value);
+    refreshAddPreview();
+  });
+  itemMeasureType.addEventListener("change", () => {
+    sizeRowsContainer.querySelectorAll(".size-unit").forEach((select) => {
+      const selected = select.value;
+      const options = ITEM_UNIT_OPTIONS[itemMeasureType.value] || ITEM_UNIT_OPTIONS.FLUID;
+      const fallback = options.includes(selected) ? selected : options[0];
+      select.innerHTML = unitOptionsHtml(itemMeasureType.value, fallback);
+    });
     refreshAddPreview();
   });
   sizeRowsContainer.addEventListener("input", refreshAddPreview);
@@ -254,8 +299,18 @@ async function initAddItemPage() {
   itemCaseSizeInput.addEventListener("input", refreshAddPreview);
   itemPurchaseUnit.addEventListener("change", refreshAddPreview);
   itemPurchaseCost.addEventListener("input", refreshAddPreview);
-  addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-  addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+  addSizeRow(
+    sizeRowsContainer,
+    { sizeLabel: "1L", sizeAmount: 1, sizeUnit: "L", isTracked: true },
+    undefined,
+    itemMeasureType.value
+  );
+  addSizeRow(
+    sizeRowsContainer,
+    { sizeLabel: "750mL", sizeAmount: 750, sizeUnit: "mL", isTracked: false },
+    undefined,
+    itemMeasureType.value
+  );
   refreshAddPreview();
   await loadVendors();
 }
@@ -281,6 +336,7 @@ async function initItemCatalogPage() {
   const editItemId = byId("edit-item-id");
   const editItemName = byId("edit-item-name");
   const editItemAreaType = byId("edit-item-area-type");
+  const editItemMeasureType = byId("edit-item-measure-type");
   const editItemVendor = byId("edit-item-vendor");
   const editItemCaseSize = byId("edit-item-case-size");
   const editItemPurchaseUnit = byId("edit-item-purchase-unit");
@@ -291,12 +347,14 @@ async function initItemCatalogPage() {
   let items = [];
 
   function refreshEditPreview() {
+    const tracked = trackedSizeInfoFromRows(editSizeRows);
     renderCostPreview(
       editItemCostPreview,
       Number(editItemCaseSize.value),
       editItemPurchaseUnit.value,
       parseNullableNumber(editItemPurchaseCost.value),
-      trackedVolumeFromRows(editSizeRows)
+      tracked.amount,
+      tracked.unit
     );
   }
 
@@ -357,7 +415,7 @@ async function initItemCatalogPage() {
             const costText =
               s.unitCost === null || s.unitCost === undefined ? "No Cost" : `$${Number(s.unitCost).toFixed(2)}`;
 
-            return `<div class="size-line">${s.sizeLabel} (${s.volumeMl}ml, ${costText}) ${trackControl}</div>`;
+            return `<div class="size-line">${s.sizeLabel} (${s.sizeAmount} ${s.sizeUnit}, ${costText}) ${trackControl}</div>`;
           })
           .join("");
 
@@ -435,6 +493,7 @@ async function initItemCatalogPage() {
     editItemId.value = String(item.id);
     editItemName.value = item.name;
     editItemAreaType.value = item.areaType;
+    editItemMeasureType.value = item.measureType || "FLUID";
     editItemCaseSize.value = String(item.caseSize);
     editItemPurchaseUnit.value = item.purchaseUnit || "BOTTLE";
     editItemPurchaseCost.value = item.purchaseCost ?? "";
@@ -442,7 +501,18 @@ async function initItemCatalogPage() {
     editItemVendor.value = String(item.vendor.id);
 
     editSizeRows.innerHTML = "";
-    item.sizes.forEach((size) => addSizeRow(editSizeRows, size, "edit-size-track"));
+    item.sizes.forEach((size) =>
+      addSizeRow(
+        editSizeRows,
+        {
+          ...size,
+          sizeAmount: size.sizeAmount ?? size.volumeMl,
+          sizeUnit: size.sizeUnit || "mL",
+        },
+        "edit-size-track",
+        editItemMeasureType.value
+      )
+    );
     refreshEditPreview();
 
     editSection.hidden = false;
@@ -485,8 +555,22 @@ async function initItemCatalogPage() {
     if (event.target === editSection) closeEdit();
   });
   editAddSizeRowButton.addEventListener("click", () =>
-    addSizeRow(editSizeRows, { sizeLabel: "", volumeMl: 750, unitCost: null, isTracked: false }, "edit-size-track")
+    addSizeRow(
+      editSizeRows,
+      { sizeLabel: "", sizeAmount: 1, sizeUnit: "mL", unitCost: null, isTracked: false },
+      "edit-size-track",
+      editItemMeasureType.value
+    )
   );
+  editItemMeasureType.addEventListener("change", () => {
+    editSizeRows.querySelectorAll(".size-unit").forEach((select) => {
+      const selected = select.value;
+      const options = ITEM_UNIT_OPTIONS[editItemMeasureType.value] || ITEM_UNIT_OPTIONS.FLUID;
+      const fallback = options.includes(selected) ? selected : options[0];
+      select.innerHTML = unitOptionsHtml(editItemMeasureType.value, fallback);
+    });
+    refreshEditPreview();
+  });
   editSizeRows.addEventListener("input", refreshEditPreview);
   editSizeRows.addEventListener("change", refreshEditPreview);
   editItemCaseSize.addEventListener("input", refreshEditPreview);
@@ -503,6 +587,7 @@ async function initItemCatalogPage() {
         body: JSON.stringify({
           name: editItemName.value.trim(),
           areaType: editItemAreaType.value,
+          measureType: editItemMeasureType.value,
           vendorId: Number(editItemVendor.value),
           caseSize: Number(editItemCaseSize.value),
           purchaseUnit: editItemPurchaseUnit.value,
@@ -684,7 +769,7 @@ async function initCountsPage() {
         return `
       <tr class="${r.is_tracked ? "tracked-row" : "untracked-row"}">
         <td>${r.item_name}</td>
-        <td>${r.size_label} (${r.volume_ml}ml)</td>
+        <td>${r.size_label} (${r.size_amount ?? r.volume_ml} ${r.size_unit || "mL"})</td>
         <td>${trackedLabel}</td>
         <td><input type="number" min="0" step="0.1" data-id="${r.size_id}" data-field="full" value="${defaultFull}" /></td>
         <td><input type="number" min="0" max="100" step="1" data-id="${r.size_id}" data-field="partial" value="${defaultPartial}" /></td>
@@ -777,7 +862,7 @@ async function initParLevelsPage() {
         (row) => `
       <tr>
         <td>${row.item_name}</td>
-        <td>${row.size_label} (${row.volume_ml}ml)</td>
+        <td>${row.size_label} (${row.size_amount ?? row.volume_ml} ${row.size_unit || "mL"})</td>
         <td><input type="number" min="0" step="0.1" data-item-size-id="${row.item_size_id}" data-field="par" value="${row.par_bottles ?? ""}" placeholder="e.g. 6" /></td>
         <td><input type="number" min="0" step="0.1" data-item-size-id="${row.item_size_id}" data-field="level" value="${row.level_bottles ?? ""}" placeholder="optional" /></td>
       </tr>
@@ -866,7 +951,7 @@ async function initReorderPage() {
           <td>${r.vendor}</td>
           <td>${r.areaType}</td>
           <td>${r.item}</td>
-          <td>${r.size} (${r.volumeMl}ml)</td>
+          <td>${r.size} (${r.sizeAmount ?? r.volumeMl} ${r.sizeUnit || "mL"})</td>
           <td>${parText}</td>
           <td>${levelText}</td>
           <td>${r.onHandBottles}</td>

@@ -47,6 +47,7 @@ class SqliteClient {
         vendor_id INTEGER NOT NULL,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        measure_type TEXT NOT NULL DEFAULT 'FLUID' CHECK(measure_type IN ('FLUID', 'WEIGHT', 'EA')),
         purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
         purchase_cost REAL,
         sku TEXT NOT NULL DEFAULT '',
@@ -60,6 +61,8 @@ class SqliteClient {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         item_id INTEGER NOT NULL,
         size_label TEXT NOT NULL,
+        size_amount REAL,
+        size_unit TEXT,
         volume_ml INTEGER NOT NULL CHECK(volume_ml > 0),
         unit_cost REAL,
         par_level_bottles REAL NOT NULL DEFAULT 0 CHECK(par_level_bottles >= 0),
@@ -307,12 +310,28 @@ class SqliteClient {
     if (!itemColumnNames.has("purchase_cost")) {
       this.db.exec("ALTER TABLE items ADD COLUMN purchase_cost REAL;");
     }
+    if (!itemColumnNames.has("measure_type")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN measure_type TEXT NOT NULL DEFAULT 'FLUID';");
+    }
 
     const sizeColumns = this.db.prepare("PRAGMA table_info(item_sizes)").all();
     const sizeColumnNames = new Set(sizeColumns.map((column) => column.name));
     if (!sizeColumnNames.has("unit_cost")) {
       this.db.exec("ALTER TABLE item_sizes ADD COLUMN unit_cost REAL;");
     }
+    if (!sizeColumnNames.has("size_amount")) {
+      this.db.exec("ALTER TABLE item_sizes ADD COLUMN size_amount REAL;");
+    }
+    if (!sizeColumnNames.has("size_unit")) {
+      this.db.exec("ALTER TABLE item_sizes ADD COLUMN size_unit TEXT;");
+    }
+
+    this.db.exec(`
+      UPDATE item_sizes
+      SET size_amount = COALESCE(size_amount, volume_ml),
+          size_unit = COALESCE(size_unit, 'mL')
+      WHERE size_amount IS NULL OR size_unit IS NULL;
+    `);
 
     this.db.exec(`
       CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor
@@ -386,6 +405,7 @@ class PostgresClient {
         vendor_id BIGINT NOT NULL REFERENCES vendors(id) ON DELETE RESTRICT,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        measure_type TEXT NOT NULL DEFAULT 'FLUID' CHECK(measure_type IN ('FLUID', 'WEIGHT', 'EA')),
         purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
         purchase_cost DOUBLE PRECISION,
         sku TEXT NOT NULL DEFAULT '',
@@ -411,6 +431,9 @@ class PostgresClient {
       ALTER TABLE items ADD COLUMN IF NOT EXISTS purchase_cost DOUBLE PRECISION
     `);
     await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS measure_type TEXT NOT NULL DEFAULT 'FLUID'
+    `);
+    await this.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor
       ON items(name, vendor_id)
     `);
@@ -425,6 +448,8 @@ class PostgresClient {
         id BIGSERIAL PRIMARY KEY,
         item_id BIGINT NOT NULL REFERENCES items(id) ON DELETE CASCADE,
         size_label TEXT NOT NULL,
+        size_amount DOUBLE PRECISION,
+        size_unit TEXT,
         volume_ml INTEGER NOT NULL CHECK(volume_ml > 0),
         unit_cost DOUBLE PRECISION,
         par_level_bottles DOUBLE PRECISION NOT NULL DEFAULT 0 CHECK(par_level_bottles >= 0),
@@ -435,6 +460,18 @@ class PostgresClient {
 
     await this.query(`
       ALTER TABLE item_sizes ADD COLUMN IF NOT EXISTS unit_cost DOUBLE PRECISION
+    `);
+    await this.query(`
+      ALTER TABLE item_sizes ADD COLUMN IF NOT EXISTS size_amount DOUBLE PRECISION
+    `);
+    await this.query(`
+      ALTER TABLE item_sizes ADD COLUMN IF NOT EXISTS size_unit TEXT
+    `);
+    await this.query(`
+      UPDATE item_sizes
+      SET size_amount = COALESCE(size_amount, volume_ml),
+          size_unit = COALESCE(size_unit, 'mL')
+      WHERE size_amount IS NULL OR size_unit IS NULL
     `);
 
     await this.query(`
