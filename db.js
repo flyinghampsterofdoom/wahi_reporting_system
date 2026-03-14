@@ -47,6 +47,9 @@ class SqliteClient {
         vendor_id INTEGER NOT NULL,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        sku TEXT NOT NULL DEFAULT '',
+        source_system TEXT NOT NULL DEFAULT '',
+        source_key TEXT NOT NULL DEFAULT '',
         created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
         FOREIGN KEY(vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT
       );
@@ -250,6 +253,28 @@ class SqliteClient {
           )
       );
     `);
+
+    const itemColumns = this.db.prepare("PRAGMA table_info(items)").all();
+    const itemColumnNames = new Set(itemColumns.map((column) => column.name));
+    if (!itemColumnNames.has("sku")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN sku TEXT NOT NULL DEFAULT '';");
+    }
+    if (!itemColumnNames.has("source_system")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN source_system TEXT NOT NULL DEFAULT '';");
+    }
+    if (!itemColumnNames.has("source_key")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN source_key TEXT NOT NULL DEFAULT '';");
+    }
+
+    this.db.exec(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor
+      ON items(name, vendor_id);
+    `);
+    this.db.exec(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_items_source_ref
+      ON items(source_system, source_key)
+      WHERE source_system <> '' AND source_key <> '';
+    `);
   }
 
   async query(sql, params = []) {
@@ -313,8 +338,30 @@ class PostgresClient {
         vendor_id BIGINT NOT NULL REFERENCES vendors(id) ON DELETE RESTRICT,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        sku TEXT NOT NULL DEFAULT '',
+        source_system TEXT NOT NULL DEFAULT '',
+        source_key TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS sku TEXT NOT NULL DEFAULT ''
+    `);
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS source_system TEXT NOT NULL DEFAULT ''
+    `);
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS source_key TEXT NOT NULL DEFAULT ''
+    `);
+    await this.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor
+      ON items(name, vendor_id)
+    `);
+    await this.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_items_source_ref
+      ON items(source_system, source_key)
+      WHERE source_system <> '' AND source_key <> ''
     `);
 
     await this.query(`

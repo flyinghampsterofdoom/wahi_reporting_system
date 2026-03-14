@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const XLSX = require("xlsx");
 const { createDbClient } = require("../db");
+const { syncPricebookToCatalog } = require("../lib/pricebook-sync");
 
 const sourcePath = process.argv[2];
 if (!sourcePath) {
@@ -305,6 +306,7 @@ async function run() {
   ]);
 
   const pick = (q) => Number(q.rows[0].c);
+  const catalogSync = await syncPricebookToCatalog(db);
   // eslint-disable-next-line no-console
   console.log("Price book import complete:", {
     ingredients: pick(counts[0]),
@@ -316,6 +318,7 @@ async function run() {
     drinkCatalog: pick(counts[6]),
     foodCatalog: pick(counts[7]),
     syrupCatalog: pick(counts[8]),
+    catalogSync,
   });
 }
 

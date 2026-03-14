@@ -199,6 +199,7 @@ async function initItemCatalogPage() {
   const filterNameInput = byId("catalog-filter-name");
   const refreshButton = byId("refresh-catalog");
   const openAddItemButton = byId("open-add-item");
+  const syncPricebookCatalogButton = byId("sync-pricebook-catalog");
   const addItemSection = byId("add-item-section");
   const editSection = byId("edit-item-section");
   const editForm = byId("edit-item-form");
@@ -372,6 +373,22 @@ async function initItemCatalogPage() {
   }
 
   refreshButton.addEventListener("click", () => reloadData().catch((e) => showToast(e.message, true)));
+  if (syncPricebookCatalogButton) {
+    syncPricebookCatalogButton.addEventListener("click", async () => {
+      try {
+        syncPricebookCatalogButton.disabled = true;
+        const result = await api("/api/pricebook/sync-catalog", { method: "POST" });
+        await reloadData();
+        const created = result?.stats?.itemsCreated ?? 0;
+        const updated = result?.stats?.itemsUpdated ?? 0;
+        showToast(`Price book synced. Created ${created}, updated ${updated}.`);
+      } catch (error) {
+        showToast(error.message, true);
+      } finally {
+        syncPricebookCatalogButton.disabled = false;
+      }
+    });
+  }
   if (openAddItemButton && addItemSection) {
     openAddItemButton.addEventListener("click", () => {
       addItemSection.hidden = !addItemSection.hidden;

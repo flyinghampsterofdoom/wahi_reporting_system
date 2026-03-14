@@ -26,7 +26,7 @@ Web-based inventory and ordering starter system for a bar.
 
 - Node.js
 - Express
-- SQLite (`better-sqlite3`)
+- SQLite (`better-sqlite3`) or Postgres (`pg`)
 - Vanilla HTML/CSS/JavaScript frontend
 
 ## Run locally
@@ -44,7 +44,7 @@ Then open [http://localhost:3000](http://localhost:3000).
 npm run import:pricebook -- "/absolute/path/to/Wahi Price Book V2.1.xlsx"
 ```
 
-This preserves source-of-truth math inputs in dedicated tables:
+This preserves source-of-truth math inputs in dedicated tables and syncs `Ingredients` into the operational Item Catalog (`vendors`, `items`, `item_sizes`, and area assignments):
 
 - `pricebook_ingredients`
 - `pricebook_recipes`
@@ -80,5 +80,6 @@ This preserves source-of-truth math inputs in dedicated tables:
 - `POST /api/par-levels`
 - `GET /api/reorder?date=YYYY-MM-DD`
 - `GET /api/pricebook/summary`
+- `POST /api/pricebook/sync-catalog`
 - `GET /api/pricebook/recipes`
 - `GET /api/pricebook/recipe-lines?recipeName=...`

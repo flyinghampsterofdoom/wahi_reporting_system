@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { z } = require("zod");
 const { createDbClient, DB_CLIENT } = require("./db");
+const { syncPricebookToCatalog } = require("./lib/pricebook-sync");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -593,6 +594,15 @@ app.get("/api/pricebook/summary", async (_req, res) => {
     foodCatalog: pick(foodCatalog),
     syrupCatalog: pick(syrupCatalog),
   });
+});
+
+app.post("/api/pricebook/sync-catalog", async (_req, res) => {
+  try {
+    const stats = await syncPricebookToCatalog(db);
+    return res.json({ ok: true, stats });
+  } catch (_error) {
+    return res.status(500).json({ error: "Failed to sync price book into item catalog." });
+  }
 });
 
 app.get("/api/pricebook/recipes", async (_req, res) => {
