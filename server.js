@@ -179,6 +179,76 @@ function recipeUnitCategory(value) {
   return "OTHER";
 }
 
+function recipeUnitFactor(unit, category) {
+  const normalized = normalizeRecipeUnit(unit);
+  if (!normalized) return null;
+
+  if (category === "VOLUME") {
+    const map = {
+      "fl oz": 1,
+      floz: 1,
+      oz: 1,
+      ml: 1 / 29.5735,
+      l: 33.8140227,
+      qt: 32,
+      gal: 128,
+      cup: 8,
+      tbsp: 0.5,
+      tsp: 1 / 6,
+      pt: 16,
+      pint: 16,
+    };
+    return map[normalized] ?? null;
+  }
+
+  if (category === "WEIGHT") {
+    const map = {
+      g: 1,
+      kg: 1000,
+      oz: 28.349523125,
+      lb: 453.59237,
+      lbs: 453.59237,
+    };
+    return map[normalized] ?? null;
+  }
+
+  if (category === "EACH") {
+    const map = {
+      ea: 1,
+      each: 1,
+      x: 1,
+      count: 1,
+    };
+    return map[normalized] ?? null;
+  }
+
+  return null;
+}
+
+function convertRecipeQuantity(quantity, fromUnit, toUnit) {
+  const qty = Number(quantity);
+  if (!Number.isFinite(qty)) return null;
+
+  const from = normalizeRecipeUnit(fromUnit);
+  const to = normalizeRecipeUnit(toUnit);
+
+  if (!from && !to) return qty;
+  if (!from || !to || from === to) return qty;
+
+  const toCategory = recipeUnitCategory(to);
+  const fromCategory = recipeUnitCategory(from);
+  const category = toCategory !== "OTHER" ? toCategory : fromCategory;
+  if (category === "OTHER" || (toCategory !== "OTHER" && fromCategory !== "OTHER" && toCategory !== fromCategory)) {
+    return null;
+  }
+
+  const fromFactor = recipeUnitFactor(from, category);
+  const toFactor = recipeUnitFactor(to, category);
+  if (!fromFactor || !toFactor) return null;
+
+  return (qty * fromFactor) / toFactor;
+}
+
 function resolveRecipeReferenceUnit(sourceUnit, recipeYieldUnit) {
   const rawSourceUnit = String(sourceUnit || "").trim();
   const rawYieldUnit = String(recipeYieldUnit || "").trim();
@@ -303,8 +373,11 @@ async function getRecipeLines(tx, recipeId) {
       l.time_unit,
       l.notes,
       i.name AS ingredient_item_name,
+      i.measure_type AS ingredient_measure_type,
       rr.name AS ingredient_recipe_name,
-      tis.unit_cost AS ingredient_item_cost
+      tis.unit_cost AS ingredient_item_cost,
+      tis.size_amount AS ingredient_size_amount,
+      tis.size_unit AS ingredient_size_unit
     FROM recipe_builder_lines l
     LEFT JOIN items i ON i.id = l.ingredient_item_id
     LEFT JOIN item_sizes tis ON tis.item_id = i.id AND tis.is_tracked = 1
@@ -322,10 +395,16 @@ async function getRecipeLines(tx, recipeId) {
     lineType: row.line_type,
     ingredientItemId: row.ingredient_item_id ? Number(row.ingredient_item_id) : null,
     ingredientItemName: row.ingredient_item_name || null,
+    ingredientMeasureType: row.ingredient_measure_type || null,
     ingredientItemCost:
       row.ingredient_item_cost === null || row.ingredient_item_cost === undefined
         ? null
         : Number(row.ingredient_item_cost),
+    ingredientSizeAmount:
+      row.ingredient_size_amount === null || row.ingredient_size_amount === undefined
+        ? null
+        : Number(row.ingredient_size_amount),
+    ingredientSizeUnit: row.ingredient_size_unit || null,
     ingredientRecipeId: row.ingredient_recipe_id ? Number(row.ingredient_recipe_id) : null,
     ingredientRecipeName: row.ingredient_recipe_name || null,
     quantity: row.quantity === null ? null : Number(row.quantity),
@@ -339,9 +418,123 @@ async function getRecipeLines(tx, recipeId) {
   }));
 }
 
-async function calculateRecipeCost(tx, recipeId, path = new Set()) {
+async function getRecipeMeta(tx, recipeId, metaCache = new Map()) {
   const id = Number(recipeId);
+  if (metaCache.has(id)) return metaCache.get(id);
+
+  const { rows } = await tx.query(
+    "SELECT id, yield_qty, yield_unit FROM recipe_builder_recipes WHERE id = $1",
+    [id]
+  );
+
+  const meta =
+    rows[0] && rows[0].id
+      ? {
+          id: Number(rows[0].id),
+          yieldQty:
+            rows[0].yield_qty === null || rows[0].yield_qty === undefined
+              ? null
+              : Number(rows[0].yield_qty),
+          yieldUnit: rows[0].yield_unit || null,
+        }
+      : null;
+  metaCache.set(id, meta);
+  return meta;
+}
+
+function parseSourceLineCost(notes) {
+  const text = String(notes || "");
+  const match = text.match(/LineCost:\s*([0-9]+(?:\.[0-9]+)?)/i);
+  if (!match) return null;
+  const value = Number(match[1]);
+  return Number.isFinite(value) ? value : null;
+}
+
+function trackedIngredientBaseQuantity(line) {
+  const measureType = String(line.ingredientMeasureType || "").toUpperCase();
+  const amount = line.ingredientSizeAmount;
+  const unit = line.ingredientSizeUnit;
+
+  if (measureType === "FLUID") {
+    return toFluidOz(amount, unit);
+  }
+  if (measureType === "WEIGHT") {
+    return convertRecipeQuantity(amount, unit || "g", "g");
+  }
+  if (measureType === "EA") {
+    return convertRecipeQuantity(amount || 1, unit || "ea", "ea") ?? 1;
+  }
+  return null;
+}
+
+function ingredientLineCost(line) {
+  const qty = line.quantity ?? 0;
+  if (!Number.isFinite(qty) || qty <= 0 || line.ingredientItemCost === null) {
+    return null;
+  }
+
+  const measureType = String(line.ingredientMeasureType || "").toUpperCase();
+  const baseQtyPerTracked = trackedIngredientBaseQuantity(line);
+  if (!baseQtyPerTracked || baseQtyPerTracked <= 0) return null;
+
+  if (measureType === "FLUID") {
+    const qtyFloz = convertRecipeQuantity(qty, line.unit || "fl oz", "fl oz");
+    if (qtyFloz === null) return null;
+    const costPerFloz = line.ingredientItemCost / baseQtyPerTracked;
+    return qtyFloz * costPerFloz;
+  }
+
+  if (measureType === "WEIGHT") {
+    const qtyGrams = convertRecipeQuantity(qty, line.unit || "g", "g");
+    if (qtyGrams === null) return null;
+    const costPerGram = line.ingredientItemCost / baseQtyPerTracked;
+    return qtyGrams * costPerGram;
+  }
+
+  if (measureType === "EA") {
+    const qtyEa = convertRecipeQuantity(qty, line.unit || "ea", "ea");
+    if (qtyEa === null) return null;
+    const costPerEa = line.ingredientItemCost / baseQtyPerTracked;
+    return qtyEa * costPerEa;
+  }
+
+  return null;
+}
+
+async function calculateRecipeLineCost(tx, line, path = new Set(), totalCache = new Map(), metaCache = new Map()) {
+  const qty = line.quantity ?? 0;
+  if (!Number.isFinite(qty) || qty <= 0) return 0;
+  const sourceLineCost = parseSourceLineCost(line.notes);
+
+  if (line.lineType === "INGREDIENT" && line.ingredientItemCost !== null) {
+    const derived = ingredientLineCost(line);
+    if (derived !== null) return Number(derived.toFixed(4));
+    if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
+    return Number((qty * line.ingredientItemCost).toFixed(4));
+  }
+
+  if (line.lineType === "RECIPE" && line.ingredientRecipeId) {
+    const nestedMeta = await getRecipeMeta(tx, line.ingredientRecipeId, metaCache);
+    if (!nestedMeta) return 0;
+
+    const nestedCost = await calculateRecipeCost(tx, line.ingredientRecipeId, path, totalCache, metaCache);
+    const yieldQty = nestedMeta.yieldQty && nestedMeta.yieldQty > 0 ? nestedMeta.yieldQty : 1;
+    const qtyInYieldUnit =
+      convertRecipeQuantity(qty, line.unit || nestedMeta.yieldUnit, nestedMeta.yieldUnit) ?? qty;
+    const derived = Number(((qtyInYieldUnit / yieldQty) * nestedCost).toFixed(4));
+    if (derived > 0) return derived;
+    if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
+    return derived;
+  }
+
+  return 0;
+}
+
+async function calculateRecipeCost(tx, recipeId, path = new Set(), totalCache = new Map(), metaCache = new Map()) {
+  const id = Number(recipeId);
+  if (totalCache.has(id)) return totalCache.get(id);
   if (path.has(id)) return 0;
+
   const nextPath = new Set(path);
   nextPath.add(id);
 
@@ -349,16 +542,13 @@ async function calculateRecipeCost(tx, recipeId, path = new Set()) {
   let total = 0;
 
   for (const line of lines) {
-    const qty = line.quantity ?? 0;
-    if (line.lineType === "INGREDIENT" && line.ingredientItemCost !== null) {
-      total += qty * line.ingredientItemCost;
-    } else if (line.lineType === "RECIPE" && line.ingredientRecipeId) {
-      const nestedCost = await calculateRecipeCost(tx, line.ingredientRecipeId, nextPath);
-      total += qty * nestedCost;
-    }
+    const lineCost = await calculateRecipeLineCost(tx, line, nextPath, totalCache, metaCache);
+    total += lineCost;
   }
 
-  return Number(total.toFixed(4));
+  const rounded = Number(total.toFixed(4));
+  totalCache.set(id, rounded);
+  return rounded;
 }
 
 app.get("/api/vendors", async (_req, res) => {
@@ -1382,8 +1572,18 @@ app.get("/api/recipe-builder/recipes/:id", async (req, res) => {
     );
     if (!rows.length) return null;
 
+    const totalCache = new Map();
+    const metaCache = new Map();
     const lines = await getRecipeLines(tx, recipeId);
-    const totalCost = await calculateRecipeCost(tx, recipeId);
+    const linesWithCost = [];
+    for (const line of lines) {
+      const lineCost = await calculateRecipeLineCost(tx, line, new Set([recipeId]), totalCache, metaCache);
+      linesWithCost.push({
+        ...line,
+        lineCost,
+      });
+    }
+    const totalCost = await calculateRecipeCost(tx, recipeId, new Set(), totalCache, metaCache);
     return {
       id: Number(rows[0].id),
       name: rows[0].name,
@@ -1395,7 +1595,7 @@ app.get("/api/recipe-builder/recipes/:id", async (req, res) => {
       createdAt: rows[0].created_at,
       updatedAt: rows[0].updated_at,
       totalCost,
-      lines,
+      lines: linesWithCost,
     };
   });
 

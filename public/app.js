@@ -1108,6 +1108,13 @@ async function initRecipeBuilderPage() {
       .join("");
   }
 
+  function lineCostDisplay(line) {
+    if (line.lineCost === null || line.lineCost === undefined) return "n/a";
+    const n = Number(line.lineCost);
+    if (!Number.isFinite(n)) return "n/a";
+    return `$${n.toFixed(4)}`;
+  }
+
   function renderLineBody(row, line = {}) {
     const type = row.querySelector(".rb-line-type").value;
     const body = row.querySelector(".recipe-line-body");
@@ -1124,6 +1131,7 @@ async function initRecipeBuilderPage() {
         <div class="line">
           <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? ""}" /></label>
           <label>Unit <select class="rb-unit">${ingredientUnitOptions(line.ingredientItemId, line.unit || "")}</select></label>
+          <label>Line Cost <input type="text" class="rb-line-cost" value="${lineCostDisplay(line)}" readonly /></label>
           <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
         </div>
       `;
@@ -1147,6 +1155,7 @@ async function initRecipeBuilderPage() {
         <div class="line">
           <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? "1"}" /></label>
           <label>Unit <input type="text" class="rb-unit" value="${line.unit ?? "x"}" /></label>
+          <label>Line Cost <input type="text" class="rb-line-cost" value="${lineCostDisplay(line)}" readonly /></label>
           <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
         </div>
       `;

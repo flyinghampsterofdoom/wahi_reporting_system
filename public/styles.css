@@ -319,3 +319,8 @@ body.modal-open {
   display: grid;
   gap: 0.5rem;
 }
+
+.rb-line-cost {
+  background: #f7f7f7;
+  font-weight: 600;
+}
