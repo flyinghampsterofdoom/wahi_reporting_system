@@ -131,6 +131,17 @@ button:hover {
   background: #5c534a;
 }
 
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.home-btn {
+  font-size: 0.85rem;
+  padding: 0.34rem 0.58rem;
+}
+
 .nav-card {
   display: grid;
   align-content: start;
