@@ -23,6 +23,46 @@ function parseNullableNumber(value) {
   return Number.isFinite(num) ? num : null;
 }
 
+function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedVolumeMl) {
+  if (purchaseCost === null || purchaseCost === undefined) return null;
+  let perBottle = Number(purchaseCost);
+  if (purchaseUnit === "CASE") {
+    if (!Number(caseSize)) return null;
+    perBottle = Number(purchaseCost) / Number(caseSize);
+  }
+  if (!Number.isFinite(perBottle) || perBottle < 0) return null;
+  const perMl = Number(trackedVolumeMl) > 0 ? perBottle / Number(trackedVolumeMl) : null;
+  return {
+    perBottle: Number(perBottle.toFixed(4)),
+    perMl: perMl === null ? null : Number(perMl.toFixed(6)),
+  };
+}
+
+function trackedVolumeFromRows(container) {
+  const tracked = [...container.querySelectorAll(".size-row")].find(
+    (row) => row.querySelector(".size-tracked")?.checked
+  );
+  if (!tracked) return null;
+  const vol = Number(tracked.querySelector(".size-volume")?.value);
+  return Number.isFinite(vol) && vol > 0 ? vol : null;
+}
+
+function renderCostPreview(previewNode, caseSize, purchaseUnit, purchaseCost, trackedVolumeMl) {
+  if (!previewNode) return;
+  if (purchaseCost === null || purchaseCost === undefined) {
+    previewNode.textContent = "Item Cost not set. Tracked size cost/ml will use manual bottle cost.";
+    return;
+  }
+  const breakdown = computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedVolumeMl);
+  if (!breakdown) {
+    previewNode.textContent = "Enter valid case size and tracked volume to calculate cost per bottle and per ml.";
+    return;
+  }
+  const sourceLabel = purchaseUnit === "CASE" ? "case" : "bottle";
+  const perMlText = breakdown.perMl === null ? "n/a" : `$${breakdown.perMl.toFixed(6)} / ml`;
+  previewNode.textContent = `From $${Number(purchaseCost).toFixed(2)} per ${sourceLabel}: $${breakdown.perBottle.toFixed(4)} per tracked bottle, ${perMlText}.`;
+}
+
 async function api(url, options = {}) {
   const response = await fetch(url, {
     headers: { "Content-Type": "application/json" },
@@ -53,7 +93,10 @@ function addSizeRow(
     <label class="track-label">Track Item Size <input type="radio" class="size-tracked" name="${trackGroup}" ${defaults.isTracked ? "checked" : ""} /></label>
     <button type="button" class="secondary remove-size">Remove</button>
   `;
-  row.querySelector(".remove-size").addEventListener("click", () => row.remove());
+  row.querySelector(".remove-size").addEventListener("click", () => {
+    row.remove();
+    sizeRowsContainer.dispatchEvent(new Event("change"));
+  });
   sizeRowsContainer.appendChild(row);
 }
 
@@ -137,8 +180,21 @@ async function initAddItemPage() {
   const itemVendorSelect = byId("item-vendor");
   const itemCaseSizeInput = byId("item-case-size");
   const itemAreaTypeSelect = byId("item-area-type");
+  const itemPurchaseUnit = byId("item-purchase-unit");
+  const itemPurchaseCost = byId("item-purchase-cost");
+  const itemCostPreview = byId("item-cost-preview");
   const sizeRowsContainer = byId("size-rows");
   const addSizeRowButton = byId("add-size-row");
+
+  function refreshAddPreview() {
+    renderCostPreview(
+      itemCostPreview,
+      Number(itemCaseSizeInput.value),
+      itemPurchaseUnit.value,
+      parseNullableNumber(itemPurchaseCost.value),
+      trackedVolumeFromRows(sizeRowsContainer)
+    );
+  }
 
   async function loadVendors() {
     const vendors = await api("/api/vendors");
@@ -167,6 +223,8 @@ async function initAddItemPage() {
           vendorId: Number(itemVendorSelect.value),
           caseSize: Number(itemCaseSizeInput.value),
           areaType: itemAreaTypeSelect.value,
+          purchaseUnit: itemPurchaseUnit.value,
+          purchaseCost: parseNullableNumber(itemPurchaseCost.value),
           sizes: collectSizesFrom(sizeRowsContainer),
         }),
       });
@@ -174,9 +232,12 @@ async function initAddItemPage() {
       itemNameInput.value = "";
       itemCaseSizeInput.value = 12;
       itemAreaTypeSelect.value = "FOH";
+      itemPurchaseUnit.value = "BOTTLE";
+      itemPurchaseCost.value = "";
       sizeRowsContainer.innerHTML = "";
       addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
       addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+      refreshAddPreview();
       showToast("Item created and saved.");
       window.dispatchEvent(new CustomEvent("catalog-data-changed"));
     } catch (error) {
@@ -184,9 +245,18 @@ async function initAddItemPage() {
     }
   });
 
-  addSizeRowButton.addEventListener("click", () => addSizeRow(sizeRowsContainer));
+  addSizeRowButton.addEventListener("click", () => {
+    addSizeRow(sizeRowsContainer);
+    refreshAddPreview();
+  });
+  sizeRowsContainer.addEventListener("input", refreshAddPreview);
+  sizeRowsContainer.addEventListener("change", refreshAddPreview);
+  itemCaseSizeInput.addEventListener("input", refreshAddPreview);
+  itemPurchaseUnit.addEventListener("change", refreshAddPreview);
+  itemPurchaseCost.addEventListener("input", refreshAddPreview);
   addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
   addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+  refreshAddPreview();
   await loadVendors();
 }
 
@@ -212,9 +282,22 @@ async function initItemCatalogPage() {
   const editItemAreaType = byId("edit-item-area-type");
   const editItemVendor = byId("edit-item-vendor");
   const editItemCaseSize = byId("edit-item-case-size");
+  const editItemPurchaseUnit = byId("edit-item-purchase-unit");
+  const editItemPurchaseCost = byId("edit-item-purchase-cost");
+  const editItemCostPreview = byId("edit-item-cost-preview");
 
   let vendors = [];
   let items = [];
+
+  function refreshEditPreview() {
+    renderCostPreview(
+      editItemCostPreview,
+      Number(editItemCaseSize.value),
+      editItemPurchaseUnit.value,
+      parseNullableNumber(editItemPurchaseCost.value),
+      trackedVolumeFromRows(editSizeRows)
+    );
+  }
 
   function sortItems(inputItems) {
     const key = sortBySelect.value;
@@ -352,11 +435,14 @@ async function initItemCatalogPage() {
     editItemName.value = item.name;
     editItemAreaType.value = item.areaType;
     editItemCaseSize.value = String(item.caseSize);
+    editItemPurchaseUnit.value = item.purchaseUnit || "BOTTLE";
+    editItemPurchaseCost.value = item.purchaseCost ?? "";
     loadVendorOptions(editItemVendor);
     editItemVendor.value = String(item.vendor.id);
 
     editSizeRows.innerHTML = "";
     item.sizes.forEach((size) => addSizeRow(editSizeRows, size, "edit-size-track"));
+    refreshEditPreview();
 
     editSection.hidden = false;
     editSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -391,8 +477,13 @@ async function initItemCatalogPage() {
   filterNameInput.addEventListener("input", renderCatalog);
   cancelEditButton.addEventListener("click", closeEdit);
   editAddSizeRowButton.addEventListener("click", () =>
-    addSizeRow(editSizeRows, { sizeLabel: "", volumeMl: 750, isTracked: false }, "edit-size-track")
+    addSizeRow(editSizeRows, { sizeLabel: "", volumeMl: 750, unitCost: null, isTracked: false }, "edit-size-track")
   );
+  editSizeRows.addEventListener("input", refreshEditPreview);
+  editSizeRows.addEventListener("change", refreshEditPreview);
+  editItemCaseSize.addEventListener("input", refreshEditPreview);
+  editItemPurchaseUnit.addEventListener("change", refreshEditPreview);
+  editItemPurchaseCost.addEventListener("input", refreshEditPreview);
 
   editForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -406,6 +497,8 @@ async function initItemCatalogPage() {
           areaType: editItemAreaType.value,
           vendorId: Number(editItemVendor.value),
           caseSize: Number(editItemCaseSize.value),
+          purchaseUnit: editItemPurchaseUnit.value,
+          purchaseCost: parseNullableNumber(editItemPurchaseCost.value),
           sizes: collectSizesFrom(editSizeRows),
         }),
       });

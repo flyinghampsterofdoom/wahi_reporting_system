@@ -47,6 +47,8 @@ class SqliteClient {
         vendor_id INTEGER NOT NULL,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
+        purchase_cost REAL,
         sku TEXT NOT NULL DEFAULT '',
         source_system TEXT NOT NULL DEFAULT '',
         source_key TEXT NOT NULL DEFAULT '',
@@ -299,6 +301,12 @@ class SqliteClient {
     if (!itemColumnNames.has("source_key")) {
       this.db.exec("ALTER TABLE items ADD COLUMN source_key TEXT NOT NULL DEFAULT '';");
     }
+    if (!itemColumnNames.has("purchase_unit")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE';");
+    }
+    if (!itemColumnNames.has("purchase_cost")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN purchase_cost REAL;");
+    }
 
     const sizeColumns = this.db.prepare("PRAGMA table_info(item_sizes)").all();
     const sizeColumnNames = new Set(sizeColumns.map((column) => column.name));
@@ -378,6 +386,8 @@ class PostgresClient {
         vendor_id BIGINT NOT NULL REFERENCES vendors(id) ON DELETE RESTRICT,
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
+        purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
+        purchase_cost DOUBLE PRECISION,
         sku TEXT NOT NULL DEFAULT '',
         source_system TEXT NOT NULL DEFAULT '',
         source_key TEXT NOT NULL DEFAULT '',
@@ -393,6 +403,12 @@ class PostgresClient {
     `);
     await this.query(`
       ALTER TABLE items ADD COLUMN IF NOT EXISTS source_key TEXT NOT NULL DEFAULT ''
+    `);
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE'
+    `);
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS purchase_cost DOUBLE PRECISION
     `);
     await this.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor

@@ -46,6 +46,20 @@
             Case Size (Qty)
             <input type="number" id="item-case-size" min="1" value="12" required />
           </label>
+          <div class="line">
+            <label>
+              Purchase Format
+              <select id="item-purchase-unit">
+                <option value="BOTTLE">Bottle</option>
+                <option value="CASE">Case</option>
+              </select>
+            </label>
+            <label>
+              Item Cost (Purchase Cost)
+              <input type="number" id="item-purchase-cost" min="0" step="0.01" placeholder="optional" />
+            </label>
+          </div>
+          <p id="item-cost-preview" class="muted-note"></p>
 
           <div>
             <div class="line">
@@ -122,6 +136,20 @@
             Case Size (Qty)
             <input type="number" id="edit-item-case-size" min="1" required />
           </label>
+          <div class="line">
+            <label>
+              Purchase Format
+              <select id="edit-item-purchase-unit">
+                <option value="BOTTLE">Bottle</option>
+                <option value="CASE">Case</option>
+              </select>
+            </label>
+            <label>
+              Item Cost (Purchase Cost)
+              <input type="number" id="edit-item-purchase-cost" min="0" step="0.01" placeholder="optional" />
+            </label>
+          </div>
+          <p id="edit-item-cost-preview" class="muted-note"></p>
 
           <div>
             <div class="line">

@@ -39,6 +39,12 @@ p {
   color: var(--muted);
 }
 
+.muted-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);

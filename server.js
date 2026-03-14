@@ -26,6 +26,8 @@ const itemSchema = z.object({
   vendorId: z.number().int().positive(),
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
+  purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
+  purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
     .array(
       z.object({
@@ -43,6 +45,8 @@ const itemUpdateSchema = z.object({
   vendorId: z.number().int().positive(),
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
+  purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
+  purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
     .array(
       z.object({
@@ -123,6 +127,26 @@ function normalizeSqlError(error) {
   const code = String(error?.code || "").toLowerCase();
   if (code.includes("constraint") || msg.includes("unique")) return "UNIQUE";
   return "OTHER";
+}
+
+function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
+  if (purchaseCost === null || purchaseCost === undefined) return sizes;
+  const tracked = sizes.find((size) => size.isTracked);
+  if (!tracked) return sizes;
+
+  let perBottle = Number(purchaseCost);
+  if (purchaseUnit === "CASE") {
+    perBottle = Number(purchaseCost) / Number(caseSize);
+  }
+
+  return sizes.map((size) =>
+    size.isTracked
+      ? {
+          ...size,
+          unitCost: Number.isFinite(perBottle) ? Number(perBottle.toFixed(4)) : size.unitCost ?? null,
+        }
+      : size
+  );
 }
 
 async function getRecipeBaseRows(tx) {
@@ -357,6 +381,8 @@ app.get("/api/items", async (_req, res) => {
       i.name AS item_name,
       i.case_size,
       i.area_type,
+      i.purchase_unit,
+      i.purchase_cost,
       v.id AS vendor_id,
       v.name AS vendor_name,
       s.id AS size_id,
@@ -378,6 +404,9 @@ app.get("/api/items", async (_req, res) => {
         name: row.item_name,
         caseSize: Number(row.case_size),
         areaType: row.area_type,
+        purchaseUnit: row.purchase_unit || "BOTTLE",
+        purchaseCost:
+          row.purchase_cost === null || row.purchase_cost === undefined ? null : Number(row.purchase_cost),
         vendor: {
           id: Number(row.vendor_id),
           name: row.vendor_name,
@@ -393,15 +422,23 @@ app.get("/api/items", async (_req, res) => {
       isTracked: Number(row.is_tracked) === 1,
     });
   }
+  const items = [...grouped.values()].map((item) => {
+    const tracked = item.sizes.find((size) => size.isTracked);
+    const trackedUnitCost = tracked?.unitCost ?? null;
+    const trackedCostPerMl =
+      tracked && trackedUnitCost !== null ? Number((trackedUnitCost / tracked.volumeMl).toFixed(6)) : null;
+    return { ...item, trackedUnitCost, trackedCostPerMl };
+  });
 
-  res.json([...grouped.values()]);
+  res.json(items);
 });
 
 app.post("/api/items", async (req, res) => {
   const parsed = itemSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, sizes } = parsed.data;
+  const { name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost } = parsed.data;
+  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
       .status(400)
@@ -414,8 +451,8 @@ app.post("/api/items", async (req, res) => {
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
 
       const inserted = await tx.query(
-        "INSERT INTO items (name, vendor_id, case_size, area_type) VALUES ($1, $2, $3, $4) RETURNING id",
-        [name, vendorId, caseSize, areaType]
+        "INSERT INTO items (name, vendor_id, case_size, area_type, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+        [name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost ?? null]
       );
 
       const id = Number(inserted.rows[0].id);
@@ -447,7 +484,8 @@ app.put("/api/items/:id", async (req, res) => {
   const parsed = itemUpdateSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
-  const { name, vendorId, caseSize, areaType, sizes } = parsed.data;
+  const { name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost } = parsed.data;
+  const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost ?? null, parsed.data.sizes);
   if (!hasExactlyOneTrackedSize(sizes)) {
     return res
       .status(400)
@@ -463,8 +501,8 @@ app.put("/api/items/:id", async (req, res) => {
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
 
       await tx.query(
-        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4 WHERE id = $5",
-        [name, vendorId, caseSize, areaType, itemId]
+        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, purchase_unit = $5, purchase_cost = $6 WHERE id = $7",
+        [name, vendorId, caseSize, areaType, purchaseUnit, purchaseCost ?? null, itemId]
       );
 
       const existing = await tx.query("SELECT id FROM item_sizes WHERE item_id = $1", [itemId]);
