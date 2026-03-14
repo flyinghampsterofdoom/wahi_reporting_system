@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Areas | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Areas</h1>
+          <p>Create locations and assign items to one or more areas.</p>
+        </div>
+        <a class="button-link" href="/item-catalog">Back to Item Catalog</a>
+      </header>
+
+      <section class="card">
+        <h2>Create Area</h2>
+        <form id="area-form" class="line">
+          <label>
+            Area Name
+            <input type="text" id="area-name" required placeholder="Underbar" />
+          </label>
+          <button type="submit">Add Area</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Assign Item to Area</h2>
+        <form id="area-assignment-form" class="line">
+          <label>
+            Item
+            <select id="assignment-item" required></select>
+          </label>
+          <label>
+            Area
+            <select id="assignment-area" required></select>
+          </label>
+          <button type="submit">Assign Area</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Existing Areas</h2>
+        <div id="areas-list"></div>
+      </section>
+
+      <section class="card">
+        <h2>Current Area Assignments</h2>
+        <div id="area-assignments-list"></div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

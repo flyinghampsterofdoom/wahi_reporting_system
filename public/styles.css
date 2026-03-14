@@ -115,6 +115,10 @@ button:hover {
   background: var(--primary-2);
 }
 
+.toggle-active {
+  background: var(--primary);
+}
+
 .button-link {
   display: inline-block;
   text-decoration: none;
@@ -232,6 +236,10 @@ th {
 .mini-btn {
   font-size: 0.8rem;
   padding: 0.3rem 0.55rem;
+}
+
+.untracked-row td {
+  background: #f7f3ec;
 }
 
 .toast {

@@ -63,6 +63,22 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY(item_size_id) REFERENCES item_sizes(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS areas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS item_area_assignments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    item_id INTEGER NOT NULL,
+    area_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(item_id, area_id),
+    FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
+    FOREIGN KEY(area_id) REFERENCES areas(id) ON DELETE CASCADE
+  );
 `);
 
 const itemColumns = db.prepare("PRAGMA table_info(items)").all();

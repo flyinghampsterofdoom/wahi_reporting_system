@@ -74,6 +74,20 @@ const parLevelUpsertSchema = z.object({
   levelBottles: z.number().nonnegative().nullable(),
 });
 
+const countsQuerySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  area: z.enum(["FOH", "BOH"]),
+});
+
+const areaSchema = z.object({
+  name: z.string().trim().min(1),
+});
+
+const areaAssignmentSchema = z.object({
+  itemId: z.number().int().positive(),
+  areaId: z.number().int().positive(),
+});
+
 function hasExactlyOneTrackedSize(sizes) {
   return sizes.filter((size) => size.isTracked).length === 1;
 }
@@ -114,6 +128,104 @@ app.post("/api/vendors", (req, res) => {
     }
     return res.status(500).json({ error: "Failed to create vendor." });
   }
+});
+
+app.get("/api/areas", (_req, res) => {
+  const rows = db.prepare("SELECT id, name FROM areas ORDER BY name").all();
+  res.json(rows);
+});
+
+app.post("/api/areas", (req, res) => {
+  const parsed = areaSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid area payload." });
+  }
+
+  try {
+    const result = db
+      .prepare("INSERT INTO areas (name) VALUES (?)")
+      .run(parsed.data.name);
+    return res.status(201).json({ id: result.lastInsertRowid, name: parsed.data.name });
+  } catch (error) {
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res.status(409).json({ error: "Area already exists." });
+    }
+    return res.status(500).json({ error: "Failed to create area." });
+  }
+});
+
+app.delete("/api/areas/:id", (req, res) => {
+  const areaId = Number(req.params.id);
+  if (!Number.isInteger(areaId) || areaId <= 0) {
+    return res.status(400).json({ error: "Invalid area id." });
+  }
+
+  const exists = db.prepare("SELECT id FROM areas WHERE id = ?").get(areaId);
+  if (!exists) return res.status(404).json({ error: "Area not found." });
+
+  db.prepare("DELETE FROM areas WHERE id = ?").run(areaId);
+  return res.status(204).send();
+});
+
+app.get("/api/item-area-assignments", (_req, res) => {
+  const rows = db
+    .prepare(
+      `
+      SELECT
+        ia.item_id,
+        i.name AS item_name,
+        i.area_type,
+        v.name AS vendor_name,
+        a.id AS area_id,
+        a.name AS area_name
+      FROM item_area_assignments ia
+      JOIN items i ON i.id = ia.item_id
+      JOIN vendors v ON v.id = i.vendor_id
+      JOIN areas a ON a.id = ia.area_id
+      ORDER BY i.name, a.name
+      `
+    )
+    .all();
+  res.json(rows);
+});
+
+app.post("/api/item-area-assignments", (req, res) => {
+  const parsed = areaAssignmentSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid area assignment payload." });
+  }
+
+  const { itemId, areaId } = parsed.data;
+  const itemExists = db.prepare("SELECT id FROM items WHERE id = ?").get(itemId);
+  const areaExists = db.prepare("SELECT id FROM areas WHERE id = ?").get(areaId);
+  if (!itemExists) return res.status(404).json({ error: "Item not found." });
+  if (!areaExists) return res.status(404).json({ error: "Area not found." });
+
+  try {
+    db.prepare("INSERT INTO item_area_assignments (item_id, area_id) VALUES (?, ?)").run(
+      itemId,
+      areaId
+    );
+    return res.status(201).json({ itemId, areaId });
+  } catch (error) {
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res.status(409).json({ error: "Assignment already exists." });
+    }
+    return res.status(500).json({ error: "Failed to create assignment." });
+  }
+});
+
+app.delete("/api/item-area-assignments", (req, res) => {
+  const parsed = areaAssignmentSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid area assignment payload." });
+  }
+  const { itemId, areaId } = parsed.data;
+  db.prepare("DELETE FROM item_area_assignments WHERE item_id = ? AND area_id = ?").run(
+    itemId,
+    areaId
+  );
+  res.status(204).send();
 });
 
 app.get("/api/items", (_req, res) => {
@@ -400,16 +512,19 @@ app.post("/api/par-levels", (req, res) => {
 });
 
 app.get("/api/counts", (req, res) => {
-  const date = req.query.date;
-  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return res.status(400).json({ error: "Provide date in YYYY-MM-DD format." });
+  const parsed = countsQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Provide date and area (FOH/BOH)." });
   }
+  const { date, area } = parsed.data;
 
   const rows = db
     .prepare(
       `
       SELECT
         s.id AS size_id,
+        s.is_tracked,
+        i.area_type,
         i.name AS item_name,
         s.size_label,
         s.volume_ml,
@@ -418,10 +533,11 @@ app.get("/api/counts", (req, res) => {
       FROM item_sizes s
       JOIN items i ON i.id = s.item_id
       LEFT JOIN inventory_counts c ON c.item_size_id = s.id AND c.count_date = ?
-      ORDER BY i.name, s.volume_ml DESC
+      WHERE i.area_type = ?
+      ORDER BY s.is_tracked DESC, i.name, s.volume_ml DESC
       `
     )
-    .all(date);
+    .all(date, area);
 
   res.json(rows);
 });
@@ -529,6 +645,10 @@ app.get("/item-catalog", (_req, res) => {
 
 app.get("/add-vendor", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "add-vendor.html"));
+});
+
+app.get("/areas", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "areas.html"));
 });
 
 app.get("/counts", (_req, res) => {

@@ -44,9 +44,10 @@ Then open [http://localhost:3000](http://localhost:3000).
 - `/add-item` legacy alias redirects to Item Catalog
 - `/item-catalog` item list, sorting, editing, and inline Add Item
 - `/add-vendor` vendor profile setup
+- `/areas` area/location setup and item-area assignments
 - `/catalog` legacy alias redirects to Item Catalog
 - `/par-levels` FOH/BOH par and level setup
-- `/counts` daily count entry
+- `/counts` FOH/BOH inventory count entry
 - `/reorder` reorder suggestions
 
 ## API endpoints (current)

@@ -3,18 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Daily Count | Bar Inventory</title>
+    <title>Inventory Count | Bar Inventory</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <main class="layout">
       <header class="line">
         <div>
-          <h1>Daily Stock Count</h1>
-          <p>Record full bottles and partial percentages by size.</p>
+          <h1>Inventory Count</h1>
+          <p>Choose FOH or BOH. Tracked sizes appear first; untracked sizes are listed below with 0 defaults.</p>
         </div>
         <a class="button-link" href="/">Back to Home</a>
       </header>
+
+      <section class="card">
+        <div class="line">
+          <button id="counts-area-foh" class="secondary">FOH</button>
+          <button id="counts-area-boh" class="secondary">BOH</button>
+        </div>
+      </section>
 
       <section class="card">
         <div class="line">

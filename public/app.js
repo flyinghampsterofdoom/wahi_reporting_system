@@ -78,18 +78,59 @@ function collectSizesFrom(container) {
   });
 }
 
-async function initAddItemPage() {
-  const vendorForm = byId("vendor-form");
-  const itemForm = byId("item-form");
-  if (!vendorForm && !itemForm) return;
+function setAreaToggleState(activeArea, buttons) {
+  buttons.forEach(({ area, button }) => {
+    if (!button) return;
+    if (area === activeArea) {
+      button.classList.add("toggle-active");
+      button.classList.remove("secondary");
+    } else {
+      button.classList.remove("toggle-active");
+      button.classList.add("secondary");
+    }
+  });
+}
 
+async function initVendorPage() {
+  const vendorForm = byId("vendor-form");
   const vendorNameInput = byId("vendor-name");
+  if (!vendorForm || !vendorNameInput) return;
+
   const vendorAddressInput = byId("vendor-address");
   const vendorEmailInput = byId("vendor-email");
   const vendorCorporateNumberInput = byId("vendor-corporate-number");
   const vendorRepresentativeNameInput = byId("vendor-representative-name");
   const vendorRepresentativePhoneInput = byId("vendor-representative-phone");
   const vendorRepresentativeEmailInput = byId("vendor-representative-email");
+
+  vendorForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      await api("/api/vendors", {
+        method: "POST",
+        body: JSON.stringify({
+          name: vendorNameInput.value.trim(),
+          address: vendorAddressInput?.value?.trim() || "",
+          email: vendorEmailInput?.value?.trim() || "",
+          corporateNumber: vendorCorporateNumberInput?.value?.trim() || "",
+          representativeName: vendorRepresentativeNameInput?.value?.trim() || "",
+          representativePhone: vendorRepresentativePhoneInput?.value?.trim() || "",
+          representativeEmail: vendorRepresentativeEmailInput?.value?.trim() || "",
+        }),
+      });
+      vendorForm.reset();
+      showToast("Vendor added and saved.");
+      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+}
+
+async function initAddItemPage() {
+  const itemForm = byId("item-form");
+  if (!itemForm) return;
+
   const itemNameInput = byId("item-name");
   const itemVendorSelect = byId("item-vendor");
   const itemCaseSizeInput = byId("item-case-size");
@@ -98,7 +139,6 @@ async function initAddItemPage() {
   const addSizeRowButton = byId("add-size-row");
 
   async function loadVendors() {
-    if (!itemVendorSelect) return;
     const vendors = await api("/api/vendors");
     if (!vendors.length) {
       itemVendorSelect.innerHTML = `<option value="">Add a vendor first</option>`;
@@ -110,70 +150,42 @@ async function initAddItemPage() {
     itemVendorSelect.innerHTML = vendors.map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
   }
 
-  if (vendorForm) {
-    vendorForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      try {
-        await api("/api/vendors", {
-          method: "POST",
-          body: JSON.stringify({
-            name: vendorNameInput.value.trim(),
-            address: vendorAddressInput?.value?.trim() || "",
-            email: vendorEmailInput?.value?.trim() || "",
-            corporateNumber: vendorCorporateNumberInput?.value?.trim() || "",
-            representativeName: vendorRepresentativeNameInput?.value?.trim() || "",
-            representativePhone: vendorRepresentativePhoneInput?.value?.trim() || "",
-            representativeEmail: vendorRepresentativeEmailInput?.value?.trim() || "",
-          }),
-        });
-        vendorForm.reset();
-        await loadVendors();
-        showToast("Vendor added and saved.");
-        window.dispatchEvent(new CustomEvent("catalog-data-changed"));
-      } catch (error) {
-        showToast(error.message, true);
+  itemForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      if (itemVendorSelect.disabled) {
+        showToast("Add a vendor first.", true);
+        return;
       }
-    });
-  }
 
-  if (itemForm) {
-    itemForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      try {
-        if (itemVendorSelect.disabled) {
-          showToast("Add a vendor first.", true);
-          return;
-        }
+      await api("/api/items", {
+        method: "POST",
+        body: JSON.stringify({
+          name: itemNameInput.value.trim(),
+          vendorId: Number(itemVendorSelect.value),
+          caseSize: Number(itemCaseSizeInput.value),
+          areaType: itemAreaTypeSelect.value,
+          sizes: collectSizesFrom(sizeRowsContainer),
+        }),
+      });
 
-        await api("/api/items", {
-          method: "POST",
-          body: JSON.stringify({
-            name: itemNameInput.value.trim(),
-            vendorId: Number(itemVendorSelect.value),
-            caseSize: Number(itemCaseSizeInput.value),
-            areaType: itemAreaTypeSelect.value,
-            sizes: collectSizesFrom(sizeRowsContainer),
-          }),
-        });
+      itemNameInput.value = "";
+      itemCaseSizeInput.value = 12;
+      itemAreaTypeSelect.value = "FOH";
+      sizeRowsContainer.innerHTML = "";
+      addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
+      addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+      showToast("Item created and saved.");
+      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
 
-        itemNameInput.value = "";
-        itemCaseSizeInput.value = 12;
-        itemAreaTypeSelect.value = "FOH";
-        sizeRowsContainer.innerHTML = "";
-        addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-        addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
-        showToast("Item created and saved.");
-        window.dispatchEvent(new CustomEvent("catalog-data-changed"));
-      } catch (error) {
-        showToast(error.message, true);
-      }
-    });
-
-    addSizeRowButton.addEventListener("click", () => addSizeRow(sizeRowsContainer));
-    addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-    addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
-    await loadVendors();
-  }
+  addSizeRowButton.addEventListener("click", () => addSizeRow(sizeRowsContainer));
+  addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
+  addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+  await loadVendors();
 }
 
 async function initItemCatalogPage() {
@@ -305,6 +317,7 @@ async function initItemCatalogPage() {
           });
           await reloadData();
           showToast("Tracked item size updated.");
+          window.dispatchEvent(new CustomEvent("catalog-data-changed"));
         } catch (error) {
           showToast(error.message, true);
         }
@@ -396,6 +409,7 @@ async function initItemCatalogPage() {
       await reloadData();
       closeEdit();
       showToast("Item updated.");
+      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
     } catch (error) {
       showToast(error.message, true);
     }
@@ -408,48 +422,186 @@ async function initItemCatalogPage() {
   await reloadData();
 }
 
+async function initAreasPage() {
+  const areaForm = byId("area-form");
+  const areaNameInput = byId("area-name");
+  const assignmentForm = byId("area-assignment-form");
+  if (!areaForm || !areaNameInput || !assignmentForm) return;
+
+  const assignmentItemSelect = byId("assignment-item");
+  const assignmentAreaSelect = byId("assignment-area");
+  const areasList = byId("areas-list");
+  const assignmentsList = byId("area-assignments-list");
+
+  async function reload() {
+    const [items, areas, assignments] = await Promise.all([
+      api("/api/items"),
+      api("/api/areas"),
+      api("/api/item-area-assignments"),
+    ]);
+
+    assignmentItemSelect.innerHTML = items
+      .map((item) => `<option value="${item.id}">${item.name} (${item.areaType})</option>`)
+      .join("");
+
+    assignmentAreaSelect.innerHTML = areas
+      .map((area) => `<option value="${area.id}">${area.name}</option>`)
+      .join("");
+
+    if (!areas.length) {
+      areasList.innerHTML = "<p>No areas created yet.</p>";
+    } else {
+      areasList.innerHTML = `
+        <table>
+          <thead><tr><th>Area</th><th>Action</th></tr></thead>
+          <tbody>
+            ${areas
+              .map(
+                (area) =>
+                  `<tr><td>${area.name}</td><td><button class="secondary delete-area-btn" data-area-id="${area.id}">Delete</button></td></tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    if (!assignments.length) {
+      assignmentsList.innerHTML = "<p>No assignments yet.</p>";
+    } else {
+      assignmentsList.innerHTML = `
+        <table>
+          <thead><tr><th>Item</th><th>FOH/BOH</th><th>Area</th><th>Action</th></tr></thead>
+          <tbody>
+            ${assignments
+              .map(
+                (row) =>
+                  `<tr><td>${row.item_name}</td><td>${row.area_type}</td><td>${row.area_name}</td><td><button class="secondary unassign-btn" data-item-id="${row.item_id}" data-area-id="${row.area_id}">Remove</button></td></tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    areasList.querySelectorAll(".delete-area-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        try {
+          await api(`/api/areas/${Number(btn.dataset.areaId)}`, { method: "DELETE" });
+          await reload();
+          showToast("Area deleted.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+
+    assignmentsList.querySelectorAll(".unassign-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        try {
+          await api("/api/item-area-assignments", {
+            method: "DELETE",
+            body: JSON.stringify({
+              itemId: Number(btn.dataset.itemId),
+              areaId: Number(btn.dataset.areaId),
+            }),
+          });
+          await reload();
+          showToast("Assignment removed.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
+  areaForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      await api("/api/areas", {
+        method: "POST",
+        body: JSON.stringify({ name: areaNameInput.value.trim() }),
+      });
+      areaForm.reset();
+      await reload();
+      showToast("Area added.");
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+
+  assignmentForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      await api("/api/item-area-assignments", {
+        method: "POST",
+        body: JSON.stringify({
+          itemId: Number(assignmentItemSelect.value),
+          areaId: Number(assignmentAreaSelect.value),
+        }),
+      });
+      await reload();
+      showToast("Area assigned to item.");
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+
+  await reload();
+}
+
 async function initCountsPage() {
   const countDateInput = byId("count-date");
   const countSheet = byId("count-sheet");
   const loadCountSheetButton = byId("load-count-sheet");
   const saveCountsButton = byId("save-counts");
-  if (!countDateInput || !countSheet || !loadCountSheetButton || !saveCountsButton) return;
+  const fohButton = byId("counts-area-foh");
+  const bohButton = byId("counts-area-boh");
+  if (!countDateInput || !countSheet || !loadCountSheetButton || !saveCountsButton || !fohButton || !bohButton)
+    return;
+
+  let selectedArea = "FOH";
 
   async function loadCountSheet() {
     const date = countDateInput.value;
-    const rows = await api(`/api/counts?date=${date}`);
+    const rows = await api(`/api/counts?date=${date}&area=${selectedArea}`);
 
     if (!rows.length) {
-      countSheet.innerHTML = "<p>Add catalog items first on the Add Item page.</p>";
+      countSheet.innerHTML = `<p>No ${selectedArea} items found in catalog.</p>`;
       return;
     }
 
     const tableRows = rows
-      .map(
-        (r) => `
-      <tr>
+      .map((r) => {
+        const trackedLabel = r.is_tracked ? "Tracked" : "Untracked";
+        const defaultFull = r.is_tracked ? r.full_bottles || 0 : 0;
+        const defaultPartial = r.is_tracked ? r.partial_percent || 0 : 0;
+        return `
+      <tr class="${r.is_tracked ? "tracked-row" : "untracked-row"}">
         <td>${r.item_name}</td>
         <td>${r.size_label} (${r.volume_ml}ml)</td>
-        <td><input type="number" min="0" step="0.1" data-id="${r.size_id}" data-field="full" value="${r.full_bottles}" /></td>
-        <td><input type="number" min="0" max="100" step="1" data-id="${r.size_id}" data-field="partial" value="${r.partial_percent}" /></td>
+        <td>${trackedLabel}</td>
+        <td><input type="number" min="0" step="0.1" data-id="${r.size_id}" data-field="full" value="${defaultFull}" /></td>
+        <td><input type="number" min="0" max="100" step="1" data-id="${r.size_id}" data-field="partial" value="${defaultPartial}" /></td>
       </tr>
-    `
-      )
+    `;
+      })
       .join("");
 
     countSheet.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Size</th>
-          <th>Full Bottles</th>
-          <th>Partial %</th>
-        </tr>
-      </thead>
-      <tbody>${tableRows}</tbody>
-    </table>
-  `;
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Size</th>
+            <th>Type</th>
+            <th>Full Bottles</th>
+            <th>Partial %</th>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    `;
   }
 
   async function saveCounts() {
@@ -476,25 +628,42 @@ async function initCountsPage() {
     );
 
     await Promise.all(writes);
-    showToast("Counts saved.");
+    showToast(`${selectedArea} counts saved.`);
+  }
+
+  function setArea(area) {
+    selectedArea = area;
+    setAreaToggleState(selectedArea, [
+      { area: "FOH", button: fohButton },
+      { area: "BOH", button: bohButton },
+    ]);
+    loadCountSheet().catch((e) => showToast(e.message, true));
   }
 
   countDateInput.value = todayYMD();
   loadCountSheetButton.addEventListener("click", () => loadCountSheet().catch((e) => showToast(e.message, true)));
   saveCountsButton.addEventListener("click", () => saveCounts().catch((e) => showToast(e.message, true)));
-  await loadCountSheet();
+  fohButton.addEventListener("click", () => setArea("FOH"));
+  bohButton.addEventListener("click", () => setArea("BOH"));
+  setArea("FOH");
 }
 
 async function initParLevelsPage() {
-  const fohTable = byId("foh-par-table");
-  const bohTable = byId("boh-par-table");
+  const title = byId("par-levels-title");
+  const tableContainer = byId("par-levels-table");
   const saveButton = byId("save-par-levels");
-  if (!fohTable || !bohTable || !saveButton) return;
+  const fohButton = byId("par-area-foh");
+  const bohButton = byId("par-area-boh");
+  if (!title || !tableContainer || !saveButton || !fohButton || !bohButton) return;
 
-  async function renderArea(area, mountNode) {
-    const rows = await api(`/api/par-levels?area=${area}`);
+  let selectedArea = "FOH";
+
+  async function renderArea() {
+    const rows = await api(`/api/par-levels?area=${selectedArea}`);
+    title.textContent = `${selectedArea} Par and Levels`;
+
     if (!rows.length) {
-      mountNode.innerHTML = `<p>No ${area} items in catalog.</p>`;
+      tableContainer.innerHTML = `<p>No ${selectedArea} tracked items in catalog.</p>`;
       return;
     }
 
@@ -511,7 +680,7 @@ async function initParLevelsPage() {
       )
       .join("");
 
-    mountNode.innerHTML = `
+    tableContainer.innerHTML = `
       <table>
         <thead>
           <tr>
@@ -527,7 +696,7 @@ async function initParLevelsPage() {
   }
 
   async function saveParLevels() {
-    const inputs = [...document.querySelectorAll("input[data-item-size-id]")];
+    const inputs = [...tableContainer.querySelectorAll("input[data-item-size-id]")];
     const grouped = new Map();
 
     for (const input of inputs) {
@@ -550,12 +719,22 @@ async function initParLevelsPage() {
     );
 
     await Promise.all(writes);
-    showToast("Par and levels saved.");
+    showToast(`${selectedArea} par and levels saved.`);
   }
 
-  await renderArea("FOH", fohTable);
-  await renderArea("BOH", bohTable);
+  function setArea(area) {
+    selectedArea = area;
+    setAreaToggleState(selectedArea, [
+      { area: "FOH", button: fohButton },
+      { area: "BOH", button: bohButton },
+    ]);
+    renderArea().catch((e) => showToast(e.message, true));
+  }
+
   saveButton.addEventListener("click", () => saveParLevels().catch((e) => showToast(e.message, true)));
+  fohButton.addEventListener("click", () => setArea("FOH"));
+  bohButton.addEventListener("click", () => setArea("BOH"));
+  setArea("FOH");
 }
 
 async function initReorderPage() {
@@ -614,13 +793,17 @@ async function initReorderPage() {
   }
 
   countDateInput.value = todayYMD();
-  buildReorderReportButton.addEventListener("click", () => buildReorderReport().catch((e) => showToast(e.message, true)));
+  buildReorderReportButton.addEventListener("click", () =>
+    buildReorderReport().catch((e) => showToast(e.message, true))
+  );
   await buildReorderReport();
 }
 
 async function init() {
+  await initVendorPage();
   await initAddItemPage();
   await initItemCatalogPage();
+  await initAreasPage();
   await initCountsPage();
   await initParLevelsPage();
   await initReorderPage();
