@@ -1385,9 +1385,18 @@ async function initRecipeBuilderPage() {
 async function initAdminReferencePage() {
   const conversionsContainer = byId("admin-conversions");
   const yieldsContainer = byId("admin-yields");
+  const addConversionButton = byId("add-conversion");
   const refreshConversionsButton = byId("refresh-conversions");
   const refreshYieldsButton = byId("refresh-yields");
   if (!conversionsContainer || !yieldsContainer || !refreshConversionsButton || !refreshYieldsButton) return;
+
+  function defaultBaseUnitByType(type) {
+    const t = String(type || "").toLowerCase();
+    if (t === "volume") return "fl oz";
+    if (t === "weight") return "g";
+    if (t === "count") return "ea";
+    return "";
+  }
 
   async function loadConversions() {
     const rows = await api("/api/admin/conversions");
@@ -1397,8 +1406,9 @@ async function initAdminReferencePage() {
     }
 
     conversionsContainer.innerHTML = `
+      <div class="table-scroll">
       <table>
-        <thead><tr><th>Unit</th><th>Type</th><th>To Base</th><th>Action</th></tr></thead>
+        <thead><tr><th>Unit</th><th>Type</th><th>Base Definition (1 Unit = ?)</th><th>Action</th></tr></thead>
         <tbody>
           ${rows
             .map(
@@ -1406,7 +1416,14 @@ async function initAdminReferencePage() {
             <tr data-conv-id="${row.id}">
               <td><input type="text" class="ad-conv-unit" value="${row.unit}" /></td>
               <td><input type="text" class="ad-conv-type" value="${row.unitType}" /></td>
-              <td><input type="number" step="0.0001" min="0.0001" class="ad-conv-base" value="${row.toBase ?? ""}" /></td>
+              <td>
+                <div class="line">
+                  <span>1</span>
+                  <input type="number" step="0.0001" min="0.0001" class="ad-conv-base" value="${row.toBase ?? ""}" />
+                  <span>x</span>
+                  <input type="text" class="ad-conv-base-unit" value="${row.baseUnit ?? ""}" placeholder="fl oz, g, ea..." />
+                </div>
+              </td>
               <td><button type="button" class="secondary mini-btn ad-conv-save">Save</button></td>
             </tr>
           `
@@ -1414,6 +1431,7 @@ async function initAdminReferencePage() {
             .join("")}
         </tbody>
       </table>
+      </div>
     `;
 
     conversionsContainer.querySelectorAll(".ad-conv-save").forEach((button) => {
@@ -1421,14 +1439,19 @@ async function initAdminReferencePage() {
         const tr = button.closest("tr");
         const id = Number(tr.dataset.convId);
         try {
+          const typeValue = tr.querySelector(".ad-conv-type").value.trim();
+          const baseUnitInput = tr.querySelector(".ad-conv-base-unit");
+          const baseUnitValue = baseUnitInput.value.trim() || defaultBaseUnitByType(typeValue);
           await api(`/api/admin/conversions/${id}`, {
             method: "PUT",
             body: JSON.stringify({
               unit: tr.querySelector(".ad-conv-unit").value.trim(),
-              unitType: tr.querySelector(".ad-conv-type").value.trim(),
+              unitType: typeValue,
+              baseUnit: baseUnitValue,
               toBase: Number(tr.querySelector(".ad-conv-base").value),
             }),
           });
+          baseUnitInput.value = baseUnitValue;
           showToast("Conversion saved.");
         } catch (error) {
           showToast(error.message, true);
@@ -1445,6 +1468,7 @@ async function initAdminReferencePage() {
     }
 
     yieldsContainer.innerHTML = `
+      <div class="table-scroll">
       <table>
         <thead>
           <tr>
@@ -1471,6 +1495,7 @@ async function initAdminReferencePage() {
             .join("")}
         </tbody>
       </table>
+      </div>
     `;
 
     yieldsContainer.querySelectorAll(".ad-y-save").forEach((button) => {
@@ -1506,6 +1531,25 @@ async function initAdminReferencePage() {
     loadConversions().catch((e) => showToast(e.message, true))
   );
   refreshYieldsButton.addEventListener("click", () => loadYields().catch((e) => showToast(e.message, true)));
+  if (addConversionButton) {
+    addConversionButton.addEventListener("click", async () => {
+      try {
+        await api("/api/admin/conversions", {
+          method: "POST",
+          body: JSON.stringify({
+            unit: `new_unit_${Date.now()}`,
+            unitType: "volume",
+            baseUnit: "fl oz",
+            toBase: 1,
+          }),
+        });
+        await loadConversions();
+        showToast("Conversion added.");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
 
   await Promise.all([loadConversions(), loadYields()]);
 }

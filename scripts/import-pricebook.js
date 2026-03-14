@@ -47,6 +47,14 @@ function isoDate(v) {
   return d.toISOString().slice(0, 10);
 }
 
+function defaultBaseUnit(unitType) {
+  const type = String(unitType || "").trim().toLowerCase();
+  if (type === "volume") return "fl oz";
+  if (type === "weight") return "g";
+  if (type === "count") return "ea";
+  return "";
+}
+
 async function run() {
   const db = createDbClient();
   await db.init();
@@ -157,19 +165,22 @@ async function run() {
     for (const [idx, row] of rows("Conversions").entries()) {
       const unit = str(row.Unit);
       if (!unit) continue;
+      const unitType = str(row.Type);
+      const baseUnit = str(row.BaseUnit) || defaultBaseUnit(unitType);
       await tx.query(
         `
         INSERT INTO pricebook_conversions
-        (unit, unit_type, to_base, source_row, source_file)
-        VALUES ($1,$2,$3,$4,$5)
+        (unit, unit_type, base_unit, to_base, source_row, source_file)
+        VALUES ($1,$2,$3,$4,$5,$6)
         ON CONFLICT(unit)
         DO UPDATE SET
           unit_type = excluded.unit_type,
+          base_unit = excluded.base_unit,
           to_base = excluded.to_base,
           source_row = excluded.source_row,
           source_file = excluded.source_file
         `,
-        [unit, str(row.Type), num(row.ToBase), idx + 2, sourceFile]
+        [unit, unitType, baseUnit, num(row.ToBase), idx + 2, sourceFile]
       );
     }
 

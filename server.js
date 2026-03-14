@@ -141,6 +141,14 @@ function roundTo(value, places = 4) {
   return Math.round(n * factor) / factor;
 }
 
+function defaultBaseUnitForType(unitType) {
+  const type = String(unitType || "").trim().toLowerCase();
+  if (type === "volume") return "fl oz";
+  if (type === "weight") return "g";
+  if (type === "count" || type === "each") return "ea";
+  return "";
+}
+
 function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
   if (purchaseCost === null || purchaseCost === undefined) return sizes;
   const tracked = sizes.find((size) => size.isTracked);
@@ -939,7 +947,7 @@ app.get("/api/pricebook/recipe-lines", async (req, res) => {
 
 app.get("/api/admin/conversions", async (_req, res) => {
   const { rows } = await db.query(`
-    SELECT id, unit, unit_type, to_base, source_row, source_file
+    SELECT id, unit, unit_type, base_unit, to_base, source_row, source_file
     FROM pricebook_conversions
     ORDER BY unit
   `);
@@ -948,11 +956,45 @@ app.get("/api/admin/conversions", async (_req, res) => {
       id: Number(row.id),
       unit: row.unit,
       unitType: row.unit_type || "",
+      baseUnit: row.base_unit || defaultBaseUnitForType(row.unit_type),
       toBase: row.to_base === null ? null : Number(row.to_base),
       sourceRow: row.source_row === null ? null : Number(row.source_row),
       sourceFile: row.source_file || "",
     }))
   );
+});
+
+app.post("/api/admin/conversions", async (req, res) => {
+  const schema = z.object({
+    unit: z.string().trim().min(1),
+    unitType: z.string().trim().optional().default(""),
+    baseUnit: z.string().trim().optional().default(""),
+    toBase: z.number().positive(),
+  });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid conversion payload." });
+
+  try {
+    const { rows } = await db.query(
+      `
+      INSERT INTO pricebook_conversions (unit, unit_type, base_unit, to_base)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id
+      `,
+      [
+        parsed.data.unit,
+        parsed.data.unitType,
+        parsed.data.baseUnit || defaultBaseUnitForType(parsed.data.unitType),
+        parsed.data.toBase,
+      ]
+    );
+    return res.status(201).json({ id: Number(rows[0].id) });
+  } catch (error) {
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "Conversion unit already exists." });
+    }
+    return res.status(500).json({ error: "Failed to create conversion." });
+  }
 });
 
 app.put("/api/admin/conversions/:id", async (req, res) => {
@@ -962,14 +1004,21 @@ app.put("/api/admin/conversions/:id", async (req, res) => {
   const schema = z.object({
     unit: z.string().trim().min(1),
     unitType: z.string().trim().optional().default(""),
+    baseUnit: z.string().trim().optional().default(""),
     toBase: z.number().positive(),
   });
   const parsed = schema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid conversion payload." });
 
   const result = await db.query(
-    "UPDATE pricebook_conversions SET unit = $1, unit_type = $2, to_base = $3 WHERE id = $4",
-    [parsed.data.unit, parsed.data.unitType, parsed.data.toBase, id]
+    "UPDATE pricebook_conversions SET unit = $1, unit_type = $2, base_unit = $3, to_base = $4 WHERE id = $5",
+    [
+      parsed.data.unit,
+      parsed.data.unitType,
+      parsed.data.baseUnit || defaultBaseUnitForType(parsed.data.unitType),
+      parsed.data.toBase,
+      id,
+    ]
   );
   if (!result.rowCount) return res.status(404).json({ error: "Conversion not found." });
   return res.status(204).send();

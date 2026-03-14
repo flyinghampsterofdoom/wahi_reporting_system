@@ -18,10 +18,12 @@ body {
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
   color: var(--text);
   background: linear-gradient(180deg, #f7f1e6 0%, var(--bg) 100%);
+  overflow-x: auto;
 }
 
 .layout {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 1.25rem;
   display: grid;
@@ -188,6 +190,11 @@ table {
   border-collapse: collapse;
   margin-top: 0.6rem;
   font-size: 0.92rem;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
 }
 
 th,

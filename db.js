@@ -161,6 +161,7 @@ class SqliteClient {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         unit TEXT NOT NULL,
         unit_type TEXT,
+        base_unit TEXT,
         to_base REAL,
         source_row INTEGER,
         source_file TEXT,
@@ -331,6 +332,22 @@ class SqliteClient {
       SET size_amount = COALESCE(size_amount, volume_ml),
           size_unit = COALESCE(size_unit, 'mL')
       WHERE size_amount IS NULL OR size_unit IS NULL;
+    `);
+
+    const conversionColumns = this.db.prepare("PRAGMA table_info(pricebook_conversions)").all();
+    const conversionColumnNames = new Set(conversionColumns.map((column) => column.name));
+    if (!conversionColumnNames.has("base_unit")) {
+      this.db.exec("ALTER TABLE pricebook_conversions ADD COLUMN base_unit TEXT;");
+    }
+    this.db.exec(`
+      UPDATE pricebook_conversions
+      SET base_unit = CASE
+        WHEN LOWER(COALESCE(unit_type, '')) = 'volume' THEN 'fl oz'
+        WHEN LOWER(COALESCE(unit_type, '')) = 'weight' THEN 'g'
+        WHEN LOWER(COALESCE(unit_type, '')) IN ('count', 'each') THEN 'ea'
+        ELSE base_unit
+      END
+      WHERE base_unit IS NULL OR TRIM(base_unit) = '';
     `);
 
     this.db.exec(`
@@ -575,10 +592,24 @@ class PostgresClient {
         id BIGSERIAL PRIMARY KEY,
         unit TEXT NOT NULL UNIQUE,
         unit_type TEXT,
+        base_unit TEXT,
         to_base DOUBLE PRECISION,
         source_row INTEGER,
         source_file TEXT
       )
+    `);
+    await this.query(`
+      ALTER TABLE pricebook_conversions ADD COLUMN IF NOT EXISTS base_unit TEXT
+    `);
+    await this.query(`
+      UPDATE pricebook_conversions
+      SET base_unit = CASE
+        WHEN LOWER(COALESCE(unit_type, '')) = 'volume' THEN 'fl oz'
+        WHEN LOWER(COALESCE(unit_type, '')) = 'weight' THEN 'g'
+        WHEN LOWER(COALESCE(unit_type, '')) IN ('count', 'each') THEN 'ea'
+        ELSE base_unit
+      END
+      WHERE base_unit IS NULL OR BTRIM(base_unit) = ''
     `);
 
     await this.query(`
