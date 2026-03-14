@@ -213,6 +213,11 @@ th {
   padding: 0.32rem 0.58rem;
 }
 
+.mini-btn {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.55rem;
+}
+
 .toast {
   position: fixed;
   right: 1rem;

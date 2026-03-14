@@ -113,6 +113,7 @@ async function initAddItemPage() {
       vendorNameInput.value = "";
       await loadVendors();
       showToast("Vendor added and saved.");
+      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
     } catch (error) {
       showToast(error.message, true);
     }
@@ -144,6 +145,7 @@ async function initAddItemPage() {
       addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
       addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
       showToast("Item created and saved.");
+      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
     } catch (error) {
       showToast(error.message, true);
     }
@@ -166,6 +168,10 @@ async function initItemCatalogPage() {
   const filterAreaSelect = byId("catalog-filter-area");
   const filterNameInput = byId("catalog-filter-name");
   const refreshButton = byId("refresh-catalog");
+  const openAddItemButton = byId("open-add-item");
+  const openAddVendorButton = byId("open-add-vendor");
+  const addItemSection = byId("add-item-section");
+  const addVendorSection = byId("add-vendor-section");
   const editSection = byId("edit-item-section");
   const editForm = byId("edit-item-form");
   const cancelEditButton = byId("cancel-edit");
@@ -337,6 +343,24 @@ async function initItemCatalogPage() {
   }
 
   refreshButton.addEventListener("click", () => reloadData().catch((e) => showToast(e.message, true)));
+  if (openAddItemButton && addItemSection) {
+    openAddItemButton.addEventListener("click", () => {
+      addItemSection.hidden = !addItemSection.hidden;
+      if (!addItemSection.hidden) {
+        if (addVendorSection) addVendorSection.hidden = true;
+        addItemSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+  if (openAddVendorButton && addVendorSection) {
+    openAddVendorButton.addEventListener("click", () => {
+      addVendorSection.hidden = !addVendorSection.hidden;
+      if (!addVendorSection.hidden) {
+        if (addItemSection) addItemSection.hidden = true;
+        addVendorSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
   sortBySelect.addEventListener("change", renderCatalog);
   sortDirectionSelect.addEventListener("change", renderCatalog);
   filterVendorSelect.addEventListener("change", renderCatalog);
@@ -369,6 +393,10 @@ async function initItemCatalogPage() {
     } catch (error) {
       showToast(error.message, true);
     }
+  });
+
+  window.addEventListener("catalog-data-changed", () => {
+    reloadData().catch((e) => showToast(e.message, true));
   });
 
   await reloadData();
