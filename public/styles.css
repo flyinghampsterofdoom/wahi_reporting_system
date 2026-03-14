@@ -86,7 +86,8 @@ button {
 }
 
 input,
-select {
+select,
+textarea {
   border: 1px solid var(--border);
   border-radius: 0.45rem;
   background: #fff;
@@ -197,7 +198,7 @@ th {
 .size-row {
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: 1.4fr 1fr 1fr auto;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
 }
 
 .size-row button {
@@ -258,4 +259,25 @@ th {
 .toast.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+.recipe-line {
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  padding: 0.7rem;
+  background: #fffdf9;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.recipe-line-head {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.recipe-line-body {
+  display: grid;
+  gap: 0.5rem;
 }

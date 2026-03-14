@@ -40,7 +40,7 @@ async function api(url, options = {}) {
 
 function addSizeRow(
   sizeRowsContainer,
-  defaults = { id: null, sizeLabel: "", volumeMl: 750, isTracked: false },
+  defaults = { id: null, sizeLabel: "", volumeMl: 750, unitCost: null, isTracked: false },
   trackGroup = `${sizeRowsContainer.id}-track`
 ) {
   const row = document.createElement("div");
@@ -49,6 +49,7 @@ function addSizeRow(
     <input type="hidden" class="size-id" value="${defaults.id ?? ""}" />
     <label>Label <input type="text" class="size-label" value="${defaults.sizeLabel}" placeholder="750ml" required /></label>
     <label>Volume ml <input type="number" class="size-volume" min="1" value="${defaults.volumeMl}" required /></label>
+    <label>Cost / Bottle <input type="number" class="size-cost" min="0" step="0.01" value="${defaults.unitCost ?? ""}" placeholder="optional" /></label>
     <label class="track-label">Track Item Size <input type="radio" class="size-tracked" name="${trackGroup}" ${defaults.isTracked ? "checked" : ""} /></label>
     <button type="button" class="secondary remove-size">Remove</button>
   `;
@@ -71,6 +72,7 @@ function collectSizesFrom(container) {
     const payload = {
       sizeLabel: row.querySelector(".size-label").value.trim(),
       volumeMl: Number(row.querySelector(".size-volume").value),
+      unitCost: parseNullableNumber(row.querySelector(".size-cost").value),
       isTracked: row.querySelector(".size-tracked")?.checked || false,
     };
     if (idValue) payload.id = Number(idValue);
@@ -199,7 +201,6 @@ async function initItemCatalogPage() {
   const filterNameInput = byId("catalog-filter-name");
   const refreshButton = byId("refresh-catalog");
   const openAddItemButton = byId("open-add-item");
-  const syncPricebookCatalogButton = byId("sync-pricebook-catalog");
   const addItemSection = byId("add-item-section");
   const editSection = byId("edit-item-section");
   const editForm = byId("edit-item-form");
@@ -269,8 +270,10 @@ async function initItemCatalogPage() {
             const trackControl = s.isTracked
               ? `<span class="track-state">Tracked</span>`
               : `<button class="secondary track-toggle-btn" data-item-id="${item.id}" data-size-id="${s.id}">Set Tracked</button>`;
+            const costText =
+              s.unitCost === null || s.unitCost === undefined ? "No Cost" : `$${Number(s.unitCost).toFixed(2)}`;
 
-            return `<div class="size-line">${s.sizeLabel} (${s.volumeMl}ml) ${trackControl}</div>`;
+            return `<div class="size-line">${s.sizeLabel} (${s.volumeMl}ml, ${costText}) ${trackControl}</div>`;
           })
           .join("");
 
@@ -373,22 +376,6 @@ async function initItemCatalogPage() {
   }
 
   refreshButton.addEventListener("click", () => reloadData().catch((e) => showToast(e.message, true)));
-  if (syncPricebookCatalogButton) {
-    syncPricebookCatalogButton.addEventListener("click", async () => {
-      try {
-        syncPricebookCatalogButton.disabled = true;
-        const result = await api("/api/pricebook/sync-catalog", { method: "POST" });
-        await reloadData();
-        const created = result?.stats?.itemsCreated ?? 0;
-        const updated = result?.stats?.itemsUpdated ?? 0;
-        showToast(`Price book synced. Created ${created}, updated ${updated}.`);
-      } catch (error) {
-        showToast(error.message, true);
-      } finally {
-        syncPricebookCatalogButton.disabled = false;
-      }
-    });
-  }
   if (openAddItemButton && addItemSection) {
     openAddItemButton.addEventListener("click", () => {
       addItemSection.hidden = !addItemSection.hidden;
@@ -816,6 +803,326 @@ async function initReorderPage() {
   await buildReorderReport();
 }
 
+async function initRecipeBuilderPage() {
+  const recipeForm = byId("recipe-form");
+  if (!recipeForm) return;
+
+  const recipeList = byId("recipe-list");
+  const recipeName = byId("recipe-name");
+  const recipeCategory = byId("recipe-category");
+  const recipeStatus = byId("recipe-status");
+  const recipeYieldQty = byId("recipe-yield-qty");
+  const recipeYieldUnit = byId("recipe-yield-unit");
+  const recipeNotes = byId("recipe-notes");
+
+  const editorCard = byId("recipe-editor-card");
+  const editorTitle = byId("editor-title");
+  const editorRecipeId = byId("editor-recipe-id");
+  const editorRecipeName = byId("editor-recipe-name");
+  const editorRecipeCategory = byId("editor-recipe-category");
+  const editorRecipeStatus = byId("editor-recipe-status");
+  const editorRecipeYieldQty = byId("editor-recipe-yield-qty");
+  const editorRecipeYieldUnit = byId("editor-recipe-yield-unit");
+  const editorRecipeNotes = byId("editor-recipe-notes");
+  const editorTotalCost = byId("editor-total-cost");
+  const saveRecipeMeta = byId("save-recipe-meta");
+  const saveRecipeLines = byId("save-recipe-lines");
+  const addRecipeLine = byId("add-recipe-line");
+  const recipeLines = byId("recipe-lines");
+
+  let recipes = [];
+  let optionItems = [];
+  let optionRecipes = [];
+
+  function itemOptionsHtml(selectedId = null) {
+    return optionItems
+      .map((item) => {
+        const selected = Number(selectedId) === item.id ? "selected" : "";
+        const cost =
+          item.trackedUnitCost === null ? "No Cost" : `$${Number(item.trackedUnitCost).toFixed(2)}`;
+        return `<option value="${item.id}" ${selected}>${item.name} (${item.trackedSizeLabel}, ${cost})</option>`;
+      })
+      .join("");
+  }
+
+  function recipeOptionsHtml(selectedId = null) {
+    return optionRecipes
+      .map((recipe) => {
+        const selected = Number(selectedId) === recipe.id ? "selected" : "";
+        return `<option value="${recipe.id}" ${selected}>${recipe.name}</option>`;
+      })
+      .join("");
+  }
+
+  function renderLineBody(row, line = {}) {
+    const type = row.querySelector(".rb-line-type").value;
+    const body = row.querySelector(".recipe-line-body");
+
+    if (type === "INGREDIENT") {
+      body.innerHTML = `
+        <label>
+          Item Catalog Ingredient
+          <select class="rb-ingredient-item">
+            <option value="">Select item</option>
+            ${itemOptionsHtml(line.ingredientItemId)}
+          </select>
+        </label>
+        <div class="line">
+          <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? ""}" /></label>
+          <label>Unit <input type="text" class="rb-unit" value="${line.unit ?? "bottle"}" /></label>
+          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
+        </div>
+      `;
+      return;
+    }
+
+    if (type === "RECIPE") {
+      body.innerHTML = `
+        <label>
+          Recipe Component
+          <select class="rb-ingredient-recipe">
+            <option value="">Select recipe</option>
+            ${recipeOptionsHtml(line.ingredientRecipeId)}
+          </select>
+        </label>
+        <div class="line">
+          <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? "1"}" /></label>
+          <label>Unit <input type="text" class="rb-unit" value="${line.unit ?? "x"}" /></label>
+          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
+        </div>
+      `;
+      return;
+    }
+
+    if (type === "DIRECTION") {
+      body.innerHTML = `
+        <label>
+          Direction
+          <textarea class="rb-direction" rows="2">${line.directionText ?? ""}</textarea>
+        </label>
+      `;
+      return;
+    }
+
+    if (type === "COOK_TEMPERATURE") {
+      body.innerHTML = `
+        <div class="line">
+          <label>Temperature <input type="number" min="0" step="0.1" class="rb-cook-temp" value="${line.cookTemperature ?? ""}" /></label>
+          <label>Unit <input type="text" class="rb-cook-temp-unit" value="${line.cookTemperatureUnit ?? "F"}" /></label>
+          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
+        </div>
+      `;
+      return;
+    }
+
+    if (type === "TIME") {
+      body.innerHTML = `
+        <div class="line">
+          <label>Time Value <input type="number" min="0" step="0.1" class="rb-time-value" value="${line.timeValue ?? ""}" /></label>
+          <label>Time Unit <input type="text" class="rb-time-unit" value="${line.timeUnit ?? "minutes"}" /></label>
+          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = `
+      <label>
+        Note
+        <textarea class="rb-notes" rows="2">${line.notes ?? ""}</textarea>
+      </label>
+    `;
+  }
+
+  function addRecipeLineRow(line = {}) {
+    const row = document.createElement("div");
+    row.className = "recipe-line";
+    row.innerHTML = `
+      <div class="recipe-line-head">
+        <label>
+          Line Type
+          <select class="rb-line-type">
+            <option value="INGREDIENT">Ingredient</option>
+            <option value="RECIPE">Recipe</option>
+            <option value="DIRECTION">Direction</option>
+            <option value="COOK_TEMPERATURE">Cook Temperature</option>
+            <option value="TIME">Time</option>
+            <option value="NOTE">Note</option>
+          </select>
+        </label>
+        <button type="button" class="secondary mini-btn rb-remove-line">Remove</button>
+      </div>
+      <div class="recipe-line-body"></div>
+    `;
+
+    const typeSelect = row.querySelector(".rb-line-type");
+    typeSelect.value = line.lineType || "INGREDIENT";
+    typeSelect.addEventListener("change", () => renderLineBody(row));
+    row.querySelector(".rb-remove-line").addEventListener("click", () => row.remove());
+
+    renderLineBody(row, line);
+    recipeLines.appendChild(row);
+  }
+
+  function collectLinesPayload() {
+    const rows = [...recipeLines.querySelectorAll(".recipe-line")];
+    return rows.map((row) => {
+      const lineType = row.querySelector(".rb-line-type").value;
+      const payload = { lineType };
+
+      if (lineType === "INGREDIENT") {
+        payload.ingredientItemId = parseNullableNumber(row.querySelector(".rb-ingredient-item")?.value);
+        payload.quantity = parseNullableNumber(row.querySelector(".rb-qty")?.value);
+        payload.unit = row.querySelector(".rb-unit")?.value?.trim() || null;
+        payload.notes = row.querySelector(".rb-notes")?.value?.trim() || null;
+      } else if (lineType === "RECIPE") {
+        payload.ingredientRecipeId = parseNullableNumber(row.querySelector(".rb-ingredient-recipe")?.value);
+        payload.quantity = parseNullableNumber(row.querySelector(".rb-qty")?.value);
+        payload.unit = row.querySelector(".rb-unit")?.value?.trim() || null;
+        payload.notes = row.querySelector(".rb-notes")?.value?.trim() || null;
+      } else if (lineType === "DIRECTION") {
+        payload.directionText = row.querySelector(".rb-direction")?.value?.trim() || null;
+      } else if (lineType === "COOK_TEMPERATURE") {
+        payload.cookTemperature = parseNullableNumber(row.querySelector(".rb-cook-temp")?.value);
+        payload.cookTemperatureUnit = row.querySelector(".rb-cook-temp-unit")?.value?.trim() || null;
+        payload.notes = row.querySelector(".rb-notes")?.value?.trim() || null;
+      } else if (lineType === "TIME") {
+        payload.timeValue = parseNullableNumber(row.querySelector(".rb-time-value")?.value);
+        payload.timeUnit = row.querySelector(".rb-time-unit")?.value?.trim() || null;
+        payload.notes = row.querySelector(".rb-notes")?.value?.trim() || null;
+      } else if (lineType === "NOTE") {
+        payload.notes = row.querySelector(".rb-notes")?.value?.trim() || null;
+      }
+
+      return payload;
+    });
+  }
+
+  async function loadOptions(activeRecipeId) {
+    const opts = await api(`/api/recipe-builder/options?recipeId=${activeRecipeId}`);
+    optionItems = opts.items || [];
+    optionRecipes = opts.recipes || [];
+  }
+
+  async function openRecipe(recipeId) {
+    const recipe = await api(`/api/recipe-builder/recipes/${recipeId}`);
+    await loadOptions(recipeId);
+
+    editorRecipeId.value = String(recipe.id);
+    editorRecipeName.value = recipe.name;
+    editorRecipeCategory.value = recipe.category || "General";
+    editorRecipeStatus.value = recipe.status || "Draft";
+    editorRecipeYieldQty.value = recipe.yieldQty ?? "";
+    editorRecipeYieldUnit.value = recipe.yieldUnit ?? "";
+    editorRecipeNotes.value = recipe.notes ?? "";
+    editorTotalCost.textContent = `$${Number(recipe.totalCost || 0).toFixed(2)}`;
+    editorTitle.textContent = `Recipe Editor: ${recipe.name}`;
+
+    recipeLines.innerHTML = "";
+    for (const line of recipe.lines || []) addRecipeLineRow(line);
+    editorCard.hidden = false;
+    editorCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  async function loadRecipes() {
+    recipes = await api("/api/recipe-builder/recipes");
+    if (!recipes.length) {
+      recipeList.innerHTML = "<p>No recipes yet.</p>";
+      return;
+    }
+
+    recipeList.innerHTML = `
+      <table>
+        <thead><tr><th>Name</th><th>Category</th><th>Status</th><th>Total Cost</th><th>Action</th></tr></thead>
+        <tbody>
+          ${recipes
+            .map(
+              (recipe) => `<tr>
+                <td>${recipe.name}</td>
+                <td>${recipe.category || ""}</td>
+                <td>${recipe.status || ""}</td>
+                <td>$${Number(recipe.totalCost || 0).toFixed(2)}</td>
+                <td><button type="button" class="secondary mini-btn rb-open-recipe" data-recipe-id="${recipe.id}">Open</button></td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    recipeList.querySelectorAll(".rb-open-recipe").forEach((button) => {
+      button.addEventListener("click", () =>
+        openRecipe(Number(button.dataset.recipeId)).catch((error) => showToast(error.message, true))
+      );
+    });
+  }
+
+  recipeForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      const created = await api("/api/recipe-builder/recipes", {
+        method: "POST",
+        body: JSON.stringify({
+          name: recipeName.value.trim(),
+          category: recipeCategory.value.trim() || "General",
+          status: recipeStatus.value,
+          yieldQty: parseNullableNumber(recipeYieldQty.value),
+          yieldUnit: recipeYieldUnit.value.trim() || null,
+          notes: recipeNotes.value.trim() || "",
+        }),
+      });
+      recipeForm.reset();
+      recipeCategory.value = "General";
+      recipeStatus.value = "Draft";
+      await loadRecipes();
+      await openRecipe(created.id);
+      showToast("Recipe created.");
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+
+  saveRecipeMeta.addEventListener("click", async () => {
+    try {
+      const id = Number(editorRecipeId.value);
+      await api(`/api/recipe-builder/recipes/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          name: editorRecipeName.value.trim(),
+          category: editorRecipeCategory.value.trim() || "General",
+          status: editorRecipeStatus.value,
+          yieldQty: parseNullableNumber(editorRecipeYieldQty.value),
+          yieldUnit: editorRecipeYieldUnit.value.trim() || null,
+          notes: editorRecipeNotes.value.trim() || "",
+        }),
+      });
+      await loadRecipes();
+      showToast("Recipe header saved.");
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+
+  saveRecipeLines.addEventListener("click", async () => {
+    try {
+      const id = Number(editorRecipeId.value);
+      await api(`/api/recipe-builder/recipes/${id}/lines`, {
+        method: "PUT",
+        body: JSON.stringify({ lines: collectLinesPayload() }),
+      });
+      await loadRecipes();
+      await openRecipe(id);
+      showToast("Recipe lines saved.");
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+
+  addRecipeLine.addEventListener("click", () => addRecipeLineRow());
+
+  await loadRecipes();
+}
+
 async function init() {
   await initVendorPage();
   await initAddItemPage();
@@ -824,6 +1131,7 @@ async function init() {
   await initCountsPage();
   await initParLevelsPage();
   await initReorderPage();
+  await initRecipeBuilderPage();
 }
 
 init().catch((error) => showToast(error.message, true));

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Builder | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Recipe Builder</h1>
+          <p>Build recipes line-by-line with ingredients, directions, temperature, time, and nested recipes.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="grid two">
+        <article class="card">
+          <h2>Create Recipe</h2>
+          <form id="recipe-form" class="stack">
+            <label>
+              Recipe Name
+              <input type="text" id="recipe-name" required />
+            </label>
+            <label>
+              Category
+              <input type="text" id="recipe-category" value="General" />
+            </label>
+            <label>
+              Status
+              <select id="recipe-status">
+                <option value="Draft">Draft</option>
+                <option value="Active">Active</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </label>
+            <label>
+              Yield Qty
+              <input type="number" id="recipe-yield-qty" min="0" step="0.01" />
+            </label>
+            <label>
+              Yield Unit
+              <input type="text" id="recipe-yield-unit" placeholder="oz, ea, portions..." />
+            </label>
+            <label>
+              Notes
+              <textarea id="recipe-notes" rows="3"></textarea>
+            </label>
+            <button type="submit" class="mini-btn">Create Recipe</button>
+          </form>
+
+          <hr />
+          <h3>Recipes</h3>
+          <div id="recipe-list"></div>
+        </article>
+
+        <article class="card" id="recipe-editor-card" hidden>
+          <div class="line">
+            <h2 id="editor-title">Recipe Editor</h2>
+            <button id="save-recipe-meta" class="secondary mini-btn">Save Header</button>
+            <button id="save-recipe-lines" class="mini-btn">Save Lines</button>
+          </div>
+
+          <div class="stack">
+            <input type="hidden" id="editor-recipe-id" />
+            <label>
+              Name
+              <input type="text" id="editor-recipe-name" required />
+            </label>
+            <label>
+              Category
+              <input type="text" id="editor-recipe-category" />
+            </label>
+            <label>
+              Status
+              <select id="editor-recipe-status">
+                <option value="Draft">Draft</option>
+                <option value="Active">Active</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </label>
+            <div class="line">
+              <label>
+                Yield Qty
+                <input type="number" id="editor-recipe-yield-qty" min="0" step="0.01" />
+              </label>
+              <label>
+                Yield Unit
+                <input type="text" id="editor-recipe-yield-unit" />
+              </label>
+            </div>
+            <label>
+              Notes
+              <textarea id="editor-recipe-notes" rows="3"></textarea>
+            </label>
+            <p><strong>Total Cost:</strong> <span id="editor-total-cost">$0.00</span></p>
+          </div>
+
+          <hr />
+          <div class="line">
+            <button id="add-recipe-line" class="secondary mini-btn">Add Line</button>
+          </div>
+          <div id="recipe-lines" class="stack"></div>
+        </article>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

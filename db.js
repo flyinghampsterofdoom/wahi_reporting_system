@@ -59,6 +59,7 @@ class SqliteClient {
         item_id INTEGER NOT NULL,
         size_label TEXT NOT NULL,
         volume_ml INTEGER NOT NULL CHECK(volume_ml > 0),
+        unit_cost REAL,
         par_level_bottles REAL NOT NULL DEFAULT 0 CHECK(par_level_bottles >= 0),
         is_tracked INTEGER NOT NULL DEFAULT 0 CHECK(is_tracked IN (0, 1)),
         created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -232,6 +233,39 @@ class SqliteClient {
         imported_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
         notes TEXT
       );
+
+      CREATE TABLE IF NOT EXISTS recipe_builder_recipes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        category TEXT NOT NULL DEFAULT 'General',
+        status TEXT NOT NULL DEFAULT 'Draft',
+        yield_qty REAL,
+        yield_unit TEXT,
+        notes TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        updated_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+      );
+
+      CREATE TABLE IF NOT EXISTS recipe_builder_lines (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        recipe_id INTEGER NOT NULL,
+        sort_order INTEGER NOT NULL,
+        line_type TEXT NOT NULL CHECK(line_type IN ('INGREDIENT','RECIPE','DIRECTION','COOK_TEMPERATURE','TIME','NOTE')),
+        ingredient_item_id INTEGER,
+        ingredient_recipe_id INTEGER,
+        quantity REAL,
+        unit TEXT,
+        direction_text TEXT,
+        cook_temperature REAL,
+        cook_temperature_unit TEXT,
+        time_value REAL,
+        time_unit TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        FOREIGN KEY(recipe_id) REFERENCES recipe_builder_recipes(id) ON DELETE CASCADE,
+        FOREIGN KEY(ingredient_item_id) REFERENCES items(id) ON DELETE SET NULL,
+        FOREIGN KEY(ingredient_recipe_id) REFERENCES recipe_builder_recipes(id) ON DELETE SET NULL
+      );
     `);
 
     this.db.exec(`
@@ -264,6 +298,12 @@ class SqliteClient {
     }
     if (!itemColumnNames.has("source_key")) {
       this.db.exec("ALTER TABLE items ADD COLUMN source_key TEXT NOT NULL DEFAULT '';");
+    }
+
+    const sizeColumns = this.db.prepare("PRAGMA table_info(item_sizes)").all();
+    const sizeColumnNames = new Set(sizeColumns.map((column) => column.name));
+    if (!sizeColumnNames.has("unit_cost")) {
+      this.db.exec("ALTER TABLE item_sizes ADD COLUMN unit_cost REAL;");
     }
 
     this.db.exec(`
@@ -370,10 +410,15 @@ class PostgresClient {
         item_id BIGINT NOT NULL REFERENCES items(id) ON DELETE CASCADE,
         size_label TEXT NOT NULL,
         volume_ml INTEGER NOT NULL CHECK(volume_ml > 0),
+        unit_cost DOUBLE PRECISION,
         par_level_bottles DOUBLE PRECISION NOT NULL DEFAULT 0 CHECK(par_level_bottles >= 0),
         is_tracked INTEGER NOT NULL DEFAULT 0 CHECK(is_tracked IN (0, 1)),
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    await this.query(`
+      ALTER TABLE item_sizes ADD COLUMN IF NOT EXISTS unit_cost DOUBLE PRECISION
     `);
 
     await this.query(`
@@ -563,6 +608,40 @@ class PostgresClient {
         source_file TEXT NOT NULL,
         imported_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         notes TEXT
+      )
+    `);
+
+    await this.query(`
+      CREATE TABLE IF NOT EXISTS recipe_builder_recipes (
+        id BIGSERIAL PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        category TEXT NOT NULL DEFAULT 'General',
+        status TEXT NOT NULL DEFAULT 'Draft',
+        yield_qty DOUBLE PRECISION,
+        yield_unit TEXT,
+        notes TEXT NOT NULL DEFAULT '',
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await this.query(`
+      CREATE TABLE IF NOT EXISTS recipe_builder_lines (
+        id BIGSERIAL PRIMARY KEY,
+        recipe_id BIGINT NOT NULL REFERENCES recipe_builder_recipes(id) ON DELETE CASCADE,
+        sort_order INTEGER NOT NULL,
+        line_type TEXT NOT NULL CHECK(line_type IN ('INGREDIENT','RECIPE','DIRECTION','COOK_TEMPERATURE','TIME','NOTE')),
+        ingredient_item_id BIGINT REFERENCES items(id) ON DELETE SET NULL,
+        ingredient_recipe_id BIGINT REFERENCES recipe_builder_recipes(id) ON DELETE SET NULL,
+        quantity DOUBLE PRECISION,
+        unit TEXT,
+        direction_text TEXT,
+        cook_temperature DOUBLE PRECISION,
+        cook_temperature_unit TEXT,
+        time_value DOUBLE PRECISION,
+        time_unit TEXT,
+        notes TEXT,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
 

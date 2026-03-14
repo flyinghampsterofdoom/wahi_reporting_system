@@ -32,6 +32,7 @@ const itemSchema = z.object({
         sizeLabel: z.string().trim().min(1),
         volumeMl: z.number().int().positive(),
         isTracked: z.boolean(),
+        unitCost: z.number().nonnegative().nullable().optional(),
       })
     )
     .min(1),
@@ -49,6 +50,7 @@ const itemUpdateSchema = z.object({
         sizeLabel: z.string().trim().min(1),
         volumeMl: z.number().int().positive(),
         isTracked: z.boolean(),
+        unitCost: z.number().nonnegative().nullable().optional(),
       })
     )
     .min(1),
@@ -79,6 +81,35 @@ const areaAssignmentSchema = z.object({
   areaId: z.number().int().positive(),
 });
 
+const recipeCreateSchema = z.object({
+  name: z.string().trim().min(1),
+  category: z.string().trim().optional().default("General"),
+  status: z.string().trim().optional().default("Draft"),
+  yieldQty: z.number().positive().nullable().optional(),
+  yieldUnit: z.string().trim().nullable().optional(),
+  notes: z.string().trim().optional().default(""),
+});
+
+const recipeUpdateSchema = recipeCreateSchema;
+
+const recipeLineSchema = z.object({
+  lineType: z.enum(["INGREDIENT", "RECIPE", "DIRECTION", "COOK_TEMPERATURE", "TIME", "NOTE"]),
+  ingredientItemId: z.number().int().positive().nullable().optional(),
+  ingredientRecipeId: z.number().int().positive().nullable().optional(),
+  quantity: z.number().nonnegative().nullable().optional(),
+  unit: z.string().trim().nullable().optional(),
+  directionText: z.string().trim().nullable().optional(),
+  cookTemperature: z.number().nonnegative().nullable().optional(),
+  cookTemperatureUnit: z.string().trim().nullable().optional(),
+  timeValue: z.number().nonnegative().nullable().optional(),
+  timeUnit: z.string().trim().nullable().optional(),
+  notes: z.string().trim().nullable().optional(),
+});
+
+const recipeLinesReplaceSchema = z.object({
+  lines: z.array(recipeLineSchema),
+});
+
 function hasExactlyOneTrackedSize(sizes) {
   return sizes.filter((size) => size.isTracked).length === 1;
 }
@@ -92,6 +123,102 @@ function normalizeSqlError(error) {
   const code = String(error?.code || "").toLowerCase();
   if (code.includes("constraint") || msg.includes("unique")) return "UNIQUE";
   return "OTHER";
+}
+
+async function getRecipeBaseRows(tx) {
+  const { rows } = await tx.query(`
+    SELECT id, name, category, status, yield_qty, yield_unit, notes, created_at, updated_at
+    FROM recipe_builder_recipes
+    ORDER BY name
+  `);
+  return rows.map((row) => ({
+    id: Number(row.id),
+    name: row.name,
+    category: row.category,
+    status: row.status,
+    yieldQty: row.yield_qty === null ? null : Number(row.yield_qty),
+    yieldUnit: row.yield_unit || null,
+    notes: row.notes || "",
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  }));
+}
+
+async function getRecipeLines(tx, recipeId) {
+  const { rows } = await tx.query(
+    `
+    SELECT
+      l.id,
+      l.recipe_id,
+      l.sort_order,
+      l.line_type,
+      l.ingredient_item_id,
+      l.ingredient_recipe_id,
+      l.quantity,
+      l.unit,
+      l.direction_text,
+      l.cook_temperature,
+      l.cook_temperature_unit,
+      l.time_value,
+      l.time_unit,
+      l.notes,
+      i.name AS ingredient_item_name,
+      rr.name AS ingredient_recipe_name,
+      tis.unit_cost AS ingredient_item_cost
+    FROM recipe_builder_lines l
+    LEFT JOIN items i ON i.id = l.ingredient_item_id
+    LEFT JOIN item_sizes tis ON tis.item_id = i.id AND tis.is_tracked = 1
+    LEFT JOIN recipe_builder_recipes rr ON rr.id = l.ingredient_recipe_id
+    WHERE l.recipe_id = $1
+    ORDER BY l.sort_order, l.id
+    `,
+    [recipeId]
+  );
+
+  return rows.map((row) => ({
+    id: Number(row.id),
+    recipeId: Number(row.recipe_id),
+    sortOrder: Number(row.sort_order),
+    lineType: row.line_type,
+    ingredientItemId: row.ingredient_item_id ? Number(row.ingredient_item_id) : null,
+    ingredientItemName: row.ingredient_item_name || null,
+    ingredientItemCost:
+      row.ingredient_item_cost === null || row.ingredient_item_cost === undefined
+        ? null
+        : Number(row.ingredient_item_cost),
+    ingredientRecipeId: row.ingredient_recipe_id ? Number(row.ingredient_recipe_id) : null,
+    ingredientRecipeName: row.ingredient_recipe_name || null,
+    quantity: row.quantity === null ? null : Number(row.quantity),
+    unit: row.unit || null,
+    directionText: row.direction_text || null,
+    cookTemperature: row.cook_temperature === null ? null : Number(row.cook_temperature),
+    cookTemperatureUnit: row.cook_temperature_unit || null,
+    timeValue: row.time_value === null ? null : Number(row.time_value),
+    timeUnit: row.time_unit || null,
+    notes: row.notes || null,
+  }));
+}
+
+async function calculateRecipeCost(tx, recipeId, path = new Set()) {
+  const id = Number(recipeId);
+  if (path.has(id)) return 0;
+  const nextPath = new Set(path);
+  nextPath.add(id);
+
+  const lines = await getRecipeLines(tx, id);
+  let total = 0;
+
+  for (const line of lines) {
+    const qty = line.quantity ?? 0;
+    if (line.lineType === "INGREDIENT" && line.ingredientItemCost !== null) {
+      total += qty * line.ingredientItemCost;
+    } else if (line.lineType === "RECIPE" && line.ingredientRecipeId) {
+      const nestedCost = await calculateRecipeCost(tx, line.ingredientRecipeId, nextPath);
+      total += qty * nestedCost;
+    }
+  }
+
+  return Number(total.toFixed(4));
 }
 
 app.get("/api/vendors", async (_req, res) => {
@@ -235,6 +362,7 @@ app.get("/api/items", async (_req, res) => {
       s.id AS size_id,
       s.size_label,
       s.volume_ml,
+      s.unit_cost,
       s.is_tracked
     FROM items i
     JOIN vendors v ON v.id = i.vendor_id
@@ -261,6 +389,7 @@ app.get("/api/items", async (_req, res) => {
       id: Number(row.size_id),
       sizeLabel: row.size_label,
       volumeMl: Number(row.volume_ml),
+      unitCost: row.unit_cost === null || row.unit_cost === undefined ? null : Number(row.unit_cost),
       isTracked: Number(row.is_tracked) === 1,
     });
   }
@@ -292,8 +421,8 @@ app.post("/api/items", async (req, res) => {
       const id = Number(inserted.rows[0].id);
       for (const size of sizes) {
         await tx.query(
-          "INSERT INTO item_sizes (item_id, size_label, volume_ml, is_tracked) VALUES ($1, $2, $3, $4)",
-          [id, size.sizeLabel, size.volumeMl, toBoolInt(size.isTracked)]
+          "INSERT INTO item_sizes (item_id, size_label, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5)",
+          [id, size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked)]
         );
       }
 
@@ -346,14 +475,14 @@ app.put("/api/items/:id", async (req, res) => {
         if (size.id) {
           if (!existingIds.has(size.id)) throw new Error("SIZE_NOT_FOUND");
           await tx.query(
-            "UPDATE item_sizes SET size_label = $1, volume_ml = $2, is_tracked = $3 WHERE id = $4 AND item_id = $5",
-            [size.sizeLabel, size.volumeMl, toBoolInt(size.isTracked), size.id, itemId]
+            "UPDATE item_sizes SET size_label = $1, volume_ml = $2, unit_cost = $3, is_tracked = $4 WHERE id = $5 AND item_id = $6",
+            [size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked), size.id, itemId]
           );
           keepIds.add(size.id);
         } else {
           const inserted = await tx.query(
-            "INSERT INTO item_sizes (item_id, size_label, volume_ml, is_tracked) VALUES ($1, $2, $3, $4) RETURNING id",
-            [itemId, size.sizeLabel, size.volumeMl, toBoolInt(size.isTracked)]
+            "INSERT INTO item_sizes (item_id, size_label, volume_ml, unit_cost, is_tracked) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+            [itemId, size.sizeLabel, size.volumeMl, size.unitCost ?? null, toBoolInt(size.isTracked)]
           );
           keepIds.add(Number(inserted.rows[0].id));
         }
@@ -631,6 +760,219 @@ app.get("/api/pricebook/recipe-lines", async (req, res) => {
   res.json(rows);
 });
 
+app.get("/api/recipe-builder/options", async (req, res) => {
+  const recipeId = Number(req.query.recipeId || 0);
+  const [itemsResult, recipesResult] = await Promise.all([
+    db.query(`
+      SELECT
+        i.id,
+        i.name,
+        v.name AS vendor_name,
+        i.area_type,
+        s.size_label,
+        s.volume_ml,
+        s.unit_cost
+      FROM items i
+      JOIN vendors v ON v.id = i.vendor_id
+      JOIN item_sizes s ON s.item_id = i.id AND s.is_tracked = 1
+      ORDER BY i.name
+    `),
+    db.query("SELECT id, name FROM recipe_builder_recipes ORDER BY name"),
+  ]);
+
+  const items = itemsResult.rows.map((row) => ({
+    id: Number(row.id),
+    name: row.name,
+    vendorName: row.vendor_name,
+    areaType: row.area_type,
+    trackedSizeLabel: row.size_label,
+    trackedVolumeMl: Number(row.volume_ml),
+    trackedUnitCost: row.unit_cost === null ? null : Number(row.unit_cost),
+  }));
+
+  const recipes = recipesResult.rows
+    .map((row) => ({ id: Number(row.id), name: row.name }))
+    .filter((row) => !recipeId || row.id !== recipeId);
+
+  res.json({ items, recipes });
+});
+
+app.get("/api/recipe-builder/recipes", async (_req, res) => {
+  const recipes = await db.transaction(async (tx) => {
+    const base = await getRecipeBaseRows(tx);
+    const enriched = [];
+    for (const recipe of base) {
+      const totalCost = await calculateRecipeCost(tx, recipe.id);
+      enriched.push({ ...recipe, totalCost });
+    }
+    return enriched;
+  });
+  res.json(recipes);
+});
+
+app.post("/api/recipe-builder/recipes", async (req, res) => {
+  const parsed = recipeCreateSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid recipe payload." });
+
+  try {
+    const { rows } = await db.query(
+      `
+      INSERT INTO recipe_builder_recipes (name, category, status, yield_qty, yield_unit, notes, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+      RETURNING id
+      `,
+      [
+        parsed.data.name,
+        parsed.data.category,
+        parsed.data.status,
+        parsed.data.yieldQty ?? null,
+        parsed.data.yieldUnit ?? null,
+        parsed.data.notes,
+      ]
+    );
+    return res.status(201).json({ id: Number(rows[0].id) });
+  } catch (error) {
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "A recipe with that name already exists." });
+    }
+    return res.status(500).json({ error: "Failed to create recipe." });
+  }
+});
+
+app.get("/api/recipe-builder/recipes/:id", async (req, res) => {
+  const recipeId = Number(req.params.id);
+  if (!Number.isInteger(recipeId) || recipeId <= 0) {
+    return res.status(400).json({ error: "Invalid recipe id." });
+  }
+
+  const recipe = await db.transaction(async (tx) => {
+    const { rows } = await tx.query(
+      `
+      SELECT id, name, category, status, yield_qty, yield_unit, notes, created_at, updated_at
+      FROM recipe_builder_recipes
+      WHERE id = $1
+      `,
+      [recipeId]
+    );
+    if (!rows.length) return null;
+
+    const lines = await getRecipeLines(tx, recipeId);
+    const totalCost = await calculateRecipeCost(tx, recipeId);
+    return {
+      id: Number(rows[0].id),
+      name: rows[0].name,
+      category: rows[0].category,
+      status: rows[0].status,
+      yieldQty: rows[0].yield_qty === null ? null : Number(rows[0].yield_qty),
+      yieldUnit: rows[0].yield_unit || null,
+      notes: rows[0].notes || "",
+      createdAt: rows[0].created_at,
+      updatedAt: rows[0].updated_at,
+      totalCost,
+      lines,
+    };
+  });
+
+  if (!recipe) return res.status(404).json({ error: "Recipe not found." });
+  res.json(recipe);
+});
+
+app.put("/api/recipe-builder/recipes/:id", async (req, res) => {
+  const recipeId = Number(req.params.id);
+  if (!Number.isInteger(recipeId) || recipeId <= 0) {
+    return res.status(400).json({ error: "Invalid recipe id." });
+  }
+
+  const parsed = recipeUpdateSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid recipe payload." });
+
+  try {
+    const result = await db.query(
+      `
+      UPDATE recipe_builder_recipes
+      SET name = $1, category = $2, status = $3, yield_qty = $4, yield_unit = $5, notes = $6, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $7
+      `,
+      [
+        parsed.data.name,
+        parsed.data.category,
+        parsed.data.status,
+        parsed.data.yieldQty ?? null,
+        parsed.data.yieldUnit ?? null,
+        parsed.data.notes,
+        recipeId,
+      ]
+    );
+    if (!result.rowCount) return res.status(404).json({ error: "Recipe not found." });
+    return res.status(204).send();
+  } catch (error) {
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "A recipe with that name already exists." });
+    }
+    return res.status(500).json({ error: "Failed to update recipe." });
+  }
+});
+
+app.put("/api/recipe-builder/recipes/:id/lines", async (req, res) => {
+  const recipeId = Number(req.params.id);
+  if (!Number.isInteger(recipeId) || recipeId <= 0) {
+    return res.status(400).json({ error: "Invalid recipe id." });
+  }
+
+  const parsed = recipeLinesReplaceSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid recipe lines payload." });
+
+  for (const line of parsed.data.lines) {
+    if (line.lineType === "RECIPE" && line.ingredientRecipeId === recipeId) {
+      return res.status(400).json({ error: "A recipe cannot reference itself." });
+    }
+  }
+
+  try {
+    await db.transaction(async (tx) => {
+      const recipeExists = await tx.query("SELECT id FROM recipe_builder_recipes WHERE id = $1", [recipeId]);
+      if (!recipeExists.rows.length) throw new Error("RECIPE_NOT_FOUND");
+
+      await tx.query("DELETE FROM recipe_builder_lines WHERE recipe_id = $1", [recipeId]);
+
+      let sortOrder = 1;
+      for (const line of parsed.data.lines) {
+        await tx.query(
+          `
+          INSERT INTO recipe_builder_lines
+          (recipe_id, sort_order, line_type, ingredient_item_id, ingredient_recipe_id, quantity, unit, direction_text, cook_temperature, cook_temperature_unit, time_value, time_unit, notes)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+          `,
+          [
+            recipeId,
+            sortOrder,
+            line.lineType,
+            line.ingredientItemId ?? null,
+            line.ingredientRecipeId ?? null,
+            line.quantity ?? null,
+            line.unit ?? null,
+            line.directionText ?? null,
+            line.cookTemperature ?? null,
+            line.cookTemperatureUnit ?? null,
+            line.timeValue ?? null,
+            line.timeUnit ?? null,
+            line.notes ?? null,
+          ]
+        );
+        sortOrder += 1;
+      }
+
+      await tx.query("UPDATE recipe_builder_recipes SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [recipeId]);
+    });
+    return res.status(204).send();
+  } catch (error) {
+    if (error.message === "RECIPE_NOT_FOUND") {
+      return res.status(404).json({ error: "Recipe not found." });
+    }
+    return res.status(500).json({ error: "Failed to save recipe lines." });
+  }
+});
+
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/catalog", (_req, res) => res.redirect("/item-catalog"));
 app.get("/add-item", (_req, res) => res.redirect("/item-catalog"));
@@ -640,6 +982,9 @@ app.get("/areas", (_req, res) => res.sendFile(path.join(__dirname, "public", "ar
 app.get("/counts", (_req, res) => res.sendFile(path.join(__dirname, "public", "counts.html")));
 app.get("/reorder", (_req, res) => res.sendFile(path.join(__dirname, "public", "reorder.html")));
 app.get("/par-levels", (_req, res) => res.sendFile(path.join(__dirname, "public", "par-levels.html")));
+app.get("/recipe-builder", (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "recipe-builder.html"))
+);
 app.use((_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 async function start() {

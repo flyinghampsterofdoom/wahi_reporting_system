@@ -15,7 +15,14 @@ Web-based inventory and ordering starter system for a bar.
   - FOH/BOH classification
   - Vendor
   - Case size (qty)
+  - Cost per tracked bottle size
   - Multiple bottle sizes (for example: 1L, 750ml) per item
+- Recipe Builder:
+  - Create/edit recipes
+  - Typed lines (`Ingredient`, `Recipe`, `Direction`, `Cook Temperature`, `Time`, `Note`)
+  - Pull ingredients from Item Catalog
+  - Pull nested recipes (self-reference blocked)
+  - Live total cost rollup from tracked item costs
 - Par and Levels tool:
   - FOH Par and Levels
   - BOH Par and Levels
@@ -64,6 +71,7 @@ This preserves source-of-truth math inputs in dedicated tables and syncs `Ingred
 - `/add-vendor` vendor profile setup
 - `/areas` area/location setup and item-area assignments
 - `/catalog` legacy alias redirects to Item Catalog
+- `/recipe-builder` recipe creation and line builder
 - `/par-levels` FOH/BOH par and level setup
 - `/counts` FOH/BOH inventory count entry
 - `/reorder` reorder suggestions
@@ -80,6 +88,11 @@ This preserves source-of-truth math inputs in dedicated tables and syncs `Ingred
 - `POST /api/par-levels`
 - `GET /api/reorder?date=YYYY-MM-DD`
 - `GET /api/pricebook/summary`
-- `POST /api/pricebook/sync-catalog`
 - `GET /api/pricebook/recipes`
 - `GET /api/pricebook/recipe-lines?recipeName=...`
+- `GET /api/recipe-builder/options`
+- `GET /api/recipe-builder/recipes`
+- `POST /api/recipe-builder/recipes`
+- `GET /api/recipe-builder/recipes/:id`
+- `PUT /api/recipe-builder/recipes/:id`
+- `PUT /api/recipe-builder/recipes/:id/lines`
