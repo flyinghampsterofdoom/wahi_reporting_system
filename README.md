@@ -38,6 +38,24 @@ npm run dev
 
 Then open [http://localhost:3000](http://localhost:3000).
 
+## Import price book data (Excel)
+
+```bash
+npm run import:pricebook -- "/absolute/path/to/Wahi Price Book V2.1.xlsx"
+```
+
+This preserves source-of-truth math inputs in dedicated tables:
+
+- `pricebook_ingredients`
+- `pricebook_recipes`
+- `pricebook_recipe_lines`
+- `pricebook_conversions`
+- `pricebook_yields`
+- `pricebook_densities`
+- `pricebook_drink_catalog`
+- `pricebook_food_catalog`
+- `pricebook_syrup_catalog`
+
 ## App navigation
 
 - `/` landing page
@@ -61,3 +79,6 @@ Then open [http://localhost:3000](http://localhost:3000).
 - `GET /api/par-levels?area=FOH|BOH`
 - `POST /api/par-levels`
 - `GET /api/reorder?date=YYYY-MM-DD`
+- `GET /api/pricebook/summary`
+- `GET /api/pricebook/recipes`
+- `GET /api/pricebook/recipe-lines?recipeName=...`

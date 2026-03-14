@@ -228,6 +228,52 @@ app.delete("/api/item-area-assignments", (req, res) => {
   res.status(204).send();
 });
 
+app.get("/api/pricebook/summary", (_req, res) => {
+  const summary = {
+    ingredients: db.prepare("SELECT COUNT(*) AS c FROM pricebook_ingredients").get().c,
+    recipes: db.prepare("SELECT COUNT(*) AS c FROM pricebook_recipes").get().c,
+    recipeLines: db.prepare("SELECT COUNT(*) AS c FROM pricebook_recipe_lines").get().c,
+    conversions: db.prepare("SELECT COUNT(*) AS c FROM pricebook_conversions").get().c,
+    yields: db.prepare("SELECT COUNT(*) AS c FROM pricebook_yields").get().c,
+    densities: db.prepare("SELECT COUNT(*) AS c FROM pricebook_densities").get().c,
+    drinkCatalog: db.prepare("SELECT COUNT(*) AS c FROM pricebook_drink_catalog").get().c,
+    foodCatalog: db.prepare("SELECT COUNT(*) AS c FROM pricebook_food_catalog").get().c,
+    syrupCatalog: db.prepare("SELECT COUNT(*) AS c FROM pricebook_syrup_catalog").get().c,
+  };
+  res.json(summary);
+});
+
+app.get("/api/pricebook/recipes", (_req, res) => {
+  const rows = db
+    .prepare(
+      `
+      SELECT recipe_name, recipe_type, status, batch_yield_qty, batch_yield_unit, batch_cost, price_per_yield_unit
+      FROM pricebook_recipes
+      ORDER BY recipe_name
+      `
+    )
+    .all();
+  res.json(rows);
+});
+
+app.get("/api/pricebook/recipe-lines", (req, res) => {
+  const recipeName = String(req.query.recipeName || "").trim();
+  if (!recipeName) {
+    return res.status(400).json({ error: "Provide recipeName query parameter." });
+  }
+  const rows = db
+    .prepare(
+      `
+      SELECT recipe_name, ingredient_name, qty, unit, line_cost, notes
+      FROM pricebook_recipe_lines
+      WHERE recipe_name = ?
+      ORDER BY id
+      `
+    )
+    .all(recipeName);
+  res.json(rows);
+});
+
 app.get("/api/items", (_req, res) => {
   const rows = db
     .prepare(

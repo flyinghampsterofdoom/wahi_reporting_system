@@ -79,6 +79,132 @@ db.exec(`
     FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
     FOREIGN KEY(area_id) REFERENCES areas(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS pricebook_ingredients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ingredient_name TEXT NOT NULL,
+    purchase_name TEXT,
+    vendor TEXT,
+    sku TEXT,
+    buy_price REAL,
+    size_value REAL,
+    purchase_unit TEXT,
+    per_price REAL,
+    location TEXT,
+    source_row INTEGER,
+    source_file TEXT,
+    UNIQUE(ingredient_name)
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_recipes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recipe_name TEXT NOT NULL,
+    batch_yield_qty REAL,
+    batch_yield_unit TEXT,
+    batch_cost REAL,
+    price_per_yield_unit REAL,
+    recipe_type TEXT,
+    status TEXT,
+    prep_time_min REAL,
+    labor_cost REAL,
+    source_row INTEGER,
+    source_file TEXT,
+    UNIQUE(recipe_name)
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_recipe_lines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recipe_name TEXT NOT NULL,
+    ingredient_name TEXT,
+    qty REAL,
+    unit TEXT,
+    line_cost REAL,
+    notes TEXT,
+    source_row INTEGER,
+    source_file TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_conversions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    unit TEXT NOT NULL,
+    unit_type TEXT,
+    to_base REAL,
+    source_row INTEGER,
+    source_file TEXT,
+    UNIQUE(unit)
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_yields (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_name TEXT NOT NULL,
+    source_ingredient TEXT,
+    purchase_unit TEXT,
+    source_per_price REAL,
+    yield_unit TEXT,
+    yield_value REAL,
+    price_per_yield_unit REAL,
+    key_value TEXT,
+    verified_by TEXT,
+    verified_date TEXT,
+    notes TEXT,
+    source_row INTEGER,
+    source_file TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_densities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ingredient_name TEXT NOT NULL,
+    grams_per_cup REAL,
+    cups_per_lb REAL,
+    source_row INTEGER,
+    source_file TEXT,
+    UNIQUE(ingredient_name)
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_drink_catalog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recipe_name TEXT NOT NULL,
+    drink_cost REAL,
+    markup REAL,
+    suggest_price REAL,
+    actual_price REAL,
+    margin REAL,
+    profit REAL,
+    source_row INTEGER,
+    source_file TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_food_catalog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recipe_name TEXT NOT NULL,
+    food_cost REAL,
+    markup REAL,
+    suggest_price REAL,
+    actual_price REAL,
+    margin REAL,
+    profit REAL,
+    source_row INTEGER,
+    source_file TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_syrup_catalog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    syrup_name TEXT NOT NULL,
+    batch_yield_qty REAL,
+    batch_yield_unit TEXT,
+    batch_cost REAL,
+    price_per_oz REAL,
+    catalog_check TEXT,
+    source_row INTEGER,
+    source_file TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS pricebook_import_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_file TEXT NOT NULL,
+    imported_at TEXT NOT NULL DEFAULT (datetime('now')),
+    notes TEXT
+  );
 `);
 
 const itemColumns = db.prepare("PRAGMA table_info(items)").all();
