@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin References | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Admin References</h1>
+          <p>Manage measurement conversions and yield math inputs used by recipes and costing.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <div class="line">
+          <h2>Conversions</h2>
+          <button type="button" id="refresh-conversions" class="secondary mini-btn">Refresh</button>
+        </div>
+        <div id="admin-conversions"></div>
+      </section>
+
+      <section class="card">
+        <div class="line">
+          <h2>Yields</h2>
+          <button type="button" id="refresh-yields" class="secondary mini-btn">Refresh</button>
+        </div>
+        <div id="admin-yields"></div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

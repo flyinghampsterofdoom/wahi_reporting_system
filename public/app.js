@@ -31,7 +31,7 @@ function formatNumberInput(value, places = 4) {
 }
 
 const ITEM_UNIT_OPTIONS = {
-  FLUID: ["mL", "L", "fl oz", "oz"],
+  FLUID: ["fl oz", "mL", "L", "qt", "gal"],
   WEIGHT: ["g", "kg", "oz", "lb"],
   EA: ["ea"],
 };
@@ -43,7 +43,19 @@ function unitOptionsHtml(measureType, selectedUnit) {
     .join("");
 }
 
-function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedSizeAmount) {
+function toFloz(amount, unit) {
+  const n = Number(amount);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const u = String(unit || "").toLowerCase();
+  if (u === "fl oz" || u === "oz") return n;
+  if (u === "ml") return n / 29.5735;
+  if (u === "l") return (n * 1000) / 29.5735;
+  if (u === "qt") return n * 32;
+  if (u === "gal") return n * 128;
+  return null;
+}
+
+function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedSizeAmount, trackedSizeUnit, measureType) {
   if (purchaseCost === null || purchaseCost === undefined) return null;
   let perBottle = Number(purchaseCost);
   if (purchaseUnit === "CASE") {
@@ -51,10 +63,20 @@ function computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedS
     perBottle = Number(purchaseCost) / Number(caseSize);
   }
   if (!Number.isFinite(perBottle) || perBottle < 0) return null;
-  const perUnit = Number(trackedSizeAmount) > 0 ? perBottle / Number(trackedSizeAmount) : null;
+  let divisor = Number(trackedSizeAmount);
+  let label = trackedSizeUnit || "unit";
+  if (measureType === "FLUID") {
+    const floz = toFloz(trackedSizeAmount, trackedSizeUnit);
+    if (floz && floz > 0) {
+      divisor = floz;
+      label = "fl oz";
+    }
+  }
+  const perUnit = Number(divisor) > 0 ? perBottle / Number(divisor) : null;
   return {
     perBottle: Number(perBottle.toFixed(4)),
     perUnit: perUnit === null ? null : Number(perUnit.toFixed(6)),
+    perUnitLabel: label,
   };
 }
 
@@ -68,19 +90,34 @@ function trackedSizeInfoFromRows(container) {
   return { amount: Number.isFinite(amount) && amount > 0 ? amount : null, unit };
 }
 
-function renderCostPreview(previewNode, caseSize, purchaseUnit, purchaseCost, trackedSizeAmount, trackedSizeUnit) {
+function renderCostPreview(
+  previewNode,
+  caseSize,
+  purchaseUnit,
+  purchaseCost,
+  trackedSizeAmount,
+  trackedSizeUnit,
+  measureType
+) {
   if (!previewNode) return;
   if (purchaseCost === null || purchaseCost === undefined) {
     previewNode.textContent = "Item Cost not set. Tracked size cost/unit will use manual bottle cost.";
     return;
   }
-  const breakdown = computePurchaseBreakdown(caseSize, purchaseUnit, purchaseCost, trackedSizeAmount);
+  const breakdown = computePurchaseBreakdown(
+    caseSize,
+    purchaseUnit,
+    purchaseCost,
+    trackedSizeAmount,
+    trackedSizeUnit,
+    measureType
+  );
   if (!breakdown) {
     previewNode.textContent = "Enter valid case size and tracked size amount to calculate cost per bottle and per unit.";
     return;
   }
   const sourceLabel = purchaseUnit === "CASE" ? "case" : "bottle";
-  const unitLabel = trackedSizeUnit || "unit";
+  const unitLabel = breakdown.perUnitLabel || trackedSizeUnit || "unit";
   const perUnitText = breakdown.perUnit === null ? "n/a" : `$${breakdown.perUnit.toFixed(6)} / ${unitLabel}`;
   previewNode.textContent = `From $${Number(purchaseCost).toFixed(2)} per ${sourceLabel}: $${breakdown.perBottle.toFixed(4)} per tracked bottle, ${perUnitText}.`;
 }
@@ -223,7 +260,8 @@ async function initAddItemPage() {
       itemPurchaseUnit.value,
       parseNullableNumber(itemPurchaseCost.value),
       tracked.amount,
-      tracked.unit
+      tracked.unit,
+      itemMeasureType.value
     );
   }
 
@@ -361,7 +399,8 @@ async function initItemCatalogPage() {
       editItemPurchaseUnit.value,
       parseNullableNumber(editItemPurchaseCost.value),
       tracked.amount,
-      tracked.unit
+      tracked.unit,
+      editItemMeasureType.value
     );
   }
 
@@ -425,6 +464,10 @@ async function initItemCatalogPage() {
             return `<div class="size-line">${s.sizeLabel} (${s.sizeAmount} ${s.sizeUnit}, ${costText}) ${trackControl}</div>`;
           })
           .join("");
+        const perText =
+          item.trackedCostPerUnit === null
+            ? "Tracked price/unit not set"
+            : `Tracked Price: $${Number(item.trackedCostPerUnit).toFixed(4)} / ${item.trackedCostPerUnitLabel || "unit"}`;
 
         return `
           <tr>
@@ -432,7 +475,7 @@ async function initItemCatalogPage() {
             <td>${item.areaType}</td>
             <td>${item.name}</td>
             <td>${item.caseSize}</td>
-            <td>${sizes}</td>
+            <td>${sizes}<div class="muted-note">${perText}</div></td>
             <td><button class="secondary edit-item-btn" data-item-id="${item.id}">Edit Item</button></td>
           </tr>
         `;
@@ -1031,11 +1074,29 @@ async function initRecipeBuilderPage() {
     return optionItems
       .map((item) => {
         const selected = Number(selectedId) === item.id ? "selected" : "";
-        const cost =
-          item.trackedUnitCost === null ? "No Cost" : `$${Number(item.trackedUnitCost).toFixed(2)}`;
-        return `<option value="${item.id}" ${selected}>${item.name} (${item.trackedSizeLabel}, ${cost})</option>`;
+        let perText = "No Cost";
+        if (item.trackedUnitCost !== null) {
+          if (item.measureType === "FLUID") {
+            const floz = toFloz(item.trackedSizeAmount, item.trackedSizeUnit);
+            if (floz && floz > 0) {
+              perText = `$${Number(item.trackedUnitCost / floz).toFixed(4)} / fl oz`;
+            } else {
+              perText = `$${Number(item.trackedUnitCost).toFixed(2)} / bottle`;
+            }
+          } else {
+            perText = `$${Number(item.trackedUnitCost).toFixed(4)} / ${item.trackedSizeUnit || "unit"}`;
+          }
+        }
+        return `<option value="${item.id}" ${selected}>${item.name} (${item.trackedSizeLabel}, ${perText})</option>`;
       })
       .join("");
+  }
+
+  function ingredientUnitOptions(selectedItemId, selectedUnit = "") {
+    const item = optionItems.find((entry) => Number(entry.id) === Number(selectedItemId));
+    const measureType = item?.measureType || "FLUID";
+    const defaultUnit = item?.measureType === "FLUID" ? "fl oz" : (ITEM_UNIT_OPTIONS[measureType] || ["ea"])[0];
+    return unitOptionsHtml(measureType, selectedUnit || defaultUnit);
   }
 
   function recipeOptionsHtml(selectedId = null) {
@@ -1062,10 +1123,15 @@ async function initRecipeBuilderPage() {
         </label>
         <div class="line">
           <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? ""}" /></label>
-          <label>Unit <input type="text" class="rb-unit" value="${line.unit ?? "bottle"}" /></label>
+          <label>Unit <select class="rb-unit">${ingredientUnitOptions(line.ingredientItemId, line.unit || "")}</select></label>
           <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
         </div>
       `;
+      const itemSelect = body.querySelector(".rb-ingredient-item");
+      const unitSelect = body.querySelector(".rb-unit");
+      itemSelect?.addEventListener("change", () => {
+        unitSelect.innerHTML = ingredientUnitOptions(itemSelect.value, "");
+      });
       return;
     }
 
@@ -1316,6 +1382,134 @@ async function initRecipeBuilderPage() {
   await loadRecipes();
 }
 
+async function initAdminReferencePage() {
+  const conversionsContainer = byId("admin-conversions");
+  const yieldsContainer = byId("admin-yields");
+  const refreshConversionsButton = byId("refresh-conversions");
+  const refreshYieldsButton = byId("refresh-yields");
+  if (!conversionsContainer || !yieldsContainer || !refreshConversionsButton || !refreshYieldsButton) return;
+
+  async function loadConversions() {
+    const rows = await api("/api/admin/conversions");
+    if (!rows.length) {
+      conversionsContainer.innerHTML = "<p>No conversions found.</p>";
+      return;
+    }
+
+    conversionsContainer.innerHTML = `
+      <table>
+        <thead><tr><th>Unit</th><th>Type</th><th>To Base</th><th>Action</th></tr></thead>
+        <tbody>
+          ${rows
+            .map(
+              (row) => `
+            <tr data-conv-id="${row.id}">
+              <td><input type="text" class="ad-conv-unit" value="${row.unit}" /></td>
+              <td><input type="text" class="ad-conv-type" value="${row.unitType}" /></td>
+              <td><input type="number" step="0.0001" min="0.0001" class="ad-conv-base" value="${row.toBase ?? ""}" /></td>
+              <td><button type="button" class="secondary mini-btn ad-conv-save">Save</button></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    conversionsContainer.querySelectorAll(".ad-conv-save").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const id = Number(tr.dataset.convId);
+        try {
+          await api(`/api/admin/conversions/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              unit: tr.querySelector(".ad-conv-unit").value.trim(),
+              unitType: tr.querySelector(".ad-conv-type").value.trim(),
+              toBase: Number(tr.querySelector(".ad-conv-base").value),
+            }),
+          });
+          showToast("Conversion saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
+  async function loadYields() {
+    const rows = await api("/api/admin/yields");
+    if (!rows.length) {
+      yieldsContainer.innerHTML = "<p>No yields found.</p>";
+      return;
+    }
+
+    yieldsContainer.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th><th>Source</th><th>Purchase Unit</th><th>Source Price</th>
+            <th>Yield Unit</th><th>Yield Value</th><th>Price / Yield</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (row) => `
+            <tr data-yield-id="${row.id}">
+              <td><input type="text" class="ad-y-product" value="${row.productName}" /></td>
+              <td><input type="text" class="ad-y-source" value="${row.sourceIngredient}" /></td>
+              <td><input type="text" class="ad-y-punit" value="${row.purchaseUnit}" /></td>
+              <td><input type="number" step="0.0001" min="0" class="ad-y-sprice" value="${row.sourcePerPrice ?? ""}" /></td>
+              <td><input type="text" class="ad-y-yunit" value="${row.yieldUnit}" /></td>
+              <td><input type="number" step="0.0001" min="0" class="ad-y-yvalue" value="${row.yieldValue ?? ""}" /></td>
+              <td><input type="number" step="0.0001" min="0" class="ad-y-pyield" value="${row.pricePerYieldUnit ?? ""}" /></td>
+              <td><button type="button" class="secondary mini-btn ad-y-save">Save</button></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    yieldsContainer.querySelectorAll(".ad-y-save").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const id = Number(tr.dataset.yieldId);
+        try {
+          await api(`/api/admin/yields/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              productName: tr.querySelector(".ad-y-product").value.trim(),
+              sourceIngredient: tr.querySelector(".ad-y-source").value.trim(),
+              purchaseUnit: tr.querySelector(".ad-y-punit").value.trim(),
+              sourcePerPrice: parseNullableNumber(tr.querySelector(".ad-y-sprice").value),
+              yieldUnit: tr.querySelector(".ad-y-yunit").value.trim(),
+              yieldValue: parseNullableNumber(tr.querySelector(".ad-y-yvalue").value),
+              pricePerYieldUnit: parseNullableNumber(tr.querySelector(".ad-y-pyield").value),
+              key: "",
+              verifiedBy: "",
+              verifiedDate: "",
+              notes: "",
+            }),
+          });
+          showToast("Yield saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
+  refreshConversionsButton.addEventListener("click", () =>
+    loadConversions().catch((e) => showToast(e.message, true))
+  );
+  refreshYieldsButton.addEventListener("click", () => loadYields().catch((e) => showToast(e.message, true)));
+
+  await Promise.all([loadConversions(), loadYields()]);
+}
+
 async function init() {
   await initVendorPage();
   await initAddItemPage();
@@ -1325,6 +1519,7 @@ async function init() {
   await initParLevelsPage();
   await initReorderPage();
   await initRecipeBuilderPage();
+  await initAdminReferencePage();
 }
 
 init().catch((error) => showToast(error.message, true));

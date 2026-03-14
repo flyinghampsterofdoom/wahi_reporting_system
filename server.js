@@ -168,6 +168,8 @@ function normalizeSizeUnit(unit) {
   if (lower === "ml") return "mL";
   if (lower === "l") return "L";
   if (lower === "fl oz" || lower === "floz") return "fl oz";
+  if (lower === "qt" || lower === "quart" || lower === "quarts") return "qt";
+  if (lower === "gal" || lower === "gallon" || lower === "gallons") return "gal";
   if (lower === "oz") return "oz";
   if (lower === "lb" || lower === "lbs") return "lb";
   if (lower === "g") return "g";
@@ -185,6 +187,8 @@ function toLegacyVolumeValue(measureType, sizeAmount, sizeUnit) {
     if (unit === "ml") return Math.round(amount);
     if (unit === "l") return Math.round(amount * 1000);
     if (unit === "fl oz" || unit === "oz") return Math.round(amount * 29.5735);
+    if (unit === "qt") return Math.round(amount * 946.352946);
+    if (unit === "gal") return Math.round(amount * 3785.411784);
     return Math.round(amount);
   }
   if (measureType === "WEIGHT") {
@@ -195,6 +199,18 @@ function toLegacyVolumeValue(measureType, sizeAmount, sizeUnit) {
     return Math.round(amount);
   }
   return Math.round(amount);
+}
+
+function toFluidOz(sizeAmount, sizeUnit) {
+  const amount = Number(sizeAmount);
+  const unit = normalizeSizeUnit(sizeUnit).toLowerCase();
+  if (!Number.isFinite(amount) || amount <= 0) return null;
+  if (unit === "fl oz" || unit === "oz") return amount;
+  if (unit === "ml") return amount / 29.5735;
+  if (unit === "l") return (amount * 1000) / 29.5735;
+  if (unit === "qt") return amount * 32;
+  if (unit === "gal") return amount * 128;
+  return null;
 }
 
 async function getRecipeBaseRows(tx) {
@@ -480,11 +496,21 @@ app.get("/api/items", async (_req, res) => {
   const items = [...grouped.values()].map((item) => {
     const tracked = item.sizes.find((size) => size.isTracked);
     const trackedUnitCost = tracked?.unitCost ?? null;
-    const trackedCostPerUnit =
+    let trackedCostPerUnit =
       tracked && trackedUnitCost !== null && tracked.sizeAmount
         ? Number((trackedUnitCost / tracked.sizeAmount).toFixed(6))
         : null;
-    return { ...item, trackedUnitCost, trackedCostPerUnit };
+    let trackedCostPerUnitLabel = tracked?.sizeUnit || "unit";
+    let trackedCostPerFloz = null;
+    if (item.measureType === "FLUID" && tracked && trackedUnitCost !== null) {
+      const flozAmount = toFluidOz(tracked.sizeAmount, tracked.sizeUnit);
+      if (flozAmount && flozAmount > 0) {
+        trackedCostPerFloz = Number((trackedUnitCost / flozAmount).toFixed(6));
+        trackedCostPerUnit = trackedCostPerFloz;
+        trackedCostPerUnitLabel = "fl oz";
+      }
+    }
+    return { ...item, trackedUnitCost, trackedCostPerUnit, trackedCostPerUnitLabel, trackedCostPerFloz };
   });
 
   res.json(items);
@@ -911,6 +937,137 @@ app.get("/api/pricebook/recipe-lines", async (req, res) => {
   res.json(rows);
 });
 
+app.get("/api/admin/conversions", async (_req, res) => {
+  const { rows } = await db.query(`
+    SELECT id, unit, unit_type, to_base, source_row, source_file
+    FROM pricebook_conversions
+    ORDER BY unit
+  `);
+  res.json(
+    rows.map((row) => ({
+      id: Number(row.id),
+      unit: row.unit,
+      unitType: row.unit_type || "",
+      toBase: row.to_base === null ? null : Number(row.to_base),
+      sourceRow: row.source_row === null ? null : Number(row.source_row),
+      sourceFile: row.source_file || "",
+    }))
+  );
+});
+
+app.put("/api/admin/conversions/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid conversion id." });
+
+  const schema = z.object({
+    unit: z.string().trim().min(1),
+    unitType: z.string().trim().optional().default(""),
+    toBase: z.number().positive(),
+  });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid conversion payload." });
+
+  const result = await db.query(
+    "UPDATE pricebook_conversions SET unit = $1, unit_type = $2, to_base = $3 WHERE id = $4",
+    [parsed.data.unit, parsed.data.unitType, parsed.data.toBase, id]
+  );
+  if (!result.rowCount) return res.status(404).json({ error: "Conversion not found." });
+  return res.status(204).send();
+});
+
+app.get("/api/admin/yields", async (_req, res) => {
+  const { rows } = await db.query(`
+    SELECT
+      id,
+      product_name,
+      source_ingredient,
+      purchase_unit,
+      source_per_price,
+      yield_unit,
+      yield_value,
+      price_per_yield_unit,
+      key_value,
+      verified_by,
+      verified_date,
+      notes
+    FROM pricebook_yields
+    ORDER BY product_name, id
+  `);
+
+  res.json(
+    rows.map((row) => ({
+      id: Number(row.id),
+      productName: row.product_name || "",
+      sourceIngredient: row.source_ingredient || "",
+      purchaseUnit: row.purchase_unit || "",
+      sourcePerPrice: row.source_per_price === null ? null : Number(row.source_per_price),
+      yieldUnit: row.yield_unit || "",
+      yieldValue: row.yield_value === null ? null : Number(row.yield_value),
+      pricePerYieldUnit: row.price_per_yield_unit === null ? null : Number(row.price_per_yield_unit),
+      key: row.key_value || "",
+      verifiedBy: row.verified_by || "",
+      verifiedDate: row.verified_date || "",
+      notes: row.notes || "",
+    }))
+  );
+});
+
+app.put("/api/admin/yields/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid yield id." });
+
+  const schema = z.object({
+    productName: z.string().trim().min(1),
+    sourceIngredient: z.string().trim().optional().default(""),
+    purchaseUnit: z.string().trim().optional().default(""),
+    sourcePerPrice: z.number().nonnegative().nullable().optional(),
+    yieldUnit: z.string().trim().optional().default(""),
+    yieldValue: z.number().nonnegative().nullable().optional(),
+    pricePerYieldUnit: z.number().nonnegative().nullable().optional(),
+    key: z.string().trim().optional().default(""),
+    verifiedBy: z.string().trim().optional().default(""),
+    verifiedDate: z.string().trim().optional().default(""),
+    notes: z.string().trim().optional().default(""),
+  });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid yield payload." });
+
+  const result = await db.query(
+    `
+    UPDATE pricebook_yields
+    SET
+      product_name = $1,
+      source_ingredient = $2,
+      purchase_unit = $3,
+      source_per_price = $4,
+      yield_unit = $5,
+      yield_value = $6,
+      price_per_yield_unit = $7,
+      key_value = $8,
+      verified_by = $9,
+      verified_date = $10,
+      notes = $11
+    WHERE id = $12
+    `,
+    [
+      parsed.data.productName,
+      parsed.data.sourceIngredient,
+      parsed.data.purchaseUnit,
+      parsed.data.sourcePerPrice ?? null,
+      parsed.data.yieldUnit,
+      parsed.data.yieldValue ?? null,
+      parsed.data.pricePerYieldUnit ?? null,
+      parsed.data.key,
+      parsed.data.verifiedBy,
+      parsed.data.verifiedDate,
+      parsed.data.notes,
+      id,
+    ]
+  );
+  if (!result.rowCount) return res.status(404).json({ error: "Yield not found." });
+  return res.status(204).send();
+});
+
 app.get("/api/recipe-builder/options", async (req, res) => {
   const recipeId = Number(req.query.recipeId || 0);
   const [itemsResult, recipesResult] = await Promise.all([
@@ -920,6 +1077,7 @@ app.get("/api/recipe-builder/options", async (req, res) => {
         i.name,
         v.name AS vendor_name,
         i.area_type,
+        i.measure_type,
         s.size_label,
         s.size_amount,
         s.size_unit,
@@ -937,11 +1095,12 @@ app.get("/api/recipe-builder/options", async (req, res) => {
     name: row.name,
     vendorName: row.vendor_name,
     areaType: row.area_type,
+    measureType: row.measure_type || "FLUID",
     trackedSizeLabel: row.size_label,
     trackedSizeAmount:
       row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
     trackedSizeUnit: row.size_unit || null,
-    trackedUnitCost: row.unit_cost === null ? null : Number(row.unit_cost),
+    trackedUnitCost: row.unit_cost === null ? null : roundTo(row.unit_cost, 4),
   }));
 
   const recipes = recipesResult.rows
@@ -1136,6 +1295,9 @@ app.get("/areas", (_req, res) => res.sendFile(path.join(__dirname, "public", "ar
 app.get("/counts", (_req, res) => res.sendFile(path.join(__dirname, "public", "counts.html")));
 app.get("/reorder", (_req, res) => res.sendFile(path.join(__dirname, "public", "reorder.html")));
 app.get("/par-levels", (_req, res) => res.sendFile(path.join(__dirname, "public", "par-levels.html")));
+app.get("/admin-reference", (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "admin-reference.html"))
+);
 app.get("/recipe-builder", (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "recipe-builder.html"))
 );
