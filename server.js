@@ -1470,6 +1470,57 @@ app.post("/api/recipe-builder/import", async (req, res) => {
 
   try {
     const result = await db.transaction(async (tx) => {
+      const sourceRecipeRows = await tx.query(`
+        SELECT recipe_name, recipe_type, status, batch_yield_qty, batch_yield_unit
+        FROM pricebook_recipes
+      `);
+      const sourceRecipeByNormalizedName = new Map();
+      for (const row of sourceRecipeRows.rows) {
+        const key = normalizeLookupName(row.recipe_name);
+        if (key && !sourceRecipeByNormalizedName.has(key)) {
+          sourceRecipeByNormalizedName.set(key, row);
+        }
+      }
+
+      const builderRecipeRows = await tx.query("SELECT id, name FROM recipe_builder_recipes");
+      const builderRecipeByNormalizedName = new Map();
+      for (const row of builderRecipeRows.rows) {
+        const key = normalizeLookupName(row.name);
+        if (key && !builderRecipeByNormalizedName.has(key)) {
+          builderRecipeByNormalizedName.set(key, Number(row.id));
+        }
+      }
+
+      async function getOrCreateRecipeReferenceId(refRecipeName) {
+        const normalized = normalizeLookupName(refRecipeName);
+        if (!normalized) return null;
+        if (normalized === normalizeLookupName(recipeName)) return null; // no self-reference
+
+        if (builderRecipeByNormalizedName.has(normalized)) {
+          return builderRecipeByNormalizedName.get(normalized);
+        }
+
+        if (!sourceRecipeByNormalizedName.has(normalized)) return null;
+        const src = sourceRecipeByNormalizedName.get(normalized);
+        const inserted = await tx.query(
+          `
+          INSERT INTO recipe_builder_recipes (name, category, status, yield_qty, yield_unit, notes, updated_at)
+          VALUES ($1, $2, $3, $4, $5, '', CURRENT_TIMESTAMP)
+          RETURNING id
+          `,
+          [
+            src.recipe_name,
+            src.recipe_type || "General",
+            src.status || "Draft",
+            src.batch_yield_qty ?? null,
+            src.batch_yield_unit ?? null,
+          ]
+        );
+        const newId = Number(inserted.rows[0].id);
+        builderRecipeByNormalizedName.set(normalized, newId);
+        return newId;
+      }
+
       const itemRows = await tx.query("SELECT id, name FROM items");
       const itemsByNormalizedName = new Map();
       const normalizedItemEntries = [];
@@ -1560,12 +1611,19 @@ app.post("/api/recipe-builder/import", async (req, res) => {
 
       let order = 1;
       let matchedItems = 0;
+      let matchedRecipeRefs = 0;
       let unmatchedItems = 0;
       for (const line of sourceLines.rows) {
         const ingredientName = String(line.ingredient_name || "").trim();
         const ingredientItemId = ingredientName ? findItemIdForIngredient(ingredientName) : null;
+        const ingredientRecipeId =
+          !ingredientItemId && ingredientName
+            ? await getOrCreateRecipeReferenceId(ingredientName)
+            : null;
+        const lineType = ingredientRecipeId ? "RECIPE" : "INGREDIENT";
         if (ingredientName) {
           if (ingredientItemId) matchedItems += 1;
+          else if (ingredientRecipeId) matchedRecipeRefs += 1;
           else unmatchedItems += 1;
         }
 
@@ -1577,21 +1635,37 @@ app.post("/api/recipe-builder/import", async (req, res) => {
           `
           INSERT INTO recipe_builder_lines
           (recipe_id, sort_order, line_type, ingredient_item_id, ingredient_recipe_id, quantity, unit, direction_text, cook_temperature, cook_temperature_unit, time_value, time_unit, notes)
-          VALUES ($1, $2, 'INGREDIENT', $3, NULL, $4, $5, NULL, NULL, NULL, NULL, NULL, $6)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, NULL, NULL, NULL, NULL, NULL, $8)
           `,
-          [recipeId, order, ingredientItemId, line.qty ?? null, line.unit ?? null, lineNotes || null]
+          [
+            recipeId,
+            order,
+            lineType,
+            ingredientItemId,
+            ingredientRecipeId,
+            line.qty ?? null,
+            line.unit ?? null,
+            lineNotes || null,
+          ]
         );
         order += 1;
       }
 
       await tx.query("UPDATE recipe_builder_recipes SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [recipeId]);
-      return { recipeId, matchedItems, unmatchedItems, totalLines: sourceLines.rows.length };
+      return {
+        recipeId,
+        matchedItems,
+        matchedRecipeRefs,
+        unmatchedItems,
+        totalLines: sourceLines.rows.length,
+      };
     });
 
     return res.json({
       id: result.recipeId,
       recipeName,
       matchedItems: result.matchedItems,
+      matchedRecipeRefs: result.matchedRecipeRefs,
       unmatchedItems: result.unmatchedItems,
       totalLines: result.totalLines,
     });
