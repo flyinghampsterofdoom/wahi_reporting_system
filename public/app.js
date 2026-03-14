@@ -1408,7 +1408,7 @@ async function initAdminReferencePage() {
     conversionsContainer.innerHTML = `
       <div class="table-scroll">
       <table>
-        <thead><tr><th>Unit</th><th>Type</th><th>Base Definition (1 Unit = ?)</th><th>Action</th></tr></thead>
+        <thead><tr><th>Unit</th><th>Type</th><th>Base Definition (1 Unit = ?)</th><th>Action</th><th>Remove</th></tr></thead>
         <tbody>
           ${rows
             .map(
@@ -1425,6 +1425,7 @@ async function initAdminReferencePage() {
                 </div>
               </td>
               <td><button type="button" class="secondary mini-btn ad-conv-save">Save</button></td>
+              <td><button type="button" class="secondary mini-btn ad-conv-delete">Delete</button></td>
             </tr>
           `
             )
@@ -1453,6 +1454,20 @@ async function initAdminReferencePage() {
           });
           baseUnitInput.value = baseUnitValue;
           showToast("Conversion saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+
+    conversionsContainer.querySelectorAll(".ad-conv-delete").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const id = Number(tr.dataset.convId);
+        try {
+          await api(`/api/admin/conversions/${id}`, { method: "DELETE" });
+          await loadConversions();
+          showToast("Conversion deleted.");
         } catch (error) {
           showToast(error.message, true);
         }
@@ -1554,6 +1569,110 @@ async function initAdminReferencePage() {
   await Promise.all([loadConversions(), loadYields()]);
 }
 
+async function initRecipeBooksPage() {
+  const tableContainer = byId("recipe-book-table");
+  const title = byId("recipe-book-title");
+  const refresh = byId("recipe-book-refresh");
+  const prep = byId("recipe-book-prep");
+  const final = byId("recipe-book-final");
+  const syrup = byId("recipe-book-syrup");
+  const drinks = byId("recipe-book-drinks");
+  if (!tableContainer || !title || !refresh || !prep || !final || !syrup || !drinks) return;
+
+  let activeBook = "Prep";
+
+  function setBook(book) {
+    activeBook = book;
+    title.textContent = `${book} Recipes`;
+    setAreaToggleState(book, [
+      { area: "Prep", button: prep },
+      { area: "Final", button: final },
+      { area: "Syrup", button: syrup },
+      { area: "Drinks", button: drinks },
+    ]);
+  }
+
+  async function loadBook() {
+    const rows = await api(`/api/recipe-books?book=${encodeURIComponent(activeBook)}`);
+    if (!rows.length) {
+      tableContainer.innerHTML = `<p>No recipes in ${activeBook}.</p>`;
+      return;
+    }
+
+    tableContainer.innerHTML = `
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Recipe</th>
+            <th>Cost</th>
+            <th>Retail Price</th>
+            <th>Margin %</th>
+            <th>Profit</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (row) => `
+            <tr data-recipe-name="${encodeURIComponent(row.recipeName)}">
+              <td>${row.recipeName}</td>
+              <td>$${Number(row.cost ?? 0).toFixed(2)}</td>
+              <td><input type="number" min="0" step="0.01" class="rb-retail" value="${row.retailPrice ?? ""}" /></td>
+              <td>${row.marginPercent === null ? "n/a" : `${Number(row.marginPercent).toFixed(2)}%`}</td>
+              <td>${row.profit === null ? "n/a" : `$${Number(row.profit).toFixed(2)}`}</td>
+              <td><button type="button" class="secondary mini-btn rb-save-retail">Save</button></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+      </div>
+    `;
+
+    tableContainer.querySelectorAll(".rb-save-retail").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const recipeName = decodeURIComponent(tr.dataset.recipeName);
+        const retailPrice = parseNullableNumber(tr.querySelector(".rb-retail").value);
+        try {
+          await api(`/api/recipe-books/${encodeURIComponent(activeBook)}/${encodeURIComponent(recipeName)}/retail`, {
+            method: "PUT",
+            body: JSON.stringify({ retailPrice }),
+          });
+          await loadBook();
+          showToast("Retail price saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
+  prep.addEventListener("click", () => {
+    setBook("Prep");
+    loadBook().catch((e) => showToast(e.message, true));
+  });
+  final.addEventListener("click", () => {
+    setBook("Final");
+    loadBook().catch((e) => showToast(e.message, true));
+  });
+  syrup.addEventListener("click", () => {
+    setBook("Syrup");
+    loadBook().catch((e) => showToast(e.message, true));
+  });
+  drinks.addEventListener("click", () => {
+    setBook("Drinks");
+    loadBook().catch((e) => showToast(e.message, true));
+  });
+  refresh.addEventListener("click", () => loadBook().catch((e) => showToast(e.message, true)));
+
+  setBook("Prep");
+  await loadBook();
+}
+
 async function init() {
   await initVendorPage();
   await initAddItemPage();
@@ -1564,6 +1683,7 @@ async function init() {
   await initReorderPage();
   await initRecipeBuilderPage();
   await initAdminReferencePage();
+  await initRecipeBooksPage();
 }
 
 init().catch((error) => showToast(error.message, true));

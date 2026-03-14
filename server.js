@@ -1024,6 +1024,13 @@ app.put("/api/admin/conversions/:id", async (req, res) => {
   return res.status(204).send();
 });
 
+app.delete("/api/admin/conversions/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid conversion id." });
+  await db.query("DELETE FROM pricebook_conversions WHERE id = $1", [id]);
+  return res.status(204).send();
+});
+
 app.get("/api/admin/yields", async (_req, res) => {
   const { rows } = await db.query(`
     SELECT
@@ -1114,6 +1121,119 @@ app.put("/api/admin/yields/:id", async (req, res) => {
     ]
   );
   if (!result.rowCount) return res.status(404).json({ error: "Yield not found." });
+  return res.status(204).send();
+});
+
+const recipeBookQuerySchema = z.object({
+  book: z.enum(["Prep", "Final", "Syrup", "Drinks"]),
+});
+
+app.get("/api/recipe-books", async (req, res) => {
+  const parsed = recipeBookQuerySchema.safeParse(req.query);
+  if (!parsed.success) return res.status(400).json({ error: "Provide book as Prep, Final, Syrup, or Drinks." });
+  const { book } = parsed.data;
+
+  const rows = await db.transaction(async (tx) => {
+    const baseLines = await tx.query(`
+      SELECT recipe_name, COALESCE(SUM(line_cost), 0) AS line_cost_total
+      FROM pricebook_recipe_lines
+      GROUP BY recipe_name
+    `);
+    const lineCostMap = new Map(
+      baseLines.rows.map((row) => [row.recipe_name, row.line_cost_total === null ? 0 : Number(row.line_cost_total)])
+    );
+
+    let query = "";
+    if (book === "Drinks") {
+      query = `
+        SELECT r.recipe_name, r.batch_cost, d.actual_price AS catalog_price
+        FROM pricebook_recipes r
+        JOIN pricebook_drink_catalog d ON d.recipe_name = r.recipe_name
+        ORDER BY r.recipe_name
+      `;
+    } else if (book === "Final") {
+      query = `
+        SELECT r.recipe_name, r.batch_cost, f.actual_price AS catalog_price
+        FROM pricebook_recipes r
+        JOIN pricebook_food_catalog f ON f.recipe_name = r.recipe_name
+        ORDER BY r.recipe_name
+      `;
+    } else if (book === "Syrup") {
+      query = `
+        SELECT r.recipe_name, r.batch_cost, s.price_per_oz AS catalog_price
+        FROM pricebook_recipes r
+        JOIN pricebook_syrup_catalog s ON s.syrup_name = r.recipe_name
+        ORDER BY r.recipe_name
+      `;
+    } else {
+      query = `
+        SELECT r.recipe_name, r.batch_cost, NULL AS catalog_price
+        FROM pricebook_recipes r
+        LEFT JOIN pricebook_drink_catalog d ON d.recipe_name = r.recipe_name
+        LEFT JOIN pricebook_food_catalog f ON f.recipe_name = r.recipe_name
+        LEFT JOIN pricebook_syrup_catalog s ON s.syrup_name = r.recipe_name
+        WHERE d.id IS NULL AND f.id IS NULL AND s.id IS NULL
+        ORDER BY r.recipe_name
+      `;
+    }
+
+    const recipes = await tx.query(query);
+    const overrides = await tx.query(
+      "SELECT recipe_name, retail_price FROM recipe_book_pricing WHERE book_type = $1",
+      [book]
+    );
+    const overrideMap = new Map(overrides.rows.map((row) => [row.recipe_name, row.retail_price]));
+
+    return recipes.rows.map((row) => {
+      const lineCost = lineCostMap.get(row.recipe_name) ?? 0;
+      const costFromBatch = row.batch_cost === null || row.batch_cost === undefined ? null : Number(row.batch_cost);
+      const cost = roundTo(lineCost > 0 ? lineCost : costFromBatch ?? 0, 4);
+      const retailPriceRaw =
+        overrideMap.has(row.recipe_name) && overrideMap.get(row.recipe_name) !== null
+          ? Number(overrideMap.get(row.recipe_name))
+          : row.catalog_price === null || row.catalog_price === undefined
+            ? null
+            : Number(row.catalog_price);
+      const retailPrice = roundTo(retailPriceRaw, 2);
+      const profit = retailPrice === null ? null : roundTo(retailPrice - cost, 2);
+      const margin = retailPrice && retailPrice > 0 ? roundTo(((retailPrice - cost) / retailPrice) * 100, 2) : null;
+      return {
+        recipeName: row.recipe_name,
+        book,
+        cost,
+        retailPrice,
+        marginPercent: margin,
+        profit,
+      };
+    });
+  });
+
+  res.json(rows);
+});
+
+app.put("/api/recipe-books/:book/:recipeName/retail", async (req, res) => {
+  const book = String(req.params.book || "");
+  if (!["Prep", "Final", "Syrup", "Drinks"].includes(book)) {
+    return res.status(400).json({ error: "Invalid recipe book." });
+  }
+  const recipeName = decodeURIComponent(String(req.params.recipeName || "")).trim();
+  if (!recipeName) return res.status(400).json({ error: "Invalid recipe name." });
+
+  const parsed = z
+    .object({ retailPrice: z.number().nonnegative().nullable().optional() })
+    .safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid retail payload." });
+
+  await db.query(
+    `
+    INSERT INTO recipe_book_pricing (book_type, recipe_name, retail_price, updated_at)
+    VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+    ON CONFLICT(book_type, recipe_name)
+    DO UPDATE SET retail_price = excluded.retail_price, updated_at = CURRENT_TIMESTAMP
+    `,
+    [book, recipeName, parsed.data.retailPrice ?? null]
+  );
+
   return res.status(204).send();
 });
 
@@ -1344,6 +1464,9 @@ app.get("/areas", (_req, res) => res.sendFile(path.join(__dirname, "public", "ar
 app.get("/counts", (_req, res) => res.sendFile(path.join(__dirname, "public", "counts.html")));
 app.get("/reorder", (_req, res) => res.sendFile(path.join(__dirname, "public", "reorder.html")));
 app.get("/par-levels", (_req, res) => res.sendFile(path.join(__dirname, "public", "par-levels.html")));
+app.get("/recipe-books", (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "recipe-books.html"))
+);
 app.get("/admin-reference", (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "admin-reference.html"))
 );

@@ -272,6 +272,15 @@ class SqliteClient {
         FOREIGN KEY(ingredient_item_id) REFERENCES items(id) ON DELETE SET NULL,
         FOREIGN KEY(ingredient_recipe_id) REFERENCES recipe_builder_recipes(id) ON DELETE SET NULL
       );
+
+      CREATE TABLE IF NOT EXISTS recipe_book_pricing (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        book_type TEXT NOT NULL CHECK(book_type IN ('Prep', 'Final', 'Syrup', 'Drinks')),
+        recipe_name TEXT NOT NULL,
+        retail_price REAL,
+        updated_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        UNIQUE(book_type, recipe_name)
+      );
     `);
 
     this.db.exec(`
@@ -726,6 +735,17 @@ class PostgresClient {
         time_unit TEXT,
         notes TEXT,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await this.query(`
+      CREATE TABLE IF NOT EXISTS recipe_book_pricing (
+        id BIGSERIAL PRIMARY KEY,
+        book_type TEXT NOT NULL CHECK(book_type IN ('Prep', 'Final', 'Syrup', 'Drinks')),
+        recipe_name TEXT NOT NULL,
+        retail_price DOUBLE PRECISION,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(book_type, recipe_name)
       )
     `);
 

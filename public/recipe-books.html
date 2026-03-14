@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Books | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Recipe Books</h1>
+          <p>Select a book and manage recipe pricing metrics.</p>
+        </div>
+        <a class="button-link" href="/">Back to Home</a>
+      </header>
+
+      <section class="card">
+        <div class="line">
+          <button id="recipe-book-prep" class="secondary mini-btn">Prep</button>
+          <button id="recipe-book-final" class="secondary mini-btn">Final</button>
+          <button id="recipe-book-syrup" class="secondary mini-btn">Syrup</button>
+          <button id="recipe-book-drinks" class="secondary mini-btn">Drinks</button>
+          <button id="recipe-book-refresh" class="secondary mini-btn">Refresh</button>
+        </div>
+        <h2 id="recipe-book-title">Prep Recipes</h2>
+        <div id="recipe-book-table"></div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
