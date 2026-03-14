@@ -282,6 +282,10 @@ body.modal-open {
   padding: 1rem;
 }
 
+.modal-shell[hidden] {
+  display: none !important;
+}
+
 .modal-card {
   width: min(960px, 96vw);
   max-height: 92vh;
