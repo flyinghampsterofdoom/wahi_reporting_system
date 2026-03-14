@@ -157,6 +157,42 @@ function normalizeLookupName(value) {
     .replace(/\s+/g, " ");
 }
 
+function normalizeRecipeUnit(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ");
+}
+
+function recipeUnitCategory(value) {
+  const unit = normalizeRecipeUnit(value);
+  if (!unit) return "OTHER";
+
+  const volumeUnits = new Set(["ml", "l", "fl oz", "floz", "oz", "qt", "gal", "cup", "tbsp", "tsp", "pt", "pint"]);
+  const weightUnits = new Set(["g", "kg", "oz wt", "lb", "lbs"]);
+  const eachUnits = new Set(["ea", "each", "x", "count"]);
+
+  if (volumeUnits.has(unit)) return "VOLUME";
+  if (weightUnits.has(unit)) return "WEIGHT";
+  if (eachUnits.has(unit)) return "EACH";
+  return "OTHER";
+}
+
+function resolveRecipeReferenceUnit(sourceUnit, recipeYieldUnit) {
+  const rawSourceUnit = String(sourceUnit || "").trim();
+  const rawYieldUnit = String(recipeYieldUnit || "").trim();
+  if (!rawSourceUnit) return rawYieldUnit || "x";
+  if (!rawYieldUnit) return rawSourceUnit;
+
+  const sourceCategory = recipeUnitCategory(rawSourceUnit);
+  const yieldCategory = recipeUnitCategory(rawYieldUnit);
+  if (sourceCategory !== "OTHER" && yieldCategory !== "OTHER" && sourceCategory !== yieldCategory) {
+    return rawYieldUnit;
+  }
+  return rawSourceUnit;
+}
+
 function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
   if (purchaseCost === null || purchaseCost === undefined) return sizes;
   const tracked = sizes.find((size) => size.isTracked);
@@ -1482,16 +1518,19 @@ app.post("/api/recipe-builder/import", async (req, res) => {
         }
       }
 
-      const builderRecipeRows = await tx.query("SELECT id, name FROM recipe_builder_recipes");
+      const builderRecipeRows = await tx.query("SELECT id, name, yield_unit FROM recipe_builder_recipes");
       const builderRecipeByNormalizedName = new Map();
       for (const row of builderRecipeRows.rows) {
         const key = normalizeLookupName(row.name);
         if (key && !builderRecipeByNormalizedName.has(key)) {
-          builderRecipeByNormalizedName.set(key, Number(row.id));
+          builderRecipeByNormalizedName.set(key, {
+            id: Number(row.id),
+            yieldUnit: row.yield_unit || null,
+          });
         }
       }
 
-      async function getOrCreateRecipeReferenceId(refRecipeName) {
+      async function getOrCreateRecipeReference(refRecipeName) {
         const normalized = normalizeLookupName(refRecipeName);
         if (!normalized) return null;
         if (normalized === normalizeLookupName(recipeName)) return null; // no self-reference
@@ -1516,9 +1555,12 @@ app.post("/api/recipe-builder/import", async (req, res) => {
             src.batch_yield_unit ?? null,
           ]
         );
-        const newId = Number(inserted.rows[0].id);
-        builderRecipeByNormalizedName.set(normalized, newId);
-        return newId;
+        const created = {
+          id: Number(inserted.rows[0].id),
+          yieldUnit: src.batch_yield_unit || null,
+        };
+        builderRecipeByNormalizedName.set(normalized, created);
+        return created;
       }
 
       const itemRows = await tx.query("SELECT id, name FROM items");
@@ -1564,6 +1606,19 @@ app.post("/api/recipe-builder/import", async (req, res) => {
         if (uniqueIds.length === 1) return uniqueIds[0];
 
         return null;
+      }
+
+      async function findRecipeReferenceForIngredient(ingredientName) {
+        const normalized = normalizeLookupName(ingredientName);
+        if (!normalized) return null;
+
+        const direct = await getOrCreateRecipeReference(ingredientName);
+        if (direct) return direct;
+
+        const withoutParens = ingredientName.replace(/\([^)]*\)/g, " ");
+        const stripped = normalizeLookupName(withoutParens);
+        if (!stripped || stripped === normalized) return null;
+        return getOrCreateRecipeReference(stripped);
       }
 
       const existing = await tx.query("SELECT id FROM recipe_builder_recipes WHERE name = $1", [recipeName]);
@@ -1615,12 +1670,17 @@ app.post("/api/recipe-builder/import", async (req, res) => {
       let unmatchedItems = 0;
       for (const line of sourceLines.rows) {
         const ingredientName = String(line.ingredient_name || "").trim();
-        const ingredientItemId = ingredientName ? findItemIdForIngredient(ingredientName) : null;
-        const ingredientRecipeId =
-          !ingredientItemId && ingredientName
-            ? await getOrCreateRecipeReferenceId(ingredientName)
-            : null;
+        const matchedRecipe = ingredientName
+          ? await findRecipeReferenceForIngredient(ingredientName)
+          : null;
+        const ingredientRecipeId = matchedRecipe ? matchedRecipe.id : null;
+        const ingredientItemId =
+          ingredientRecipeId || !ingredientName ? null : findItemIdForIngredient(ingredientName);
         const lineType = ingredientRecipeId ? "RECIPE" : "INGREDIENT";
+        const normalizedUnit =
+          lineType === "RECIPE"
+            ? resolveRecipeReferenceUnit(line.unit ?? null, matchedRecipe?.yieldUnit ?? null)
+            : line.unit ?? null;
         if (ingredientName) {
           if (ingredientItemId) matchedItems += 1;
           else if (ingredientRecipeId) matchedRecipeRefs += 1;
@@ -1644,7 +1704,7 @@ app.post("/api/recipe-builder/import", async (req, res) => {
             ingredientItemId,
             ingredientRecipeId,
             line.qty ?? null,
-            line.unit ?? null,
+            normalizedUnit,
             lineNotes || null,
           ]
         );
