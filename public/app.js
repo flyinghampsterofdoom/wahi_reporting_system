@@ -80,10 +80,16 @@ function collectSizesFrom(container) {
 
 async function initAddItemPage() {
   const vendorForm = byId("vendor-form");
-  if (!vendorForm) return;
+  const itemForm = byId("item-form");
+  if (!vendorForm && !itemForm) return;
 
   const vendorNameInput = byId("vendor-name");
-  const itemForm = byId("item-form");
+  const vendorAddressInput = byId("vendor-address");
+  const vendorEmailInput = byId("vendor-email");
+  const vendorCorporateNumberInput = byId("vendor-corporate-number");
+  const vendorRepresentativeNameInput = byId("vendor-representative-name");
+  const vendorRepresentativePhoneInput = byId("vendor-representative-phone");
+  const vendorRepresentativeEmailInput = byId("vendor-representative-email");
   const itemNameInput = byId("item-name");
   const itemVendorSelect = byId("item-vendor");
   const itemCaseSizeInput = byId("item-case-size");
@@ -92,6 +98,7 @@ async function initAddItemPage() {
   const addSizeRowButton = byId("add-size-row");
 
   async function loadVendors() {
+    if (!itemVendorSelect) return;
     const vendors = await api("/api/vendors");
     if (!vendors.length) {
       itemVendorSelect.innerHTML = `<option value="">Add a vendor first</option>`;
@@ -103,59 +110,70 @@ async function initAddItemPage() {
     itemVendorSelect.innerHTML = vendors.map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
   }
 
-  vendorForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    try {
-      await api("/api/vendors", {
-        method: "POST",
-        body: JSON.stringify({ name: vendorNameInput.value.trim() }),
-      });
-      vendorNameInput.value = "";
-      await loadVendors();
-      showToast("Vendor added and saved.");
-      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
-    } catch (error) {
-      showToast(error.message, true);
-    }
-  });
-
-  itemForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    try {
-      if (itemVendorSelect.disabled) {
-        showToast("Add a vendor first.", true);
-        return;
+  if (vendorForm) {
+    vendorForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        await api("/api/vendors", {
+          method: "POST",
+          body: JSON.stringify({
+            name: vendorNameInput.value.trim(),
+            address: vendorAddressInput?.value?.trim() || "",
+            email: vendorEmailInput?.value?.trim() || "",
+            corporateNumber: vendorCorporateNumberInput?.value?.trim() || "",
+            representativeName: vendorRepresentativeNameInput?.value?.trim() || "",
+            representativePhone: vendorRepresentativePhoneInput?.value?.trim() || "",
+            representativeEmail: vendorRepresentativeEmailInput?.value?.trim() || "",
+          }),
+        });
+        vendorForm.reset();
+        await loadVendors();
+        showToast("Vendor added and saved.");
+        window.dispatchEvent(new CustomEvent("catalog-data-changed"));
+      } catch (error) {
+        showToast(error.message, true);
       }
+    });
+  }
 
-      await api("/api/items", {
-        method: "POST",
-        body: JSON.stringify({
-          name: itemNameInput.value.trim(),
-          vendorId: Number(itemVendorSelect.value),
-          caseSize: Number(itemCaseSizeInput.value),
-          areaType: itemAreaTypeSelect.value,
-          sizes: collectSizesFrom(sizeRowsContainer),
-        }),
-      });
+  if (itemForm) {
+    itemForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        if (itemVendorSelect.disabled) {
+          showToast("Add a vendor first.", true);
+          return;
+        }
 
-      itemNameInput.value = "";
-      itemCaseSizeInput.value = 12;
-      itemAreaTypeSelect.value = "FOH";
-      sizeRowsContainer.innerHTML = "";
-      addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-      addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
-      showToast("Item created and saved.");
-      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
-    } catch (error) {
-      showToast(error.message, true);
-    }
-  });
+        await api("/api/items", {
+          method: "POST",
+          body: JSON.stringify({
+            name: itemNameInput.value.trim(),
+            vendorId: Number(itemVendorSelect.value),
+            caseSize: Number(itemCaseSizeInput.value),
+            areaType: itemAreaTypeSelect.value,
+            sizes: collectSizesFrom(sizeRowsContainer),
+          }),
+        });
 
-  addSizeRowButton.addEventListener("click", () => addSizeRow(sizeRowsContainer));
+        itemNameInput.value = "";
+        itemCaseSizeInput.value = 12;
+        itemAreaTypeSelect.value = "FOH";
+        sizeRowsContainer.innerHTML = "";
+        addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
+        addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+        showToast("Item created and saved.");
+        window.dispatchEvent(new CustomEvent("catalog-data-changed"));
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
 
-  addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
-  addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
-  await loadVendors();
+    addSizeRowButton.addEventListener("click", () => addSizeRow(sizeRowsContainer));
+    addSizeRow(sizeRowsContainer, { sizeLabel: "1L", volumeMl: 1000, isTracked: true });
+    addSizeRow(sizeRowsContainer, { sizeLabel: "750ml", volumeMl: 750, isTracked: false });
+    await loadVendors();
+  }
 }
 
 async function initItemCatalogPage() {
@@ -169,9 +187,7 @@ async function initItemCatalogPage() {
   const filterNameInput = byId("catalog-filter-name");
   const refreshButton = byId("refresh-catalog");
   const openAddItemButton = byId("open-add-item");
-  const openAddVendorButton = byId("open-add-vendor");
   const addItemSection = byId("add-item-section");
-  const addVendorSection = byId("add-vendor-section");
   const editSection = byId("edit-item-section");
   const editForm = byId("edit-item-form");
   const cancelEditButton = byId("cancel-edit");
@@ -347,17 +363,7 @@ async function initItemCatalogPage() {
     openAddItemButton.addEventListener("click", () => {
       addItemSection.hidden = !addItemSection.hidden;
       if (!addItemSection.hidden) {
-        if (addVendorSection) addVendorSection.hidden = true;
         addItemSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-  }
-  if (openAddVendorButton && addVendorSection) {
-    openAddVendorButton.addEventListener("click", () => {
-      addVendorSection.hidden = !addVendorSection.hidden;
-      if (!addVendorSection.hidden) {
-        if (addItemSection) addItemSection.hidden = true;
-        addVendorSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
   }

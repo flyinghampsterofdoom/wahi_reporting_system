@@ -101,6 +101,9 @@ button {
   padding: 0.42rem 0.72rem;
   font-size: 0.92rem;
   line-height: 1.2;
+  width: auto;
+  max-width: 100%;
+  align-self: start;
   cursor: pointer;
 }
 
@@ -120,6 +123,8 @@ button:hover {
   color: #fff;
   padding: 0.42rem 0.72rem;
   font-size: 0.92rem;
+  width: auto;
+  align-self: start;
 }
 
 .button-link:hover {

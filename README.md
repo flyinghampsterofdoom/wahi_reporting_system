@@ -5,6 +5,11 @@ Web-based inventory and ordering starter system for a bar.
 ## What this includes
 
 - Vendor setup
+  - Name
+  - Address
+  - Email
+  - Corporate number
+  - Representative name/phone/email
 - Liquor item setup with:
   - Item name
   - FOH/BOH classification
@@ -36,9 +41,10 @@ Then open [http://localhost:3000](http://localhost:3000).
 ## App navigation
 
 - `/` landing page
-- `/add-item` add vendors + items
-- `/item-catalog` item list, sorting, and editing
-- `/catalog` legacy alias to Add Item
+- `/add-item` legacy alias redirects to Item Catalog
+- `/item-catalog` item list, sorting, editing, and inline Add Item
+- `/add-vendor` vendor profile setup
+- `/catalog` legacy alias redirects to Item Catalog
 - `/par-levels` FOH/BOH par and level setup
 - `/counts` daily count entry
 - `/reorder` reorder suggestions

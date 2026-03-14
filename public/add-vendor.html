@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Vendor | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Add Vendor</h1>
+          <p>Create vendor records for ordering and future SMTP PO delivery.</p>
+        </div>
+        <a class="button-link" href="/item-catalog">Back to Item Catalog</a>
+      </header>
+
+      <section class="card">
+        <form id="vendor-form" class="stack">
+          <label>
+            Vendor Name
+            <input type="text" id="vendor-name" required />
+          </label>
+          <label>
+            Address
+            <input type="text" id="vendor-address" />
+          </label>
+          <label>
+            Email Address
+            <input type="email" id="vendor-email" />
+          </label>
+          <label>
+            Corporate Number
+            <input type="text" id="vendor-corporate-number" />
+          </label>
+          <label>
+            Representative Name
+            <input type="text" id="vendor-representative-name" />
+          </label>
+          <label>
+            Rep. Phone
+            <input type="text" id="vendor-representative-phone" />
+          </label>
+          <label>
+            Rep. Email
+            <input type="email" id="vendor-representative-email" />
+          </label>
+
+          <button type="submit">Save Vendor</button>
+        </form>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

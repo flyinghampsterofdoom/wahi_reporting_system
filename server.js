@@ -11,6 +11,18 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const vendorSchema = z.object({
   name: z.string().trim().min(1),
+  address: z.string().trim().optional().default(""),
+  email: z.string().trim().email().or(z.literal("")).optional().default(""),
+  corporateNumber: z.string().trim().optional().default(""),
+  representativeName: z.string().trim().optional().default(""),
+  representativePhone: z.string().trim().optional().default(""),
+  representativeEmail: z
+    .string()
+    .trim()
+    .email()
+    .or(z.literal(""))
+    .optional()
+    .default(""),
 });
 
 const itemSchema = z.object({
@@ -79,8 +91,22 @@ app.post("/api/vendors", (req, res) => {
 
   try {
     const result = db
-      .prepare("INSERT INTO vendors (name) VALUES (?)")
-      .run(parsed.data.name);
+      .prepare(
+        `
+        INSERT INTO vendors
+        (name, address, email, corporate_number, representative_name, representative_phone, representative_email)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        `
+      )
+      .run(
+        parsed.data.name,
+        parsed.data.address,
+        parsed.data.email,
+        parsed.data.corporateNumber,
+        parsed.data.representativeName,
+        parsed.data.representativePhone,
+        parsed.data.representativeEmail
+      );
     res.status(201).json({ id: result.lastInsertRowid, name: parsed.data.name });
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
@@ -490,15 +516,19 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/catalog", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "catalog.html"));
+  res.redirect("/item-catalog");
 });
 
 app.get("/add-item", (_req, res) => {
-  res.sendFile(path.join(__dirname, "public", "catalog.html"));
+  res.redirect("/item-catalog");
 });
 
 app.get("/item-catalog", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "item-catalog.html"));
+});
+
+app.get("/add-vendor", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "add-vendor.html"));
 });
 
 app.get("/counts", (_req, res) => {

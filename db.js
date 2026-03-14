@@ -12,6 +12,12 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS vendors (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
+    address TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    corporate_number TEXT NOT NULL DEFAULT '',
+    representative_name TEXT NOT NULL DEFAULT '',
+    representative_phone TEXT NOT NULL DEFAULT '',
+    representative_email TEXT NOT NULL DEFAULT '',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -65,6 +71,27 @@ if (!hasAreaType) {
   db.exec(
     "ALTER TABLE items ADD COLUMN area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH'));"
   );
+}
+
+const vendorColumns = db.prepare("PRAGMA table_info(vendors)").all();
+const vendorColumnNames = new Set(vendorColumns.map((column) => column.name));
+if (!vendorColumnNames.has("address")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN address TEXT NOT NULL DEFAULT '';");
+}
+if (!vendorColumnNames.has("email")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN email TEXT NOT NULL DEFAULT '';");
+}
+if (!vendorColumnNames.has("corporate_number")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN corporate_number TEXT NOT NULL DEFAULT '';");
+}
+if (!vendorColumnNames.has("representative_name")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN representative_name TEXT NOT NULL DEFAULT '';");
+}
+if (!vendorColumnNames.has("representative_phone")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN representative_phone TEXT NOT NULL DEFAULT '';");
+}
+if (!vendorColumnNames.has("representative_email")) {
+  db.exec("ALTER TABLE vendors ADD COLUMN representative_email TEXT NOT NULL DEFAULT '';");
 }
 
 const itemSizeColumns = db.prepare("PRAGMA table_info(item_sizes)").all();
