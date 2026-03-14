@@ -149,6 +149,14 @@ function defaultBaseUnitForType(unitType) {
   return "";
 }
 
+function normalizeLookupName(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
 function applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, sizes) {
   if (purchaseCost === null || purchaseCost === undefined) return sizes;
   const tracked = sizes.find((size) => size.isTracked);
@@ -1462,6 +1470,51 @@ app.post("/api/recipe-builder/import", async (req, res) => {
 
   try {
     const result = await db.transaction(async (tx) => {
+      const itemRows = await tx.query("SELECT id, name FROM items");
+      const itemsByNormalizedName = new Map();
+      const normalizedItemEntries = [];
+      for (const row of itemRows.rows) {
+        const key = normalizeLookupName(row.name);
+        if (key && !itemsByNormalizedName.has(key)) {
+          itemsByNormalizedName.set(key, Number(row.id));
+        }
+        if (key) normalizedItemEntries.push({ key, id: Number(row.id) });
+      }
+
+      const sourceMapRows = await tx.query(`
+        SELECT pi.ingredient_name, i.id AS item_id
+        FROM pricebook_ingredients pi
+        JOIN items i
+          ON i.source_system = 'pricebook'
+         AND i.source_key = ('ingredient:' || pi.id)
+      `);
+      const itemsBySourceIngredient = new Map();
+      for (const row of sourceMapRows.rows) {
+        const key = normalizeLookupName(row.ingredient_name);
+        if (key && !itemsBySourceIngredient.has(key)) {
+          itemsBySourceIngredient.set(key, Number(row.item_id));
+        }
+      }
+
+      function findItemIdForIngredient(ingredientName) {
+        const normalized = normalizeLookupName(ingredientName);
+        if (!normalized) return null;
+
+        const direct =
+          itemsBySourceIngredient.get(normalized) ||
+          itemsByNormalizedName.get(normalized) ||
+          null;
+        if (direct) return direct;
+
+        const includesMatches = normalizedItemEntries.filter(
+          (entry) => entry.key.includes(normalized) || normalized.includes(entry.key)
+        );
+        const uniqueIds = [...new Set(includesMatches.map((m) => m.id))];
+        if (uniqueIds.length === 1) return uniqueIds[0];
+
+        return null;
+      }
+
       const existing = await tx.query("SELECT id FROM recipe_builder_recipes WHERE name = $1", [recipeName]);
       let recipeId;
       if (existing.rows.length) {
@@ -1506,15 +1559,14 @@ app.post("/api/recipe-builder/import", async (req, res) => {
       );
 
       let order = 1;
+      let matchedItems = 0;
+      let unmatchedItems = 0;
       for (const line of sourceLines.rows) {
         const ingredientName = String(line.ingredient_name || "").trim();
-        let ingredientItemId = null;
+        const ingredientItemId = ingredientName ? findItemIdForIngredient(ingredientName) : null;
         if (ingredientName) {
-          const item = await tx.query(
-            "SELECT id FROM items WHERE LOWER(name) = LOWER($1) ORDER BY id LIMIT 1",
-            [ingredientName]
-          );
-          if (item.rows.length) ingredientItemId = Number(item.rows[0].id);
+          if (ingredientItemId) matchedItems += 1;
+          else unmatchedItems += 1;
         }
 
         const lineNotes = [ingredientName ? `Source: ${ingredientName}` : null, line.notes || null, line.line_cost !== null && line.line_cost !== undefined ? `LineCost: ${line.line_cost}` : null]
@@ -1533,10 +1585,16 @@ app.post("/api/recipe-builder/import", async (req, res) => {
       }
 
       await tx.query("UPDATE recipe_builder_recipes SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [recipeId]);
-      return recipeId;
+      return { recipeId, matchedItems, unmatchedItems, totalLines: sourceLines.rows.length };
     });
 
-    return res.json({ id: result, recipeName });
+    return res.json({
+      id: result.recipeId,
+      recipeName,
+      matchedItems: result.matchedItems,
+      unmatchedItems: result.unmatchedItems,
+      totalLines: result.totalLines,
+    });
   } catch (error) {
     if (error.message === "RECIPE_NOT_FOUND") {
       return res.status(404).json({ error: "Recipe not found in imported recipe catalog." });
