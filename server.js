@@ -44,6 +44,12 @@ const adminCreateUserSchema = z.object({
   passwordConfirm: z.string().min(1),
 });
 
+const unmatchedSourceMapSchema = z.object({
+  source: z.string().trim().min(1),
+  itemId: z.number().int().positive().nullable().optional(),
+  createPlaceholder: z.boolean().optional().default(false),
+});
+
 const vendorSchema = z.object({
   name: z.string().trim().min(1),
   address: z.string().trim().optional().default(""),
@@ -781,6 +787,143 @@ async function ingredientYieldLineCost(tx, line, yieldCache = new Map()) {
   if (!pricedCandidates.length) return null;
   pricedCandidates.sort((a, b) => a.priority - b.priority);
   return pricedCandidates[0].cost;
+}
+
+async function getUnmatchedIngredientSources(tx) {
+  const [lineRowsRes, itemRowsRes, mappedIngredientRowsRes, yieldRowsRes] = await Promise.all([
+    tx.query(`
+      SELECT l.id, l.notes, l.quantity, l.unit, l.sort_order, r.name AS recipe_name, r.category
+      FROM recipe_builder_lines l
+      JOIN recipe_builder_recipes r ON r.id = l.recipe_id
+      WHERE l.line_type = 'INGREDIENT'
+        AND l.ingredient_item_id IS NULL
+        AND l.ingredient_recipe_id IS NULL
+        AND l.notes LIKE 'Source:%'
+      ORDER BY r.category, r.name, l.sort_order
+    `),
+    tx.query("SELECT id, name FROM items ORDER BY name"),
+    tx.query(`
+      SELECT pi.ingredient_name, i.id AS item_id
+      FROM pricebook_ingredients pi
+      JOIN items i ON i.source_system = 'pricebook' AND i.source_key = ('ingredient:' || pi.id)
+    `),
+    tx.query("SELECT product_name, source_ingredient FROM pricebook_yields"),
+  ]);
+
+  const itemByNormName = new Map();
+  const itemById = new Map();
+  for (const row of itemRowsRes.rows) {
+    const id = Number(row.id);
+    itemById.set(id, row.name);
+    const key = normalizeLookupName(row.name);
+    if (key && !itemByNormName.has(key)) itemByNormName.set(key, id);
+  }
+
+  const itemByNormPricebookIngredient = new Map();
+  for (const row of mappedIngredientRowsRes.rows) {
+    const key = normalizeLookupName(row.ingredient_name);
+    if (key && !itemByNormPricebookIngredient.has(key)) {
+      itemByNormPricebookIngredient.set(key, Number(row.item_id));
+    }
+  }
+
+  const sourceIngredientByYieldProduct = new Map();
+  for (const row of yieldRowsRes.rows) {
+    const productKey = normalizeLookupName(row.product_name);
+    const sourceKey = normalizeLookupName(row.source_ingredient);
+    if (!productKey || !sourceKey) continue;
+    if (!sourceIngredientByYieldProduct.has(productKey)) {
+      sourceIngredientByYieldProduct.set(productKey, sourceKey);
+    }
+  }
+
+  function suggestItemId(sourceName) {
+    const sourceKey = normalizeLookupName(sourceName);
+    if (!sourceKey) return null;
+    const direct =
+      itemByNormPricebookIngredient.get(sourceKey) ||
+      itemByNormName.get(sourceKey) ||
+      null;
+    if (direct) return direct;
+    const yieldSourceKey = sourceIngredientByYieldProduct.get(sourceKey);
+    if (!yieldSourceKey) return null;
+    return (
+      itemByNormPricebookIngredient.get(yieldSourceKey) ||
+      itemByNormName.get(yieldSourceKey) ||
+      null
+    );
+  }
+
+  const grouped = new Map();
+  for (const row of lineRowsRes.rows) {
+    const source = parseSourceNameFromNotes(row.notes);
+    if (!source) continue;
+    const key = normalizeLookupName(source);
+    if (!key) continue;
+    if (!grouped.has(key)) {
+      const suggestedItemId = suggestItemId(source);
+      grouped.set(key, {
+        source,
+        sourceKey: key,
+        count: 0,
+        lineIds: [],
+        examples: [],
+        suggestedItemId,
+        suggestedItemName: suggestedItemId ? itemById.get(suggestedItemId) || null : null,
+      });
+    }
+    const entry = grouped.get(key);
+    entry.count += 1;
+    entry.lineIds.push(Number(row.id));
+    if (entry.examples.length < 5) {
+      entry.examples.push({
+        category: row.category,
+        recipeName: row.recipe_name,
+        sortOrder: Number(row.sort_order),
+        quantity: row.quantity === null ? null : Number(row.quantity),
+        unit: row.unit || "",
+      });
+    }
+  }
+
+  return [...grouped.values()].sort((a, b) => a.source.localeCompare(b.source));
+}
+
+async function ensurePlaceholderItemForSource(tx, source) {
+  const cleanSource = String(source || "").trim();
+  if (!cleanSource) throw new Error("INVALID_SOURCE");
+
+  const existing = await tx.query("SELECT id FROM items WHERE name = $1 LIMIT 1", [cleanSource]);
+  if (existing.rows.length) return Number(existing.rows[0].id);
+
+  let vendorId;
+  const vendor = await tx.query("SELECT id FROM vendors WHERE name = 'Unknown Vendor' LIMIT 1");
+  if (vendor.rows.length) {
+    vendorId = Number(vendor.rows[0].id);
+  } else {
+    const insertedVendor = await tx.query("INSERT INTO vendors (name) VALUES ('Unknown Vendor') RETURNING id");
+    vendorId = Number(insertedVendor.rows[0].id);
+  }
+
+  const insertedItem = await tx.query(
+    `
+    INSERT INTO items (name, vendor_id, case_size, area_type, measure_type, purchase_unit, purchase_cost)
+    VALUES ($1, $2, 1, 'FOH', 'FLUID', 'BOTTLE', NULL)
+    RETURNING id
+    `,
+    [cleanSource, vendorId]
+  );
+  const itemId = Number(insertedItem.rows[0].id);
+
+  await tx.query(
+    `
+    INSERT INTO item_sizes (item_id, size_label, size_amount, size_unit, volume_ml, unit_cost, is_tracked)
+    VALUES ($1, '1 oz', 1, 'oz', 30, NULL, 1)
+    `,
+    [itemId]
+  );
+
+  return itemId;
 }
 
 function trackedIngredientBaseQuantity(line) {
@@ -1949,6 +2092,76 @@ app.put("/api/admin/densities/:id", async (req, res) => {
   );
   if (!result.rowCount) return res.status(404).json({ error: "Density not found." });
   return res.status(204).send();
+});
+
+app.get("/api/admin/unmatched-sources", async (_req, res) => {
+  const rows = await db.transaction(async (tx) => getUnmatchedIngredientSources(tx));
+  res.json(
+    rows.map((row) => ({
+      source: row.source,
+      count: row.count,
+      examples: row.examples,
+      suggestedItemId: row.suggestedItemId,
+      suggestedItemName: row.suggestedItemName,
+    }))
+  );
+});
+
+app.post("/api/admin/unmatched-sources/map", async (req, res) => {
+  const parsed = unmatchedSourceMapSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid unmatched-source mapping payload." });
+
+  const source = parsed.data.source;
+  const sourceKey = normalizeLookupName(source);
+  if (!sourceKey) return res.status(400).json({ error: "Invalid source name." });
+
+  const result = await db.transaction(async (tx) => {
+    const groups = await getUnmatchedIngredientSources(tx);
+    const group = groups.find((entry) => entry.sourceKey === sourceKey);
+    if (!group) return { mappedCount: 0, itemId: null, itemName: null };
+
+    let itemId = parsed.data.itemId ? Number(parsed.data.itemId) : null;
+    if (parsed.data.createPlaceholder) {
+      itemId = await ensurePlaceholderItemForSource(tx, source);
+    }
+    if (!itemId) throw new Error("ITEM_REQUIRED");
+
+    const item = await tx.query("SELECT id, name FROM items WHERE id = $1 LIMIT 1", [itemId]);
+    if (!item.rows.length) throw new Error("ITEM_NOT_FOUND");
+
+    let mappedCount = 0;
+    for (const lineId of group.lineIds) {
+      const updated = await tx.query(
+        `
+        UPDATE recipe_builder_lines
+        SET ingredient_item_id = $1
+        WHERE id = $2
+          AND line_type = 'INGREDIENT'
+          AND ingredient_item_id IS NULL
+          AND ingredient_recipe_id IS NULL
+        `,
+        [itemId, lineId]
+      );
+      mappedCount += Number(updated.rowCount || 0);
+    }
+
+    return {
+      mappedCount,
+      itemId: Number(item.rows[0].id),
+      itemName: item.rows[0].name,
+    };
+  }).catch((error) => {
+    if (error.message === "ITEM_REQUIRED") {
+      return { error: "Select an item or create a placeholder item." };
+    }
+    if (error.message === "ITEM_NOT_FOUND") {
+      return { error: "Selected item was not found." };
+    }
+    throw error;
+  });
+
+  if (result.error) return res.status(400).json({ error: result.error });
+  return res.json(result);
 });
 
 const recipeBookQuerySchema = z.object({

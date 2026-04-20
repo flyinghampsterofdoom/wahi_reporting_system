@@ -1992,6 +1992,8 @@ async function initAdminReferencePage() {
   const conversionInputsHelp = byId("conversion-inputs-help");
   const yieldsOptionButton = byId("conversion-option-yields");
   const densitiesOptionButton = byId("conversion-option-densities");
+  const unmatchedSourcesContainer = byId("unmatched-sources");
+  const refreshUnmatchedSourcesButton = byId("refresh-unmatched-sources");
   const addConversionButton = byId("add-conversion");
   const refreshConversionsButton = byId("refresh-conversions");
   const refreshConversionInputsButton = byId("refresh-conversion-inputs");
@@ -2001,6 +2003,8 @@ async function initAdminReferencePage() {
     !conversionInputsHelp ||
     !yieldsOptionButton ||
     !densitiesOptionButton ||
+    !unmatchedSourcesContainer ||
+    !refreshUnmatchedSourcesButton ||
     !refreshConversionsButton ||
     !refreshConversionInputsButton
   ) {
@@ -2008,6 +2012,7 @@ async function initAdminReferencePage() {
   }
 
   let activeConversionInput = "yields";
+  let itemOptionsCache = [];
 
   function defaultBaseUnitByType(type) {
     const t = String(type || "").toLowerCase();
@@ -2215,6 +2220,114 @@ async function initAdminReferencePage() {
     });
   }
 
+  async function loadItemOptions() {
+    const rows = await api("/api/items");
+    itemOptionsCache = rows
+      .map((row) => ({
+        id: Number(row.id),
+        label: `${row.name} (${row.vendor?.name || "Unknown Vendor"})`,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  function itemSelectHtml(selectClass, selectedId = null) {
+    const options = itemOptionsCache
+      .map((item) => {
+        const selected = Number(selectedId) === Number(item.id) ? "selected" : "";
+        return `<option value="${item.id}" ${selected}>${item.label}</option>`;
+      })
+      .join("");
+    return `<select class="${selectClass}"><option value="">Select item...</option>${options}</select>`;
+  }
+
+  async function loadUnmatchedSources() {
+    if (!itemOptionsCache.length) {
+      await loadItemOptions();
+    }
+    const rows = await api("/api/admin/unmatched-sources");
+    if (!rows.length) {
+      unmatchedSourcesContainer.innerHTML = "<p>No unmatched sources.</p>";
+      return;
+    }
+
+    unmatchedSourcesContainer.innerHTML = `
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th><th>Count</th><th>Examples</th><th>Map To Item</th><th>Action</th><th>Placeholder</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map((row, idx) => {
+              const examples = (row.examples || [])
+                .map((ex) => `${ex.category}/${ex.recipeName} #${ex.sortOrder} (${ex.quantity ?? ""} ${ex.unit || ""})`)
+                .join("<br/>");
+              return `
+                <tr data-source="${encodeURIComponent(String(row.source || ""))}">
+                  <td>${row.source}</td>
+                  <td>${row.count}</td>
+                  <td>${examples || "n/a"}</td>
+                  <td>${itemSelectHtml(`ad-unmatched-item-${idx}`, row.suggestedItemId)}</td>
+                  <td><button type="button" class="secondary mini-btn ad-unmatched-map" data-select-class="ad-unmatched-item-${idx}">Map</button></td>
+                  <td><button type="button" class="secondary mini-btn ad-unmatched-create">Create + Map</button></td>
+                </tr>
+              `;
+            })
+            .join("")}
+        </tbody>
+      </table>
+      </div>
+    `;
+
+    unmatchedSourcesContainer.querySelectorAll(".ad-unmatched-map").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const source = decodeURIComponent(tr.dataset.source || "");
+        const selectClass = button.dataset.selectClass;
+        const select = tr.querySelector(`.${selectClass}`);
+        const itemId = parseNullableNumber(select?.value);
+        try {
+          await api("/api/admin/unmatched-sources/map", {
+            method: "POST",
+            body: JSON.stringify({
+              source,
+              itemId,
+              createPlaceholder: false,
+            }),
+          });
+          await loadUnmatchedSources();
+          showToast(`Mapped ${source}.`);
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+
+    unmatchedSourcesContainer.querySelectorAll(".ad-unmatched-create").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const source = decodeURIComponent(tr.dataset.source || "");
+        try {
+          await api("/api/admin/unmatched-sources/map", {
+            method: "POST",
+            body: JSON.stringify({
+              source,
+              createPlaceholder: true,
+            }),
+          });
+          await loadItemOptions();
+          await loadUnmatchedSources();
+          showToast(`Created placeholder and mapped ${source}.`);
+          window.dispatchEvent(new CustomEvent("catalog-data-changed"));
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
   function setConversionOption(option) {
     activeConversionInput = option;
     setAreaToggleState(option, [
@@ -2244,6 +2357,9 @@ async function initAdminReferencePage() {
     }
     loadDensities().catch((e) => showToast(e.message, true));
   });
+  refreshUnmatchedSourcesButton.addEventListener("click", () =>
+    loadUnmatchedSources().catch((e) => showToast(e.message, true))
+  );
   yieldsOptionButton.addEventListener("click", () => setConversionOption("yields"));
   densitiesOptionButton.addEventListener("click", () => setConversionOption("densities"));
 
@@ -2269,6 +2385,7 @@ async function initAdminReferencePage() {
 
   await loadConversions();
   setConversionOption("yields");
+  await loadUnmatchedSources();
 }
 
 async function initRecipeBooksPage() {
