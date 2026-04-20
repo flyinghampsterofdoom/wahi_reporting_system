@@ -281,6 +281,26 @@ class SqliteClient {
         updated_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
         UNIQUE(book_type, recipe_name)
       );
+
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        role TEXT NOT NULL CHECK(role IN ('ADMIN', 'MANAGER', 'STAFF')),
+        password_hash TEXT NOT NULL,
+        password_salt TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        updated_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+      );
+
+      CREATE TABLE IF NOT EXISTS auth_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        token_hash TEXT NOT NULL UNIQUE,
+        expires_at TEXT NOT NULL,
+        revoked_at TEXT,
+        created_at TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
     `);
 
     this.db.exec(`
@@ -746,6 +766,29 @@ class PostgresClient {
         retail_price DOUBLE PRECISION,
         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(book_type, recipe_name)
+      )
+    `);
+
+    await this.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id BIGSERIAL PRIMARY KEY,
+        username TEXT NOT NULL UNIQUE,
+        role TEXT NOT NULL CHECK(role IN ('ADMIN', 'MANAGER', 'STAFF')),
+        password_hash TEXT NOT NULL,
+        password_salt TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await this.query(`
+      CREATE TABLE IF NOT EXISTS auth_sessions (
+        id BIGSERIAL PRIMARY KEY,
+        user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        token_hash TEXT NOT NULL UNIQUE,
+        expires_at TIMESTAMP NOT NULL,
+        revoked_at TIMESTAMP,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
 

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header>
+        <h1>Sign In</h1>
+        <p>Enter your account credentials to access the reporting system.</p>
+      </header>
+
+      <section class="card">
+        <form id="login-form" class="stack">
+          <label>Username <input id="login-username" type="text" required /></label>
+          <label>Password <input id="login-password" type="password" required /></label>
+          <button type="submit">Login</button>
+          <p id="login-hint" class="muted-note"></p>
+        </form>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

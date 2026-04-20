@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const crypto = require("crypto");
+const { promisify } = require("util");
 const { z } = require("zod");
 const { createDbClient, DB_CLIENT } = require("./db");
 const { syncPricebookToCatalog } = require("./lib/pricebook-sync");
@@ -7,9 +9,40 @@ const { syncPricebookToCatalog } = require("./lib/pricebook-sync");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const db = createDbClient();
+const scryptAsync = promisify(crypto.scrypt);
+
+const SESSION_COOKIE_NAME = "wahi_session";
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const AUTH_ROLES = {
+  ADMIN: "ADMIN",
+  MANAGER: "MANAGER",
+  STAFF: "STAFF",
+};
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+
+const loginSchema = z.object({
+  username: z.string().trim().min(1),
+  password: z.string().min(1),
+});
+
+const resetOwnPasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: z.string().min(1),
+  newPasswordConfirm: z.string().min(1),
+});
+
+const adminChangePasswordSchema = z.object({
+  newPassword: z.string().min(1),
+  newPasswordConfirm: z.string().min(1),
+});
+
+const adminCreateUserSchema = z.object({
+  username: z.string().trim().min(1),
+  role: z.enum([AUTH_ROLES.ADMIN, AUTH_ROLES.MANAGER, AUTH_ROLES.STAFF]),
+  password: z.string().min(1),
+  passwordConfirm: z.string().min(1),
+});
 
 const vendorSchema = z.object({
   name: z.string().trim().min(1),
@@ -131,6 +164,169 @@ function normalizeSqlError(error) {
   const code = String(error?.code || "").toLowerCase();
   if (code.includes("constraint") || msg.includes("unique")) return "UNIQUE";
   return "OTHER";
+}
+
+function parseCookies(cookieHeader) {
+  const map = new Map();
+  String(cookieHeader || "")
+    .split(";")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .forEach((part) => {
+      const eq = part.indexOf("=");
+      if (eq <= 0) return;
+      const key = part.slice(0, eq);
+      const value = part.slice(eq + 1);
+      map.set(key, decodeURIComponent(value));
+    });
+  return map;
+}
+
+function getCookie(req, name) {
+  return parseCookies(req.headers.cookie).get(name) || null;
+}
+
+function toSqlTimestamp(dateValue) {
+  return new Date(dateValue).toISOString().slice(0, 19).replace("T", " ");
+}
+
+function hashSessionToken(token) {
+  return crypto.createHash("sha256").update(String(token)).digest("hex");
+}
+
+function safeTimingEqual(left, right) {
+  const a = Buffer.from(String(left || ""), "hex");
+  const b = Buffer.from(String(right || ""), "hex");
+  if (a.length !== b.length || a.length === 0) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function isStrongEnoughPassword(password) {
+  return typeof password === "string" && password.length >= 8;
+}
+
+async function hashPassword(password, existingSaltHex = null) {
+  const salt = existingSaltHex ? Buffer.from(existingSaltHex, "hex") : crypto.randomBytes(16);
+  const derived = await scryptAsync(String(password), salt, 64);
+  return {
+    passwordSalt: salt.toString("hex"),
+    passwordHash: Buffer.from(derived).toString("hex"),
+  };
+}
+
+async function verifyPassword(password, passwordSalt, expectedHash) {
+  if (!password || !passwordSalt || !expectedHash) return false;
+  const { passwordHash } = await hashPassword(password, passwordSalt);
+  return safeTimingEqual(passwordHash, expectedHash);
+}
+
+function setSessionCookie(res, token) {
+  const secureCookie = process.env.NODE_ENV === "production";
+  res.cookie(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: secureCookie,
+    maxAge: SESSION_TTL_MS,
+    path: "/",
+  });
+}
+
+function clearSessionCookie(res) {
+  res.clearCookie(SESSION_COOKIE_NAME, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
+function publicUser(row) {
+  return {
+    id: Number(row.id),
+    username: row.username,
+    role: row.role,
+  };
+}
+
+async function createSessionForUser(userId) {
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = hashSessionToken(token);
+  const expiresAt = toSqlTimestamp(Date.now() + SESSION_TTL_MS);
+  await db.query(
+    "INSERT INTO auth_sessions (user_id, token_hash, expires_at) VALUES ($1, $2, $3)",
+    [userId, tokenHash, expiresAt]
+  );
+  return token;
+}
+
+async function revokeSessionByToken(token) {
+  if (!token) return;
+  await db.query(
+    "UPDATE auth_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE token_hash = $1 AND revoked_at IS NULL",
+    [hashSessionToken(token)]
+  );
+}
+
+async function resolveAuthUser(req) {
+  const token = getCookie(req, SESSION_COOKIE_NAME);
+  if (!token) return null;
+  const tokenHash = hashSessionToken(token);
+  const { rows } = await db.query(
+    `
+    SELECT u.id, u.username, u.role
+    FROM auth_sessions s
+    JOIN users u ON u.id = s.user_id
+    WHERE s.token_hash = $1
+      AND s.revoked_at IS NULL
+      AND s.expires_at > CURRENT_TIMESTAMP
+    LIMIT 1
+    `,
+    [tokenHash]
+  );
+  if (!rows.length) return null;
+  return publicUser(rows[0]);
+}
+
+async function requireAuth(req, res, next) {
+  const user = await resolveAuthUser(req);
+  if (!user) return res.status(401).json({ error: "Authentication required." });
+  req.authUser = user;
+  return next();
+}
+
+function requireRole(...roles) {
+  const valid = new Set(roles);
+  return (req, res, next) => {
+    if (!req.authUser) return res.status(401).json({ error: "Authentication required." });
+    if (!valid.has(req.authUser.role)) return res.status(403).json({ error: "Insufficient permissions." });
+    return next();
+  };
+}
+
+function buildLoginRedirect(req) {
+  const nextUrl = encodeURIComponent(req.originalUrl || "/");
+  return `/login?next=${nextUrl}`;
+}
+
+async function requirePageAuth(req, res, next) {
+  const user = await resolveAuthUser(req);
+  if (!user) return res.redirect(buildLoginRedirect(req));
+  req.authUser = user;
+  return next();
+}
+
+async function ensureInitialAdminAccount() {
+  const username = "justinrawlinson";
+  const password = "Password";
+  const { passwordHash, passwordSalt } = await hashPassword(password);
+  await db.query(
+    `
+    INSERT INTO users (username, role, password_hash, password_salt, updated_at)
+    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+    ON CONFLICT(username)
+    DO UPDATE SET role = excluded.role, password_hash = excluded.password_hash, password_salt = excluded.password_salt, updated_at = CURRENT_TIMESTAMP
+    `,
+    [username, AUTH_ROLES.ADMIN, passwordHash, passwordSalt]
+  );
 }
 
 function roundTo(value, places = 4) {
@@ -566,6 +762,162 @@ async function calculateRecipeCost(tx, recipeId, path = new Set(), totalCache = 
   totalCache.set(id, rounded);
   return rounded;
 }
+
+app.use(async (req, res, next) => {
+  const lowerPath = String(req.path || "").toLowerCase();
+  if (!lowerPath.endsWith(".html")) return next();
+  if (lowerPath === "/login.html") return next();
+  return requirePageAuth(req, res, next);
+});
+
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    index: false,
+  })
+);
+
+app.post("/api/auth/login", async (req, res) => {
+  const parsed = loginSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid login payload." });
+
+  const { rows } = await db.query(
+    "SELECT id, username, role, password_hash, password_salt FROM users WHERE username = $1 LIMIT 1",
+    [parsed.data.username]
+  );
+  if (!rows.length) return res.status(401).json({ error: "Invalid username or password." });
+
+  const row = rows[0];
+  const isValid = await verifyPassword(parsed.data.password, row.password_salt, row.password_hash);
+  if (!isValid) return res.status(401).json({ error: "Invalid username or password." });
+
+  const token = await createSessionForUser(Number(row.id));
+  setSessionCookie(res, token);
+  return res.json({ user: publicUser(row) });
+});
+
+app.get("/api/auth/me", requireAuth, async (req, res) => {
+  return res.json({ user: req.authUser });
+});
+
+app.post("/api/auth/logout", requireAuth, async (req, res) => {
+  const token = getCookie(req, SESSION_COOKIE_NAME);
+  await revokeSessionByToken(token);
+  clearSessionCookie(res);
+  return res.status(204).send();
+});
+
+app.post("/api/auth/reset-password", requireAuth, async (req, res) => {
+  const parsed = resetOwnPasswordSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid reset payload." });
+
+  if (parsed.data.newPassword !== parsed.data.newPasswordConfirm) {
+    return res.status(400).json({ error: "New password and confirmation must match exactly." });
+  }
+  if (!isStrongEnoughPassword(parsed.data.newPassword)) {
+    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  }
+
+  const userId = Number(req.authUser.id);
+  const current = await db.query("SELECT password_hash, password_salt FROM users WHERE id = $1 LIMIT 1", [userId]);
+  if (!current.rows.length) return res.status(404).json({ error: "User not found." });
+
+  const validCurrent = await verifyPassword(
+    parsed.data.currentPassword,
+    current.rows[0].password_salt,
+    current.rows[0].password_hash
+  );
+  if (!validCurrent) return res.status(401).json({ error: "Current password is incorrect." });
+
+  const { passwordHash, passwordSalt } = await hashPassword(parsed.data.newPassword);
+  await db.query(
+    "UPDATE users SET password_hash = $1, password_salt = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
+    [passwordHash, passwordSalt, userId]
+  );
+  return res.status(204).send();
+});
+
+app.get("/api/auth/users", requireAuth, requireRole(AUTH_ROLES.ADMIN), async (_req, res) => {
+  const { rows } = await db.query(
+    "SELECT id, username, role, created_at, updated_at FROM users ORDER BY role, username"
+  );
+  return res.json(
+    rows.map((row) => ({
+      id: Number(row.id),
+      username: row.username,
+      role: row.role,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }))
+  );
+});
+
+app.post("/api/auth/users", requireAuth, requireRole(AUTH_ROLES.ADMIN), async (req, res) => {
+  const parsed = adminCreateUserSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid user payload." });
+
+  if (parsed.data.password !== parsed.data.passwordConfirm) {
+    return res.status(400).json({ error: "Password and confirmation must match exactly." });
+  }
+  if (!isStrongEnoughPassword(parsed.data.password)) {
+    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  }
+
+  try {
+    const { passwordHash, passwordSalt } = await hashPassword(parsed.data.password);
+    const { rows } = await db.query(
+      `
+      INSERT INTO users (username, role, password_hash, password_salt, updated_at)
+      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+      RETURNING id, username, role, created_at, updated_at
+      `,
+      [parsed.data.username, parsed.data.role, passwordHash, passwordSalt]
+    );
+    return res.status(201).json({
+      id: Number(rows[0].id),
+      username: rows[0].username,
+      role: rows[0].role,
+      createdAt: rows[0].created_at,
+      updatedAt: rows[0].updated_at,
+    });
+  } catch (error) {
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "Username already exists." });
+    }
+    return res.status(500).json({ error: "Failed to create user." });
+  }
+});
+
+app.post("/api/auth/users/:id/password", requireAuth, requireRole(AUTH_ROLES.ADMIN), async (req, res) => {
+  const userId = Number(req.params.id);
+  if (!Number.isInteger(userId) || userId <= 0) return res.status(400).json({ error: "Invalid user id." });
+
+  const parsed = adminChangePasswordSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid password payload." });
+  if (parsed.data.newPassword !== parsed.data.newPasswordConfirm) {
+    return res.status(400).json({ error: "New password and confirmation must match exactly." });
+  }
+  if (!isStrongEnoughPassword(parsed.data.newPassword)) {
+    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  }
+
+  const target = await db.query("SELECT id FROM users WHERE id = $1 LIMIT 1", [userId]);
+  if (!target.rows.length) return res.status(404).json({ error: "User not found." });
+
+  const { passwordHash, passwordSalt } = await hashPassword(parsed.data.newPassword);
+  await db.transaction(async (tx) => {
+    await tx.query(
+      "UPDATE users SET password_hash = $1, password_salt = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
+      [passwordHash, passwordSalt, userId]
+    );
+    await tx.query("UPDATE auth_sessions SET revoked_at = CURRENT_TIMESTAMP WHERE user_id = $1", [userId]);
+  });
+  return res.status(204).send();
+});
+
+app.use("/api", async (req, res, next) => {
+  if (req.path.startsWith("/auth/")) return next();
+  return requireAuth(req, res, next);
+});
 
 app.get("/api/vendors", async (_req, res) => {
   const { rows } = await db.query("SELECT id, name FROM vendors ORDER BY name");
@@ -1953,29 +2305,36 @@ app.post("/api/recipe-builder/import", async (req, res) => {
   }
 });
 
-app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/login", (_req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
+app.get("/", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/catalog", (_req, res) => res.redirect("/item-catalog"));
 app.get("/add-item", (_req, res) => res.redirect("/item-catalog"));
-app.get("/item-catalog", (_req, res) => res.sendFile(path.join(__dirname, "public", "item-catalog.html")));
-app.get("/add-vendor", (_req, res) => res.sendFile(path.join(__dirname, "public", "add-vendor.html")));
-app.get("/areas", (_req, res) => res.sendFile(path.join(__dirname, "public", "areas.html")));
-app.get("/counts", (_req, res) => res.sendFile(path.join(__dirname, "public", "counts.html")));
-app.get("/reorder", (_req, res) => res.sendFile(path.join(__dirname, "public", "reorder.html")));
-app.get("/par-levels", (_req, res) => res.sendFile(path.join(__dirname, "public", "par-levels.html")));
-app.get("/recipe-books", (_req, res) =>
+app.get("/item-catalog", requirePageAuth, (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "item-catalog.html"))
+);
+app.get("/add-vendor", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "add-vendor.html")));
+app.get("/areas", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "areas.html")));
+app.get("/counts", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "counts.html")));
+app.get("/reorder", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "reorder.html")));
+app.get("/par-levels", requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "par-levels.html")));
+app.get("/recipe-books", requirePageAuth, (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "recipe-books.html"))
 );
-app.get("/admin-reference", (_req, res) =>
+app.get("/admin-reference", requirePageAuth, (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "admin-reference.html"))
 );
-app.get("/recipe-builder", (_req, res) =>
+app.get("/recipe-builder", requirePageAuth, (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "recipe-builder.html"))
 );
-app.use((_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/security", requirePageAuth, (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "security.html"))
+);
+app.use(requirePageAuth, (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 async function start() {
   try {
     await db.init();
+    await ensureInitialAdminAccount();
     app.listen(PORT, () => {
       // eslint-disable-next-line no-console
       console.log(`Bar inventory app (${DB_CLIENT}) running on http://localhost:${PORT}`);

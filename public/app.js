@@ -3,6 +3,7 @@ function byId(id) {
 }
 
 const toast = byId("toast");
+let currentUser = null;
 
 function showToast(message, isError = false) {
   if (!toast) return;
@@ -124,17 +125,194 @@ function renderCostPreview(
 
 async function api(url, options = {}) {
   const response = await fetch(url, {
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     ...options,
   });
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
+    if (response.status === 401 && !byId("login-form")) {
+      const next = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href = `/login?next=${next}`;
+      throw new Error("Authentication required.");
+    }
     throw new Error(body.error || "Request failed");
   }
 
   if (response.status === 204) return null;
   return response.json();
+}
+
+async function loadCurrentUser() {
+  if (byId("login-form")) return null;
+  const payload = await api("/api/auth/me");
+  currentUser = payload.user || null;
+  return currentUser;
+}
+
+async function initLoginPage() {
+  const loginForm = byId("login-form");
+  if (!loginForm) return;
+  const username = byId("login-username");
+  const password = byId("login-password");
+  const hint = byId("login-hint");
+  if (hint) {
+    hint.textContent = 'Default admin: username "justinrawlinson", password "Password"';
+  }
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      await api("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username.value.trim(),
+          password: password.value,
+        }),
+      });
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get("next");
+      window.location.href = next || "/";
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+}
+
+async function initSecurityPage() {
+  const securityPage = byId("security-page");
+  if (!securityPage) return;
+  const me = currentUser || (await loadCurrentUser());
+
+  const currentUserLabel = byId("current-user-label");
+  if (currentUserLabel && me) {
+    currentUserLabel.textContent = `${me.username} (${me.role})`;
+  }
+
+  const logoutButton = byId("logout-button");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async () => {
+      try {
+        await api("/api/auth/logout", { method: "POST" });
+        window.location.href = "/login";
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
+
+  const resetForm = byId("reset-password-form");
+  if (resetForm) {
+    resetForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        await api("/api/auth/reset-password", {
+          method: "POST",
+          body: JSON.stringify({
+            currentPassword: byId("current-password").value,
+            newPassword: byId("new-password").value,
+            newPasswordConfirm: byId("new-password-confirm").value,
+          }),
+        });
+        resetForm.reset();
+        showToast("Password updated.");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
+
+  const adminOnly = byId("admin-only");
+  if (!me || me.role !== "ADMIN") {
+    if (adminOnly) adminOnly.style.display = "none";
+    return;
+  }
+
+  if (adminOnly) adminOnly.style.display = "grid";
+  const usersContainer = byId("auth-users");
+  const createUserForm = byId("create-user-form");
+  const changePasswordForm = byId("admin-change-password-form");
+  const targetUserSelect = byId("admin-target-user");
+
+  async function loadUsers() {
+    const users = await api("/api/auth/users");
+    if (usersContainer) {
+      usersContainer.innerHTML = `
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${users
+                .map(
+                  (user) => `
+                    <tr>
+                      <td>${user.username}</td>
+                      <td>${user.role}</td>
+                    </tr>
+                  `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    if (targetUserSelect) {
+      targetUserSelect.innerHTML = users
+        .map((user) => `<option value="${user.id}">${user.username} (${user.role})</option>`)
+        .join("");
+    }
+  }
+
+  if (createUserForm) {
+    createUserForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        await api("/api/auth/users", {
+          method: "POST",
+          body: JSON.stringify({
+            username: byId("create-username").value.trim(),
+            role: byId("create-role").value,
+            password: byId("create-password").value,
+            passwordConfirm: byId("create-password-confirm").value,
+          }),
+        });
+        createUserForm.reset();
+        await loadUsers();
+        showToast("User created.");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
+
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        await api(`/api/auth/users/${targetUserSelect.value}/password`, {
+          method: "POST",
+          body: JSON.stringify({
+            newPassword: byId("admin-new-password").value,
+            newPasswordConfirm: byId("admin-new-password-confirm").value,
+          }),
+        });
+        changePasswordForm.reset();
+        showToast("User password updated.");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
+
+  await loadUsers();
 }
 
 function addSizeRow(
@@ -1706,6 +1884,10 @@ async function initRecipeBooksPage() {
 }
 
 async function init() {
+  await initLoginPage();
+  if (byId("login-form")) return;
+  await loadCurrentUser();
+  await initSecurityPage();
   await initVendorPage();
   await initAddItemPage();
   await initItemCatalogPage();

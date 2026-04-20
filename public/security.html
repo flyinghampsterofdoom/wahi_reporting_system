@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout" id="security-page">
+      <header class="line">
+        <div>
+          <h1>Security</h1>
+          <p>Current account: <strong id="current-user-label">Loading...</strong></p>
+        </div>
+        <div class="line">
+          <a class="button-link" href="/">Back to Home</a>
+          <button type="button" id="logout-button" class="secondary">Logout</button>
+        </div>
+      </header>
+
+      <section class="card">
+        <h2>Reset My Password</h2>
+        <p class="muted-note">All roles can reset their own password. New password must be entered twice.</p>
+        <form id="reset-password-form" class="stack">
+          <label>Current Password <input id="current-password" type="password" required /></label>
+          <label>New Password <input id="new-password" type="password" minlength="8" required /></label>
+          <label>Confirm New Password <input id="new-password-confirm" type="password" minlength="8" required /></label>
+          <button type="submit">Update My Password</button>
+        </form>
+      </section>
+
+      <section id="admin-only" class="stack" style="display: none">
+        <section class="card">
+          <h2>Create User</h2>
+          <p class="muted-note">Create Admin, Manager, or Staff accounts.</p>
+          <form id="create-user-form" class="stack">
+            <label>Username <input id="create-username" type="text" required /></label>
+            <label>
+              Role
+              <select id="create-role">
+                <option value="STAFF">Staff</option>
+                <option value="MANAGER">Manager</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </label>
+            <label>Password <input id="create-password" type="password" minlength="8" required /></label>
+            <label>Confirm Password <input id="create-password-confirm" type="password" minlength="8" required /></label>
+            <button type="submit">Create User</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Admin Password Change</h2>
+          <p class="muted-note">Admin can change any user's password. New password must be entered twice.</p>
+          <form id="admin-change-password-form" class="stack">
+            <label>
+              Target User
+              <select id="admin-target-user"></select>
+            </label>
+            <label>New Password <input id="admin-new-password" type="password" minlength="8" required /></label>
+            <label>
+              Confirm New Password
+              <input id="admin-new-password-confirm" type="password" minlength="8" required />
+            </label>
+            <button type="submit">Update Selected User Password</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>User Accounts</h2>
+          <div id="auth-users"></div>
+        </section>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
