@@ -1878,78 +1878,50 @@ app.get("/api/recipe-books", async (req, res) => {
   const { book } = parsed.data;
 
   const rows = await db.transaction(async (tx) => {
-    const baseLines = await tx.query(`
-      SELECT recipe_name, COALESCE(SUM(line_cost), 0) AS line_cost_total
-      FROM pricebook_recipe_lines
-      GROUP BY recipe_name
+    const recipes = await tx.query(`
+      SELECT id, name, category
+      FROM recipe_builder_recipes
+      ORDER BY name
     `);
-    const lineCostMap = new Map(
-      baseLines.rows.map((row) => [row.recipe_name, row.line_cost_total === null ? 0 : Number(row.line_cost_total)])
-    );
-
-    let query = "";
-    if (book === "Drinks") {
-      query = `
-        SELECT r.recipe_name, r.batch_cost, d.actual_price AS catalog_price
-        FROM pricebook_recipes r
-        JOIN pricebook_drink_catalog d ON d.recipe_name = r.recipe_name
-        ORDER BY r.recipe_name
-      `;
-    } else if (book === "Final") {
-      query = `
-        SELECT r.recipe_name, r.batch_cost, f.actual_price AS catalog_price
-        FROM pricebook_recipes r
-        JOIN pricebook_food_catalog f ON f.recipe_name = r.recipe_name
-        ORDER BY r.recipe_name
-      `;
-    } else if (book === "Syrup") {
-      query = `
-        SELECT r.recipe_name, r.batch_cost, s.price_per_oz AS catalog_price
-        FROM pricebook_recipes r
-        JOIN pricebook_syrup_catalog s ON s.syrup_name = r.recipe_name
-        ORDER BY r.recipe_name
-      `;
-    } else {
-      query = `
-        SELECT r.recipe_name, r.batch_cost, NULL AS catalog_price
-        FROM pricebook_recipes r
-        LEFT JOIN pricebook_drink_catalog d ON d.recipe_name = r.recipe_name
-        LEFT JOIN pricebook_food_catalog f ON f.recipe_name = r.recipe_name
-        LEFT JOIN pricebook_syrup_catalog s ON s.syrup_name = r.recipe_name
-        WHERE d.id IS NULL AND f.id IS NULL AND s.id IS NULL
-        ORDER BY r.recipe_name
-      `;
-    }
-
-    const recipes = await tx.query(query);
     const overrides = await tx.query(
       "SELECT recipe_name, retail_price FROM recipe_book_pricing WHERE book_type = $1",
       [book]
     );
     const overrideMap = new Map(overrides.rows.map((row) => [row.recipe_name, row.retail_price]));
 
-    return recipes.rows.map((row) => {
-      const lineCost = lineCostMap.get(row.recipe_name) ?? 0;
-      const costFromBatch = row.batch_cost === null || row.batch_cost === undefined ? null : Number(row.batch_cost);
-      const cost = roundTo(lineCost > 0 ? lineCost : costFromBatch ?? 0, 4);
-      const retailPriceRaw =
-        overrideMap.has(row.recipe_name) && overrideMap.get(row.recipe_name) !== null
-          ? Number(overrideMap.get(row.recipe_name))
-          : row.catalog_price === null || row.catalog_price === undefined
-            ? null
-            : Number(row.catalog_price);
-      const retailPrice = roundTo(retailPriceRaw, 2);
+    function categoryToBook(category) {
+      const normalized = String(category || "").trim().toLowerCase();
+      if (normalized === "drink" || normalized === "drinks" || normalized === "cocktail" || normalized === "cocktails") {
+        return "Drinks";
+      }
+      if (normalized === "syrup" || normalized === "syrups") return "Syrup";
+      if (normalized === "final" || normalized === "food") return "Final";
+      return "Prep";
+    }
+
+    const totalCache = new Map();
+    const metaCache = new Map();
+    const result = [];
+    for (const row of recipes.rows) {
+      if (categoryToBook(row.category) !== book) continue;
+      const liveCost = await calculateRecipeCost(tx, Number(row.id), new Set(), totalCache, metaCache);
+      const cost = roundTo(liveCost ?? 0, 4);
+      const retailPriceRaw = overrideMap.has(row.name) ? overrideMap.get(row.name) : null;
+      const retailPrice = roundTo(retailPriceRaw === null || retailPriceRaw === undefined ? null : Number(retailPriceRaw), 2);
       const profit = retailPrice === null ? null : roundTo(retailPrice - cost, 2);
       const margin = retailPrice && retailPrice > 0 ? roundTo(((retailPrice - cost) / retailPrice) * 100, 2) : null;
-      return {
-        recipeName: row.recipe_name,
+      result.push({
+        recipeId: Number(row.id),
+        recipeName: row.name,
         book,
         cost,
         retailPrice,
         marginPercent: margin,
         profit,
-      };
-    });
+      });
+    }
+
+    return result;
   });
 
   res.json(rows);

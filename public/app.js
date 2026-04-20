@@ -2023,7 +2023,7 @@ async function initRecipeBooksPage() {
           ${rows
             .map(
               (row) => `
-            <tr data-recipe-name="${encodeURIComponent(row.recipeName)}">
+            <tr data-recipe-id="${row.recipeId}" data-recipe-name="${encodeURIComponent(row.recipeName)}">
               <td>${row.recipeName}</td>
               <td>$${Number(row.cost ?? 0).toFixed(2)}</td>
               <td><input type="number" min="0" step="0.01" class="rb-retail" value="${row.retailPrice ?? ""}" /></td>
@@ -2054,6 +2054,7 @@ async function initRecipeBooksPage() {
         select.disabled = true;
 
         const tr = select.closest("tr");
+        const recipeId = Number(tr.dataset.recipeId);
         const recipeName = decodeURIComponent(tr.dataset.recipeName);
         try {
           if (action === "save") {
@@ -2068,11 +2069,10 @@ async function initRecipeBooksPage() {
           }
 
           if (action === "edit" || action === "view") {
-            const imported = await api("/api/recipe-builder/import", {
-              method: "POST",
-              body: JSON.stringify({ recipeName }),
-            });
-            const query = action === "view" ? `?recipeId=${encodeURIComponent(imported.id)}&mode=view` : `?recipeId=${encodeURIComponent(imported.id)}`;
+            if (!Number.isInteger(recipeId) || recipeId <= 0) {
+              throw new Error("Recipe id not found.");
+            }
+            const query = action === "view" ? `?recipeId=${encodeURIComponent(recipeId)}&mode=view` : `?recipeId=${encodeURIComponent(recipeId)}`;
             window.location.href = `/recipe-builder${query}`;
             return;
           }
