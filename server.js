@@ -2326,6 +2326,9 @@ app.get("/admin-reference", requirePageAuth, (_req, res) =>
 app.get("/recipe-builder", requirePageAuth, (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "recipe-builder.html"))
 );
+app.get("/recipe-create", requirePageAuth, (_req, res) =>
+  res.sendFile(path.join(__dirname, "public", "recipe-create.html"))
+);
 app.get("/security", requirePageAuth, (_req, res) =>
   res.sendFile(path.join(__dirname, "public", "security.html"))
 );

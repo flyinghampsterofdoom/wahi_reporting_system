@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Recipe | Bar Inventory</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="line">
+        <div>
+          <h1>Create Recipe</h1>
+          <p>Create a new recipe, then continue editing it in Recipe Builder.</p>
+        </div>
+        <a class="button-link" href="/recipe-builder">Back to Recipe Builder</a>
+      </header>
+
+      <section class="card">
+        <form id="recipe-form" class="stack">
+          <label>
+            Recipe Name
+            <input type="text" id="recipe-name" required />
+          </label>
+          <label>
+            Category
+            <input type="text" id="recipe-category" value="General" />
+          </label>
+          <label>
+            Status
+            <select id="recipe-status">
+              <option value="Draft">Draft</option>
+              <option value="Active">Active</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </label>
+          <label>
+            Yield Qty
+            <input type="number" id="recipe-yield-qty" min="0" step="0.01" />
+          </label>
+          <label>
+            Yield Unit
+            <input type="text" id="recipe-yield-unit" placeholder="oz, ea, portions..." />
+          </label>
+          <label>
+            Notes
+            <textarea id="recipe-notes" rows="3"></textarea>
+          </label>
+          <button type="submit" class="mini-btn">Create Recipe</button>
+        </form>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

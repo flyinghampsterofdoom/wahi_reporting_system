@@ -18,47 +18,17 @@
 
       <section class="grid two">
         <article class="card">
-          <h2>Create Recipe</h2>
-          <form id="recipe-form" class="stack">
-            <label>
-              Recipe Name
-              <input type="text" id="recipe-name" required />
-            </label>
-            <label>
-              Category
-              <input type="text" id="recipe-category" value="General" />
-            </label>
-            <label>
-              Status
-              <select id="recipe-status">
-                <option value="Draft">Draft</option>
-                <option value="Active">Active</option>
-                <option value="Archived">Archived</option>
-              </select>
-            </label>
-            <label>
-              Yield Qty
-              <input type="number" id="recipe-yield-qty" min="0" step="0.01" />
-            </label>
-            <label>
-              Yield Unit
-              <input type="text" id="recipe-yield-unit" placeholder="oz, ea, portions..." />
-            </label>
-            <label>
-              Notes
-              <textarea id="recipe-notes" rows="3"></textarea>
-            </label>
-            <button type="submit" class="mini-btn">Create Recipe</button>
-          </form>
-
-          <hr />
-          <h3>Recipes</h3>
+          <div class="line">
+            <h2>Recipes</h2>
+            <a class="button-link mini-btn" href="/recipe-create">Create Recipe</a>
+          </div>
           <div id="recipe-list"></div>
         </article>
 
         <article class="card" id="recipe-editor-card" hidden>
           <div class="line">
             <h2 id="editor-title">Recipe Editor</h2>
+            <button id="switch-to-edit" class="mini-btn" style="display: none">Edit Recipe</button>
             <button id="save-recipe-meta" class="secondary mini-btn">Save Header</button>
             <button id="save-recipe-lines" class="mini-btn">Save Lines</button>
           </div>

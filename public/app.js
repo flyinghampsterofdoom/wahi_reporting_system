@@ -1213,19 +1213,44 @@ async function initReorderPage() {
   await buildReorderReport();
 }
 
-async function initRecipeBuilderPage() {
+async function initRecipeCreatePage() {
   const recipeForm = byId("recipe-form");
-  if (!recipeForm) return;
-  const pageParams = new URLSearchParams(window.location.search);
-  const isViewMode = String(pageParams.get("mode") || "").toLowerCase() === "view";
-
-  const recipeList = byId("recipe-list");
   const recipeName = byId("recipe-name");
+  if (!recipeForm || !recipeName) return;
+
   const recipeCategory = byId("recipe-category");
   const recipeStatus = byId("recipe-status");
   const recipeYieldQty = byId("recipe-yield-qty");
   const recipeYieldUnit = byId("recipe-yield-unit");
   const recipeNotes = byId("recipe-notes");
+
+  recipeForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      const created = await api("/api/recipe-builder/recipes", {
+        method: "POST",
+        body: JSON.stringify({
+          name: recipeName.value.trim(),
+          category: recipeCategory.value.trim() || "General",
+          status: recipeStatus.value,
+          yieldQty: parseNullableNumber(recipeYieldQty.value),
+          yieldUnit: recipeYieldUnit.value.trim() || null,
+          notes: recipeNotes.value.trim() || "",
+        }),
+      });
+      showToast("Recipe created.");
+      window.location.href = `/recipe-builder?recipeId=${encodeURIComponent(created.id)}`;
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  });
+}
+
+async function initRecipeBuilderPage() {
+  const recipeList = byId("recipe-list");
+  if (!recipeList) return;
+  const pageParams = new URLSearchParams(window.location.search);
+  const isViewMode = String(pageParams.get("mode") || "").toLowerCase() === "view";
 
   const editorCard = byId("recipe-editor-card");
   const editorTitle = byId("editor-title");
@@ -1240,6 +1265,7 @@ async function initRecipeBuilderPage() {
   const saveRecipeMeta = byId("save-recipe-meta");
   const saveRecipeLines = byId("save-recipe-lines");
   const addRecipeLine = byId("add-recipe-line");
+  const switchToEdit = byId("switch-to-edit");
   const recipeLines = byId("recipe-lines");
 
   let recipes = [];
@@ -1256,6 +1282,10 @@ async function initRecipeBuilderPage() {
       button.disabled = true;
       button.style.display = "none";
     });
+    if (switchToEdit) {
+      switchToEdit.style.display = "inline-block";
+      switchToEdit.disabled = false;
+    }
 
     const editableFields = [
       editorRecipeName,
@@ -1543,32 +1573,6 @@ async function initRecipeBuilderPage() {
     });
   }
 
-  recipeForm.addEventListener("submit", async (event) => {
-    if (isViewMode) return;
-    event.preventDefault();
-    try {
-      const created = await api("/api/recipe-builder/recipes", {
-        method: "POST",
-        body: JSON.stringify({
-          name: recipeName.value.trim(),
-          category: recipeCategory.value.trim() || "General",
-          status: recipeStatus.value,
-          yieldQty: parseNullableNumber(recipeYieldQty.value),
-          yieldUnit: recipeYieldUnit.value.trim() || null,
-          notes: recipeNotes.value.trim() || "",
-        }),
-      });
-      recipeForm.reset();
-      recipeCategory.value = "General";
-      recipeStatus.value = "Draft";
-      await loadRecipes();
-      await openRecipe(created.id);
-      showToast("Recipe created.");
-    } catch (error) {
-      showToast(error.message, true);
-    }
-  });
-
   saveRecipeMeta.addEventListener("click", async () => {
     if (isViewMode) return;
     try {
@@ -1612,12 +1616,14 @@ async function initRecipeBuilderPage() {
     addRecipeLineRow();
   });
 
-  if (isViewMode) {
-    recipeForm.querySelectorAll("input, select, textarea, button").forEach((node) => {
-      node.disabled = true;
-      if (Object.prototype.hasOwnProperty.call(node, "readOnly")) {
-        node.readOnly = true;
+  if (switchToEdit) {
+    switchToEdit.addEventListener("click", () => {
+      const id = Number(editorRecipeId.value || pageParams.get("recipeId") || 0);
+      if (!Number.isInteger(id) || id <= 0) {
+        showToast("Select a recipe first.", true);
+        return;
       }
+      window.location.href = `/recipe-builder?recipeId=${encodeURIComponent(id)}`;
     });
   }
 
@@ -1958,6 +1964,7 @@ async function init() {
   await initCountsPage();
   await initParLevelsPage();
   await initReorderPage();
+  await initRecipeCreatePage();
   await initRecipeBuilderPage();
   await initAdminReferencePage();
   await initRecipeBooksPage();
