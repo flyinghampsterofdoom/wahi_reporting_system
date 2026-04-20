@@ -1955,59 +1955,75 @@ app.put("/api/recipe-books/:book/:recipeName/retail", async (req, res) => {
 
 app.get("/api/recipe-builder/options", async (req, res) => {
   const recipeId = Number(req.query.recipeId || 0);
-  const [itemsResult, recipesResult] = await Promise.all([
-    db.query(`
-      SELECT
-        i.id,
-        i.name,
-        v.name AS vendor_name,
-        i.area_type,
-        i.measure_type,
-        i.density_id,
-        d.ingredient_name AS density_ingredient_name,
-        d.grams_per_cup AS density_grams_per_cup,
-        d.cups_per_lb AS density_cups_per_lb,
-        s.size_label,
-        s.size_amount,
-        s.size_unit,
-        s.unit_cost
-      FROM items i
-      JOIN vendors v ON v.id = i.vendor_id
-      LEFT JOIN pricebook_densities d ON d.id = i.density_id
-      JOIN item_sizes s ON s.item_id = i.id AND s.is_tracked = 1
-      ORDER BY i.name
-    `),
-    db.query("SELECT id, name FROM recipe_builder_recipes ORDER BY name"),
-  ]);
+  const payload = await db.transaction(async (tx) => {
+    const [itemsResult, recipesResult] = await Promise.all([
+      tx.query(`
+        SELECT
+          i.id,
+          i.name,
+          v.name AS vendor_name,
+          i.area_type,
+          i.measure_type,
+          i.density_id,
+          d.ingredient_name AS density_ingredient_name,
+          d.grams_per_cup AS density_grams_per_cup,
+          d.cups_per_lb AS density_cups_per_lb,
+          s.size_label,
+          s.size_amount,
+          s.size_unit,
+          s.unit_cost
+        FROM items i
+        JOIN vendors v ON v.id = i.vendor_id
+        LEFT JOIN pricebook_densities d ON d.id = i.density_id
+        JOIN item_sizes s ON s.item_id = i.id AND s.is_tracked = 1
+        ORDER BY i.name
+      `),
+      tx.query("SELECT id, name, yield_qty, yield_unit FROM recipe_builder_recipes ORDER BY name"),
+    ]);
 
-  const items = itemsResult.rows.map((row) => ({
-    id: Number(row.id),
-    name: row.name,
-    vendorName: row.vendor_name,
-    areaType: row.area_type,
-    measureType: row.measure_type || "FLUID",
-    trackedSizeLabel: row.size_label,
-    trackedSizeAmount:
-      row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
-    trackedSizeUnit: row.size_unit || null,
-    trackedUnitCost: row.unit_cost === null ? null : roundTo(row.unit_cost, 4),
-    densityId: row.density_id === null || row.density_id === undefined ? null : Number(row.density_id),
-    densityIngredientName: row.density_ingredient_name || null,
-    densityGramsPerCup:
-      row.density_grams_per_cup === null || row.density_grams_per_cup === undefined
-        ? null
-        : Number(row.density_grams_per_cup),
-    densityCupsPerLb:
-      row.density_cups_per_lb === null || row.density_cups_per_lb === undefined
-        ? null
-        : Number(row.density_cups_per_lb),
-  }));
+    const totalCache = new Map();
+    const metaCache = new Map();
+    const recipes = [];
+    for (const row of recipesResult.rows) {
+      const id = Number(row.id);
+      if (recipeId && id === recipeId) continue;
+      const totalCost = await calculateRecipeCost(tx, id, new Set(), totalCache, metaCache);
+      recipes.push({
+        id,
+        name: row.name,
+        yieldQty: row.yield_qty === null || row.yield_qty === undefined ? null : Number(row.yield_qty),
+        yieldUnit: row.yield_unit || null,
+        totalCost,
+      });
+    }
 
-  const recipes = recipesResult.rows
-    .map((row) => ({ id: Number(row.id), name: row.name }))
-    .filter((row) => !recipeId || row.id !== recipeId);
+    const items = itemsResult.rows.map((row) => ({
+      id: Number(row.id),
+      name: row.name,
+      vendorName: row.vendor_name,
+      areaType: row.area_type,
+      measureType: row.measure_type || "FLUID",
+      trackedSizeLabel: row.size_label,
+      trackedSizeAmount:
+        row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
+      trackedSizeUnit: row.size_unit || null,
+      trackedUnitCost: row.unit_cost === null ? null : roundTo(row.unit_cost, 4),
+      densityId: row.density_id === null || row.density_id === undefined ? null : Number(row.density_id),
+      densityIngredientName: row.density_ingredient_name || null,
+      densityGramsPerCup:
+        row.density_grams_per_cup === null || row.density_grams_per_cup === undefined
+          ? null
+          : Number(row.density_grams_per_cup),
+      densityCupsPerLb:
+        row.density_cups_per_lb === null || row.density_cups_per_lb === undefined
+          ? null
+          : Number(row.density_cups_per_lb),
+    }));
 
-  res.json({ items, recipes });
+    return { items, recipes };
+  });
+
+  res.json(payload);
 });
 
 app.get("/api/recipe-builder/recipes", async (_req, res) => {

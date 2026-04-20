@@ -1418,6 +1418,230 @@ async function initRecipeBuilderPage() {
     return `$${n.toFixed(4)}`;
   }
 
+  function normalizeEditorUnit(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\./g, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function editorUnitCategory(value) {
+    const unit = normalizeEditorUnit(value);
+    const volumeUnits = new Set([
+      "ml",
+      "l",
+      "fl oz",
+      "floz",
+      "oz",
+      "qt",
+      "quart",
+      "quarts",
+      "gal",
+      "gallon",
+      "gallons",
+      "cup",
+      "cups",
+      "tbsp",
+      "tablespoon",
+      "tablespoons",
+      "tsp",
+      "teaspoon",
+      "teaspoons",
+      "pt",
+      "pint",
+      "pints",
+    ]);
+    const weightUnits = new Set([
+      "g",
+      "gram",
+      "grams",
+      "kg",
+      "oz wt",
+      "oz",
+      "ounce",
+      "ounces",
+      "lb",
+      "lbs",
+      "pound",
+      "pounds",
+    ]);
+    const eachUnits = new Set(["ea", "each", "x", "count"]);
+    if (volumeUnits.has(unit)) return "VOLUME";
+    if (weightUnits.has(unit)) return "WEIGHT";
+    if (eachUnits.has(unit)) return "EACH";
+    return "OTHER";
+  }
+
+  function editorUnitFactor(unit, category) {
+    const normalized = normalizeEditorUnit(unit);
+    if (!normalized) return null;
+
+    if (category === "VOLUME") {
+      const map = {
+        "fl oz": 1,
+        floz: 1,
+        oz: 1,
+        ml: 1 / 29.5735,
+        l: 33.8140227,
+        qt: 32,
+        quart: 32,
+        quarts: 32,
+        gal: 128,
+        gallon: 128,
+        gallons: 128,
+        cup: 8,
+        cups: 8,
+        tbsp: 0.5,
+        tablespoon: 0.5,
+        tablespoons: 0.5,
+        tsp: 1 / 6,
+        teaspoon: 1 / 6,
+        teaspoons: 1 / 6,
+        pt: 16,
+        pint: 16,
+        pints: 16,
+      };
+      return map[normalized] ?? null;
+    }
+
+    if (category === "WEIGHT") {
+      const map = {
+        g: 1,
+        gram: 1,
+        grams: 1,
+        kg: 1000,
+        oz: 28.349523125,
+        ounce: 28.349523125,
+        ounces: 28.349523125,
+        lb: 453.59237,
+        lbs: 453.59237,
+        pound: 453.59237,
+        pounds: 453.59237,
+      };
+      return map[normalized] ?? null;
+    }
+
+    if (category === "EACH") {
+      const map = { ea: 1, each: 1, x: 1, count: 1 };
+      return map[normalized] ?? null;
+    }
+
+    return null;
+  }
+
+  function convertEditorQuantity(quantity, fromUnit, toUnit) {
+    const qty = Number(quantity);
+    if (!Number.isFinite(qty)) return null;
+    const from = normalizeEditorUnit(fromUnit);
+    const to = normalizeEditorUnit(toUnit);
+    if (!from && !to) return qty;
+    if (!from || !to || from === to) return qty;
+
+    const toCategory = editorUnitCategory(to);
+    const fromCategory = editorUnitCategory(from);
+    const category = toCategory !== "OTHER" ? toCategory : fromCategory;
+    if (category === "OTHER" || (toCategory !== "OTHER" && fromCategory !== "OTHER" && toCategory !== fromCategory)) {
+      return null;
+    }
+
+    const fromFactor = editorUnitFactor(from, category);
+    const toFactor = editorUnitFactor(to, category);
+    if (!fromFactor || !toFactor) return null;
+    return (qty * fromFactor) / toFactor;
+  }
+
+  function editorGramsPerCup(item) {
+    const gpc = Number(item?.densityGramsPerCup);
+    if (Number.isFinite(gpc) && gpc > 0) return gpc;
+    const cplb = Number(item?.densityCupsPerLb);
+    if (Number.isFinite(cplb) && cplb > 0) return 453.59237 / cplb;
+    return null;
+  }
+
+  function ingredientLiveLineCost(item, qty, unit) {
+    if (!item || item.trackedUnitCost === null || item.trackedUnitCost === undefined) return null;
+    const measureType = String(item.measureType || "").toUpperCase();
+    const trackedUnitCost = Number(item.trackedUnitCost);
+    const trackedSizeAmount = Number(item.trackedSizeAmount);
+    const trackedSizeUnit = item.trackedSizeUnit || null;
+    if (!Number.isFinite(trackedUnitCost) || trackedUnitCost < 0) return null;
+
+    if (measureType === "FLUID") {
+      const baseQtyPerTracked = convertEditorQuantity(trackedSizeAmount, trackedSizeUnit || "fl oz", "fl oz");
+      const qtyFloz = convertEditorQuantity(qty, unit || "fl oz", "fl oz");
+      if (!baseQtyPerTracked || baseQtyPerTracked <= 0 || qtyFloz === null) return null;
+      return qtyFloz * (trackedUnitCost / baseQtyPerTracked);
+    }
+
+    if (measureType === "WEIGHT") {
+      const baseQtyPerTracked = convertEditorQuantity(trackedSizeAmount, trackedSizeUnit || "g", "g");
+      if (!baseQtyPerTracked || baseQtyPerTracked <= 0) return null;
+      let qtyGrams = convertEditorQuantity(qty, unit || "g", "g");
+      if (qtyGrams === null) {
+        const gramsPerCup = editorGramsPerCup(item);
+        const qtyCups = convertEditorQuantity(qty, unit || "cup", "cup");
+        if (gramsPerCup && gramsPerCup > 0 && qtyCups !== null) qtyGrams = qtyCups * gramsPerCup;
+      }
+      if (qtyGrams === null) return null;
+      return qtyGrams * (trackedUnitCost / baseQtyPerTracked);
+    }
+
+    if (measureType === "EA") {
+      const baseQtyPerTracked = convertEditorQuantity(trackedSizeAmount || 1, trackedSizeUnit || "ea", "ea");
+      const qtyEa = convertEditorQuantity(qty, unit || "ea", "ea");
+      if (!baseQtyPerTracked || baseQtyPerTracked <= 0 || qtyEa === null) return null;
+      return qtyEa * (trackedUnitCost / baseQtyPerTracked);
+    }
+
+    return null;
+  }
+
+  function nestedRecipeLiveLineCost(recipe, qty, unit) {
+    if (!recipe) return null;
+    const totalCost = Number(recipe.totalCost);
+    if (!Number.isFinite(totalCost) || totalCost < 0) return null;
+    const yieldQty = Number(recipe.yieldQty);
+    const safeYieldQty = Number.isFinite(yieldQty) && yieldQty > 0 ? yieldQty : 1;
+    const qtyInYieldUnit =
+      convertEditorQuantity(qty, unit || recipe.yieldUnit || "x", recipe.yieldUnit || "x") ?? qty;
+    if (!Number.isFinite(qtyInYieldUnit)) return null;
+    return (qtyInYieldUnit / safeYieldQty) * totalCost;
+  }
+
+  function updateRowLineCost(row) {
+    const output = row.querySelector(".rb-line-cost");
+    if (!output) return;
+    const type = row.querySelector(".rb-line-type")?.value;
+    if (type === "INGREDIENT") {
+      const itemId = parseNullableNumber(row.querySelector(".rb-ingredient-item")?.value);
+      const qty = parseNullableNumber(row.querySelector(".rb-qty")?.value);
+      const unit = row.querySelector(".rb-unit")?.value || "";
+      if (!itemId || qty === null) {
+        output.value = "n/a";
+        return;
+      }
+      const item = optionItems.find((entry) => Number(entry.id) === Number(itemId));
+      const live = ingredientLiveLineCost(item, qty, unit);
+      output.value = lineCostDisplay({ lineCost: live });
+      return;
+    }
+    if (type === "RECIPE") {
+      const nestedId = parseNullableNumber(row.querySelector(".rb-ingredient-recipe")?.value);
+      const qty = parseNullableNumber(row.querySelector(".rb-qty")?.value);
+      const unit = row.querySelector(".rb-unit")?.value || "";
+      if (!nestedId || qty === null) {
+        output.value = "n/a";
+        return;
+      }
+      const recipe = optionRecipes.find((entry) => Number(entry.id) === Number(nestedId));
+      const live = nestedRecipeLiveLineCost(recipe, qty, unit);
+      output.value = lineCostDisplay({ lineCost: live });
+      return;
+    }
+    output.value = "n/a";
+  }
+
   function renderLineBody(row, line = {}) {
     const type = row.querySelector(".rb-line-type").value;
     const body = row.querySelector(".recipe-line-body");
@@ -1442,7 +1666,12 @@ async function initRecipeBuilderPage() {
       const unitSelect = body.querySelector(".rb-unit");
       itemSelect?.addEventListener("change", () => {
         unitSelect.innerHTML = ingredientUnitOptions(itemSelect.value, "");
+        updateRowLineCost(row);
       });
+      body.querySelector(".rb-qty")?.addEventListener("input", () => updateRowLineCost(row));
+      body.querySelector(".rb-unit")?.addEventListener("change", () => updateRowLineCost(row));
+      body.querySelector(".rb-unit")?.addEventListener("input", () => updateRowLineCost(row));
+      updateRowLineCost(row);
       return;
     }
 
@@ -1462,6 +1691,10 @@ async function initRecipeBuilderPage() {
           <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
         </div>
       `;
+      body.querySelector(".rb-ingredient-recipe")?.addEventListener("change", () => updateRowLineCost(row));
+      body.querySelector(".rb-qty")?.addEventListener("input", () => updateRowLineCost(row));
+      body.querySelector(".rb-unit")?.addEventListener("input", () => updateRowLineCost(row));
+      updateRowLineCost(row);
       return;
     }
 
