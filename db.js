@@ -498,13 +498,6 @@ class PostgresClient {
       ALTER TABLE items ADD COLUMN IF NOT EXISTS density_id BIGINT
     `);
     await this.query(`
-      UPDATE items i
-      SET density_id = d.id
-      FROM pricebook_densities d
-      WHERE i.density_id IS NULL
-        AND LOWER(BTRIM(i.name)) = LOWER(BTRIM(d.ingredient_name))
-    `);
-    await this.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor
       ON items(name, vendor_id)
     `);
@@ -694,6 +687,13 @@ class PostgresClient {
         source_row INTEGER,
         source_file TEXT
       )
+    `);
+    await this.query(`
+      UPDATE items i
+      SET density_id = d.id
+      FROM pricebook_densities d
+      WHERE i.density_id IS NULL
+        AND LOWER(BTRIM(i.name)) = LOWER(BTRIM(d.ingredient_name))
     `);
 
     await this.query(`
