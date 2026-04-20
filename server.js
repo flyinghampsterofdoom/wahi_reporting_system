@@ -1726,6 +1726,47 @@ app.put("/api/admin/yields/:id", async (req, res) => {
   return res.status(204).send();
 });
 
+app.get("/api/admin/densities", async (_req, res) => {
+  const { rows } = await db.query(`
+    SELECT id, ingredient_name, grams_per_cup, cups_per_lb
+    FROM pricebook_densities
+    ORDER BY ingredient_name
+  `);
+
+  res.json(
+    rows.map((row) => ({
+      id: Number(row.id),
+      ingredientName: row.ingredient_name || "",
+      gramsPerCup: row.grams_per_cup === null ? null : Number(row.grams_per_cup),
+      cupsPerLb: row.cups_per_lb === null ? null : Number(row.cups_per_lb),
+    }))
+  );
+});
+
+app.put("/api/admin/densities/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: "Invalid density id." });
+
+  const schema = z.object({
+    ingredientName: z.string().trim().min(1),
+    gramsPerCup: z.number().nonnegative().nullable().optional(),
+    cupsPerLb: z.number().nonnegative().nullable().optional(),
+  });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid density payload." });
+
+  const result = await db.query(
+    `
+    UPDATE pricebook_densities
+    SET ingredient_name = $1, grams_per_cup = $2, cups_per_lb = $3
+    WHERE id = $4
+    `,
+    [parsed.data.ingredientName, parsed.data.gramsPerCup ?? null, parsed.data.cupsPerLb ?? null, id]
+  );
+  if (!result.rowCount) return res.status(404).json({ error: "Density not found." });
+  return res.status(204).send();
+});
+
 const recipeBookQuerySchema = z.object({
   book: z.enum(["Prep", "Final", "Syrup", "Drinks"]),
 });

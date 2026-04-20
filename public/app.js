@@ -1636,11 +1636,26 @@ async function initRecipeBuilderPage() {
 
 async function initAdminReferencePage() {
   const conversionsContainer = byId("admin-conversions");
-  const yieldsContainer = byId("admin-yields");
+  const conversionInputsContainer = byId("conversion-inputs");
+  const conversionInputsHelp = byId("conversion-inputs-help");
+  const yieldsOptionButton = byId("conversion-option-yields");
+  const densitiesOptionButton = byId("conversion-option-densities");
   const addConversionButton = byId("add-conversion");
   const refreshConversionsButton = byId("refresh-conversions");
-  const refreshYieldsButton = byId("refresh-yields");
-  if (!conversionsContainer || !yieldsContainer || !refreshConversionsButton || !refreshYieldsButton) return;
+  const refreshConversionInputsButton = byId("refresh-conversion-inputs");
+  if (
+    !conversionsContainer ||
+    !conversionInputsContainer ||
+    !conversionInputsHelp ||
+    !yieldsOptionButton ||
+    !densitiesOptionButton ||
+    !refreshConversionsButton ||
+    !refreshConversionInputsButton
+  ) {
+    return;
+  }
+
+  let activeConversionInput = "yields";
 
   function defaultBaseUnitByType(type) {
     const t = String(type || "").toLowerCase();
@@ -1730,11 +1745,11 @@ async function initAdminReferencePage() {
   async function loadYields() {
     const rows = await api("/api/admin/yields");
     if (!rows.length) {
-      yieldsContainer.innerHTML = "<p>No yields found.</p>";
+      conversionInputsContainer.innerHTML = "<p>No yields found.</p>";
       return;
     }
 
-    yieldsContainer.innerHTML = `
+    conversionInputsContainer.innerHTML = `
       <div class="table-scroll">
       <table>
         <thead>
@@ -1765,7 +1780,7 @@ async function initAdminReferencePage() {
       </div>
     `;
 
-    yieldsContainer.querySelectorAll(".ad-y-save").forEach((button) => {
+    conversionInputsContainer.querySelectorAll(".ad-y-save").forEach((button) => {
       button.addEventListener("click", async () => {
         const tr = button.closest("tr");
         const id = Number(tr.dataset.yieldId);
@@ -1794,10 +1809,92 @@ async function initAdminReferencePage() {
     });
   }
 
+  async function loadDensities() {
+    const rows = await api("/api/admin/densities");
+    if (!rows.length) {
+      conversionInputsContainer.innerHTML = "<p>No densities found.</p>";
+      return;
+    }
+
+    conversionInputsContainer.innerHTML = `
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Ingredient</th><th>Grams / Cup</th><th>Cups / Lb</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (row) => `
+            <tr data-density-id="${row.id}">
+              <td><input type="text" class="ad-d-ingredient" value="${row.ingredientName}" /></td>
+              <td><input type="number" step="0.0001" min="0" class="ad-d-gpc" value="${row.gramsPerCup ?? ""}" /></td>
+              <td><input type="number" step="0.0001" min="0" class="ad-d-cplb" value="${row.cupsPerLb ?? ""}" /></td>
+              <td><button type="button" class="secondary mini-btn ad-d-save">Save</button></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+      </div>
+    `;
+
+    conversionInputsContainer.querySelectorAll(".ad-d-save").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tr = button.closest("tr");
+        const id = Number(tr.dataset.densityId);
+        try {
+          await api(`/api/admin/densities/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              ingredientName: tr.querySelector(".ad-d-ingredient").value.trim(),
+              gramsPerCup: parseNullableNumber(tr.querySelector(".ad-d-gpc").value),
+              cupsPerLb: parseNullableNumber(tr.querySelector(".ad-d-cplb").value),
+            }),
+          });
+          showToast("Density saved.");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+  }
+
+  function setConversionOption(option) {
+    activeConversionInput = option;
+    setAreaToggleState(option, [
+      { area: "yields", button: yieldsOptionButton },
+      { area: "densities", button: densitiesOptionButton },
+    ]);
+
+    if (option === "yields") {
+      conversionInputsHelp.textContent =
+        "Yield defines usable output from a purchased input (for example, trimmed produce, reduced syrup, or cooked batch). It helps recipe costing convert buy-units into recipe-ready units.";
+      loadYields().catch((e) => showToast(e.message, true));
+      return;
+    }
+
+    conversionInputsHelp.textContent =
+      "Density defines weight-to-volume behavior (for example, grams per cup) so recipes can accurately convert between volume and weight while costing and scaling.";
+    loadDensities().catch((e) => showToast(e.message, true));
+  }
+
   refreshConversionsButton.addEventListener("click", () =>
     loadConversions().catch((e) => showToast(e.message, true))
   );
-  refreshYieldsButton.addEventListener("click", () => loadYields().catch((e) => showToast(e.message, true)));
+  refreshConversionInputsButton.addEventListener("click", () => {
+    if (activeConversionInput === "yields") {
+      loadYields().catch((e) => showToast(e.message, true));
+      return;
+    }
+    loadDensities().catch((e) => showToast(e.message, true));
+  });
+  yieldsOptionButton.addEventListener("click", () => setConversionOption("yields"));
+  densitiesOptionButton.addEventListener("click", () => setConversionOption("densities"));
+
   if (addConversionButton) {
     addConversionButton.addEventListener("click", async () => {
       try {
@@ -1818,7 +1915,8 @@ async function initAdminReferencePage() {
     });
   }
 
-  await Promise.all([loadConversions(), loadYields()]);
+  await loadConversions();
+  setConversionOption("yields");
 }
 
 async function initRecipeBooksPage() {
