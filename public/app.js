@@ -156,10 +156,6 @@ async function initLoginPage() {
   if (!loginForm) return;
   const username = byId("login-username");
   const password = byId("login-password");
-  const hint = byId("login-hint");
-  if (hint) {
-    hint.textContent = 'Default admin: username "justinrawlinson", password "Password"';
-  }
 
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1220,6 +1216,8 @@ async function initReorderPage() {
 async function initRecipeBuilderPage() {
   const recipeForm = byId("recipe-form");
   if (!recipeForm) return;
+  const pageParams = new URLSearchParams(window.location.search);
+  const isViewMode = String(pageParams.get("mode") || "").toLowerCase() === "view";
 
   const recipeList = byId("recipe-list");
   const recipeName = byId("recipe-name");
@@ -1247,6 +1245,46 @@ async function initRecipeBuilderPage() {
   let recipes = [];
   let optionItems = [];
   let optionRecipes = [];
+
+  function applyEditorReadOnlyState() {
+    if (!isViewMode || !editorCard || editorCard.hidden) return;
+
+    editorTitle.textContent = editorTitle.textContent.replace(/^Recipe Editor:/, "Recipe View:");
+
+    [saveRecipeMeta, saveRecipeLines, addRecipeLine].forEach((button) => {
+      if (!button) return;
+      button.disabled = true;
+      button.style.display = "none";
+    });
+
+    const editableFields = [
+      editorRecipeName,
+      editorRecipeCategory,
+      editorRecipeStatus,
+      editorRecipeYieldQty,
+      editorRecipeYieldUnit,
+      editorRecipeNotes,
+    ];
+    editableFields.forEach((field) => {
+      if (!field) return;
+      field.disabled = true;
+      field.readOnly = true;
+    });
+
+    recipeLines.querySelectorAll(".rb-remove-line").forEach((button) => {
+      button.disabled = true;
+      button.style.display = "none";
+    });
+
+    recipeLines.querySelectorAll("input, select, textarea, button").forEach((node) => {
+      if (node.classList.contains("rb-line-cost")) return;
+      if (node.classList.contains("rb-remove-line")) return;
+      node.disabled = true;
+      if (Object.prototype.hasOwnProperty.call(node, "readOnly")) {
+        node.readOnly = true;
+      }
+    });
+  }
 
   function itemOptionsHtml(selectedId = null) {
     return optionItems
@@ -1408,6 +1446,7 @@ async function initRecipeBuilderPage() {
 
     renderLineBody(row, line);
     recipeLines.appendChild(row);
+    applyEditorReadOnlyState();
   }
 
   function collectLinesPayload() {
@@ -1462,11 +1501,12 @@ async function initRecipeBuilderPage() {
     editorRecipeYieldUnit.value = recipe.yieldUnit ?? "";
     editorRecipeNotes.value = recipe.notes ?? "";
     editorTotalCost.textContent = `$${Number(recipe.totalCost || 0).toFixed(2)}`;
-    editorTitle.textContent = `Recipe Editor: ${recipe.name}`;
+    editorTitle.textContent = `${isViewMode ? "Recipe View" : "Recipe Editor"}: ${recipe.name}`;
 
     recipeLines.innerHTML = "";
     for (const line of recipe.lines || []) addRecipeLineRow(line);
     editorCard.hidden = false;
+    applyEditorReadOnlyState();
     editorCard.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -1504,6 +1544,7 @@ async function initRecipeBuilderPage() {
   }
 
   recipeForm.addEventListener("submit", async (event) => {
+    if (isViewMode) return;
     event.preventDefault();
     try {
       const created = await api("/api/recipe-builder/recipes", {
@@ -1529,6 +1570,7 @@ async function initRecipeBuilderPage() {
   });
 
   saveRecipeMeta.addEventListener("click", async () => {
+    if (isViewMode) return;
     try {
       const id = Number(editorRecipeId.value);
       await api(`/api/recipe-builder/recipes/${id}`, {
@@ -1550,6 +1592,7 @@ async function initRecipeBuilderPage() {
   });
 
   saveRecipeLines.addEventListener("click", async () => {
+    if (isViewMode) return;
     try {
       const id = Number(editorRecipeId.value);
       await api(`/api/recipe-builder/recipes/${id}/lines`, {
@@ -1564,11 +1607,22 @@ async function initRecipeBuilderPage() {
     }
   });
 
-  addRecipeLine.addEventListener("click", () => addRecipeLineRow());
+  addRecipeLine.addEventListener("click", () => {
+    if (isViewMode) return;
+    addRecipeLineRow();
+  });
+
+  if (isViewMode) {
+    recipeForm.querySelectorAll("input, select, textarea, button").forEach((node) => {
+      node.disabled = true;
+      if (Object.prototype.hasOwnProperty.call(node, "readOnly")) {
+        node.readOnly = true;
+      }
+    });
+  }
 
   await loadRecipes();
-  const params = new URLSearchParams(window.location.search);
-  const presetRecipeId = Number(params.get("recipeId") || 0);
+  const presetRecipeId = Number(pageParams.get("recipeId") || 0);
   if (Number.isInteger(presetRecipeId) && presetRecipeId > 0) {
     await openRecipe(presetRecipeId);
   }
@@ -1801,8 +1855,7 @@ async function initRecipeBooksPage() {
             <th>Retail Price</th>
             <th>Margin %</th>
             <th>Profit</th>
-            <th>Action</th>
-            <th>Edit</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -1815,8 +1868,14 @@ async function initRecipeBooksPage() {
               <td><input type="number" min="0" step="0.01" class="rb-retail" value="${row.retailPrice ?? ""}" /></td>
               <td>${row.marginPercent === null ? "n/a" : `${Number(row.marginPercent).toFixed(2)}%`}</td>
               <td>${row.profit === null ? "n/a" : `$${Number(row.profit).toFixed(2)}`}</td>
-              <td><button type="button" class="secondary mini-btn rb-save-retail">Save</button></td>
-              <td><button type="button" class="mini-btn rb-edit-recipe">Edit Recipe</button></td>
+              <td>
+                <select class="rb-action-select">
+                  <option value="">Choose Action</option>
+                  <option value="view">View</option>
+                  <option value="edit">Edit</option>
+                  <option value="save">Save</option>
+                </select>
+              </td>
             </tr>
           `
             )
@@ -1826,36 +1885,40 @@ async function initRecipeBooksPage() {
       </div>
     `;
 
-    tableContainer.querySelectorAll(".rb-save-retail").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const tr = button.closest("tr");
-        const recipeName = decodeURIComponent(tr.dataset.recipeName);
-        const retailPrice = parseNullableNumber(tr.querySelector(".rb-retail").value);
-        try {
-          await api(`/api/recipe-books/${encodeURIComponent(activeBook)}/${encodeURIComponent(recipeName)}/retail`, {
-            method: "PUT",
-            body: JSON.stringify({ retailPrice }),
-          });
-          await loadBook();
-          showToast("Retail price saved.");
-        } catch (error) {
-          showToast(error.message, true);
-        }
-      });
-    });
+    tableContainer.querySelectorAll(".rb-action-select").forEach((select) => {
+      select.addEventListener("change", async () => {
+        const action = select.value;
+        if (!action) return;
+        select.value = "";
+        select.disabled = true;
 
-    tableContainer.querySelectorAll(".rb-edit-recipe").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const tr = button.closest("tr");
+        const tr = select.closest("tr");
         const recipeName = decodeURIComponent(tr.dataset.recipeName);
         try {
-          const imported = await api("/api/recipe-builder/import", {
-            method: "POST",
-            body: JSON.stringify({ recipeName }),
-          });
-          window.location.href = `/recipe-builder?recipeId=${encodeURIComponent(imported.id)}`;
+          if (action === "save") {
+            const retailPrice = parseNullableNumber(tr.querySelector(".rb-retail").value);
+            await api(`/api/recipe-books/${encodeURIComponent(activeBook)}/${encodeURIComponent(recipeName)}/retail`, {
+              method: "PUT",
+              body: JSON.stringify({ retailPrice }),
+            });
+            await loadBook();
+            showToast("Retail price saved.");
+            return;
+          }
+
+          if (action === "edit" || action === "view") {
+            const imported = await api("/api/recipe-builder/import", {
+              method: "POST",
+              body: JSON.stringify({ recipeName }),
+            });
+            const query = action === "view" ? `?recipeId=${encodeURIComponent(imported.id)}&mode=view` : `?recipeId=${encodeURIComponent(imported.id)}`;
+            window.location.href = `/recipe-builder${query}`;
+            return;
+          }
         } catch (error) {
           showToast(error.message, true);
+        } finally {
+          select.disabled = false;
         }
       });
     });
