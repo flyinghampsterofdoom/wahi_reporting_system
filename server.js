@@ -715,6 +715,74 @@ function parseSourceLineCost(notes) {
   return Number.isFinite(value) ? value : null;
 }
 
+function parseSourceNameFromNotes(notes) {
+  const text = String(notes || "");
+  const match = text.match(/Source:\s*([^|]+)/i);
+  if (!match) return null;
+  const value = String(match[1] || "").trim();
+  return value || null;
+}
+
+function yieldUnitPrice(row) {
+  const direct = Number(row.price_per_yield_unit);
+  if (Number.isFinite(direct) && direct >= 0) return direct;
+  const sourcePerPrice = Number(row.source_per_price);
+  const yieldValue = Number(row.yield_value);
+  if (Number.isFinite(sourcePerPrice) && Number.isFinite(yieldValue) && yieldValue > 0) {
+    return sourcePerPrice / yieldValue;
+  }
+  return null;
+}
+
+async function getYieldRows(tx, yieldCache = new Map()) {
+  if (yieldCache.has("all")) return yieldCache.get("all");
+  const { rows } = await tx.query(`
+    SELECT product_name, source_ingredient, source_per_price, yield_unit, yield_value, price_per_yield_unit
+    FROM pricebook_yields
+  `);
+  yieldCache.set("all", rows);
+  return rows;
+}
+
+async function ingredientYieldLineCost(tx, line, yieldCache = new Map()) {
+  const qty = Number(line.quantity ?? 0);
+  if (!Number.isFinite(qty) || qty <= 0) return null;
+
+  const rows = await getYieldRows(tx, yieldCache);
+  if (!rows.length) return null;
+
+  const sourceName = normalizeLookupName(parseSourceNameFromNotes(line.notes));
+  const ingredientName = normalizeLookupName(line.ingredientItemName);
+  const unit = line.unit || null;
+
+  const pricedCandidates = [];
+  for (const row of rows) {
+    const unitPrice = yieldUnitPrice(row);
+    if (unitPrice === null) continue;
+    const yieldUnit = row.yield_unit || null;
+    const qtyInYieldUnit = convertRecipeQuantity(qty, unit || yieldUnit, yieldUnit);
+    if (qtyInYieldUnit === null || !Number.isFinite(qtyInYieldUnit)) continue;
+
+    const productName = normalizeLookupName(row.product_name);
+    const sourceIngredient = normalizeLookupName(row.source_ingredient);
+    let priority = 99;
+    if (sourceName && sourceName === productName) priority = 1;
+    else if (sourceName && sourceName === sourceIngredient) priority = 2;
+    else if (ingredientName && ingredientName === sourceIngredient) priority = 3;
+    else if (ingredientName && ingredientName === productName) priority = 4;
+    if (priority === 99) continue;
+
+    pricedCandidates.push({
+      priority,
+      cost: qtyInYieldUnit * unitPrice,
+    });
+  }
+
+  if (!pricedCandidates.length) return null;
+  pricedCandidates.sort((a, b) => a.priority - b.priority);
+  return pricedCandidates[0].cost;
+}
+
 function trackedIngredientBaseQuantity(line) {
   const measureType = String(line.ingredientMeasureType || "").toUpperCase();
   const amount = line.ingredientSizeAmount;
@@ -785,17 +853,25 @@ function ingredientLineCost(line) {
   return null;
 }
 
-async function calculateRecipeLineCost(tx, line, path = new Set(), totalCache = new Map(), metaCache = new Map()) {
+async function calculateRecipeLineCost(
+  tx,
+  line,
+  path = new Set(),
+  totalCache = new Map(),
+  metaCache = new Map(),
+  yieldCache = new Map()
+) {
   const qty = line.quantity ?? 0;
   if (!Number.isFinite(qty) || qty <= 0) return 0;
   const sourceLineCost = parseSourceLineCost(line.notes);
-  const hasImportedSourceTag = String(line.notes || "").includes("Source:");
 
-  if (sourceLineCost !== null && hasImportedSourceTag) {
-    return Number(sourceLineCost.toFixed(4));
-  }
-
-  if (line.lineType === "INGREDIENT" && line.ingredientItemCost !== null) {
+  if (line.lineType === "INGREDIENT") {
+    const yieldBased = await ingredientYieldLineCost(tx, line, yieldCache);
+    if (yieldBased !== null) return Number(yieldBased.toFixed(4));
+    if (line.ingredientItemCost === null) {
+      if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
+      return 0;
+    }
     const derived = ingredientLineCost(line);
     if (derived !== null) return Number(derived.toFixed(4));
     if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
@@ -806,7 +882,7 @@ async function calculateRecipeLineCost(tx, line, path = new Set(), totalCache = 
     const nestedMeta = await getRecipeMeta(tx, line.ingredientRecipeId, metaCache);
     if (!nestedMeta) return 0;
 
-    const nestedCost = await calculateRecipeCost(tx, line.ingredientRecipeId, path, totalCache, metaCache);
+    const nestedCost = await calculateRecipeCost(tx, line.ingredientRecipeId, path, totalCache, metaCache, yieldCache);
     const yieldQty = nestedMeta.yieldQty && nestedMeta.yieldQty > 0 ? nestedMeta.yieldQty : 1;
     const qtyInYieldUnit =
       convertRecipeQuantity(qty, line.unit || nestedMeta.yieldUnit, nestedMeta.yieldUnit) ?? qty;
@@ -819,7 +895,14 @@ async function calculateRecipeLineCost(tx, line, path = new Set(), totalCache = 
   return 0;
 }
 
-async function calculateRecipeCost(tx, recipeId, path = new Set(), totalCache = new Map(), metaCache = new Map()) {
+async function calculateRecipeCost(
+  tx,
+  recipeId,
+  path = new Set(),
+  totalCache = new Map(),
+  metaCache = new Map(),
+  yieldCache = new Map()
+) {
   const id = Number(recipeId);
   if (totalCache.has(id)) return totalCache.get(id);
   if (path.has(id)) return 0;
@@ -831,7 +914,7 @@ async function calculateRecipeCost(tx, recipeId, path = new Set(), totalCache = 
   let total = 0;
 
   for (const line of lines) {
-    const lineCost = await calculateRecipeLineCost(tx, line, nextPath, totalCache, metaCache);
+    const lineCost = await calculateRecipeLineCost(tx, line, nextPath, totalCache, metaCache, yieldCache);
     total += lineCost;
   }
 
@@ -1956,7 +2039,7 @@ app.put("/api/recipe-books/:book/:recipeName/retail", async (req, res) => {
 app.get("/api/recipe-builder/options", async (req, res) => {
   const recipeId = Number(req.query.recipeId || 0);
   const payload = await db.transaction(async (tx) => {
-    const [itemsResult, recipesResult] = await Promise.all([
+    const [itemsResult, recipesResult, yieldsResult] = await Promise.all([
       tx.query(`
         SELECT
           i.id,
@@ -1979,6 +2062,10 @@ app.get("/api/recipe-builder/options", async (req, res) => {
         ORDER BY i.name
       `),
       tx.query("SELECT id, name, yield_qty, yield_unit FROM recipe_builder_recipes ORDER BY name"),
+      tx.query(`
+        SELECT product_name, source_ingredient, source_per_price, yield_unit, yield_value, price_per_yield_unit
+        FROM pricebook_yields
+      `),
     ]);
 
     const totalCache = new Map();
@@ -2020,7 +2107,19 @@ app.get("/api/recipe-builder/options", async (req, res) => {
           : Number(row.density_cups_per_lb),
     }));
 
-    return { items, recipes };
+    const yields = yieldsResult.rows.map((row) => ({
+      productName: row.product_name || "",
+      sourceIngredient: row.source_ingredient || "",
+      sourcePerPrice: row.source_per_price === null || row.source_per_price === undefined ? null : Number(row.source_per_price),
+      yieldUnit: row.yield_unit || null,
+      yieldValue: row.yield_value === null || row.yield_value === undefined ? null : Number(row.yield_value),
+      pricePerYieldUnit:
+        row.price_per_yield_unit === null || row.price_per_yield_unit === undefined
+          ? null
+          : Number(row.price_per_yield_unit),
+    }));
+
+    return { items, recipes, yields };
   });
 
   res.json(payload);

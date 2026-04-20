@@ -1320,6 +1320,7 @@ async function initRecipeBuilderPage() {
   let recipes = [];
   let optionItems = [];
   let optionRecipes = [];
+  let optionYields = [];
 
   function applyEditorReadOnlyState() {
     if (!isViewMode || !editorCard || editorCard.hidden) return;
@@ -1423,6 +1424,14 @@ async function initRecipeBuilderPage() {
       .trim()
       .toLowerCase()
       .replace(/\./g, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function normalizeEditorName(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
       .replace(/\s+/g, " ");
   }
 
@@ -1559,8 +1568,58 @@ async function initRecipeBuilderPage() {
     return null;
   }
 
-  function ingredientLiveLineCost(item, qty, unit) {
-    if (!item || item.trackedUnitCost === null || item.trackedUnitCost === undefined) return null;
+  function parseSourceNameFromNotesText(text) {
+    const match = String(text || "").match(/Source:\s*([^|]+)/i);
+    if (!match) return null;
+    const value = String(match[1] || "").trim();
+    return value || null;
+  }
+
+  function optionYieldUnitPrice(y) {
+    const direct = Number(y?.pricePerYieldUnit);
+    if (Number.isFinite(direct) && direct >= 0) return direct;
+    const sourcePer = Number(y?.sourcePerPrice);
+    const yieldValue = Number(y?.yieldValue);
+    if (Number.isFinite(sourcePer) && Number.isFinite(yieldValue) && yieldValue > 0) {
+      return sourcePer / yieldValue;
+    }
+    return null;
+  }
+
+  function ingredientYieldLiveLineCost(item, qty, unit, sourceNoteText = "") {
+    if (!item || !optionYields.length) return null;
+    const sourceName = normalizeEditorName(parseSourceNameFromNotesText(sourceNoteText));
+    const ingredientName = normalizeEditorName(item.name);
+
+    const candidates = [];
+    for (const y of optionYields) {
+      const unitPrice = optionYieldUnitPrice(y);
+      if (unitPrice === null) continue;
+      const qtyInYieldUnit = convertEditorQuantity(qty, unit || y.yieldUnit, y.yieldUnit);
+      if (qtyInYieldUnit === null || !Number.isFinite(qtyInYieldUnit)) continue;
+
+      const productName = normalizeEditorName(y.productName);
+      const sourceIngredient = normalizeEditorName(y.sourceIngredient);
+      let priority = 99;
+      if (sourceName && sourceName === productName) priority = 1;
+      else if (sourceName && sourceName === sourceIngredient) priority = 2;
+      else if (ingredientName && ingredientName === sourceIngredient) priority = 3;
+      else if (ingredientName && ingredientName === productName) priority = 4;
+      if (priority === 99) continue;
+
+      candidates.push({ priority, cost: qtyInYieldUnit * unitPrice });
+    }
+
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => a.priority - b.priority);
+    return candidates[0].cost;
+  }
+
+  function ingredientLiveLineCost(item, qty, unit, sourceNoteText = "") {
+    if (!item) return null;
+    const yieldBased = ingredientYieldLiveLineCost(item, qty, unit, sourceNoteText);
+    if (yieldBased !== null) return yieldBased;
+    if (item.trackedUnitCost === null || item.trackedUnitCost === undefined) return null;
     const measureType = String(item.measureType || "").toUpperCase();
     const trackedUnitCost = Number(item.trackedUnitCost);
     const trackedSizeAmount = Number(item.trackedSizeAmount);
@@ -1617,12 +1676,13 @@ async function initRecipeBuilderPage() {
       const itemId = parseNullableNumber(row.querySelector(".rb-ingredient-item")?.value);
       const qty = parseNullableNumber(row.querySelector(".rb-qty")?.value);
       const unit = row.querySelector(".rb-unit")?.value || "";
+      const noteText = row.querySelector(".rb-notes")?.value || "";
       if (!itemId || qty === null) {
         output.value = "n/a";
         return;
       }
       const item = optionItems.find((entry) => Number(entry.id) === Number(itemId));
-      const live = ingredientLiveLineCost(item, qty, unit);
+      const live = ingredientLiveLineCost(item, qty, unit, noteText);
       output.value = lineCostDisplay({ lineCost: live });
       return;
     }
@@ -1671,6 +1731,7 @@ async function initRecipeBuilderPage() {
       body.querySelector(".rb-qty")?.addEventListener("input", () => updateRowLineCost(row));
       body.querySelector(".rb-unit")?.addEventListener("change", () => updateRowLineCost(row));
       body.querySelector(".rb-unit")?.addEventListener("input", () => updateRowLineCost(row));
+      body.querySelector(".rb-notes")?.addEventListener("input", () => updateRowLineCost(row));
       updateRowLineCost(row);
       return;
     }
@@ -1807,6 +1868,7 @@ async function initRecipeBuilderPage() {
     const opts = await api(`/api/recipe-builder/options?recipeId=${activeRecipeId}`);
     optionItems = opts.items || [];
     optionRecipes = opts.recipes || [];
+    optionYields = opts.yields || [];
   }
 
   async function openRecipe(recipeId) {
