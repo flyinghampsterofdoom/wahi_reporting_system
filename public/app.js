@@ -36,12 +36,20 @@ const ITEM_UNIT_OPTIONS = {
   WEIGHT: ["g", "kg", "oz", "lb"],
   EA: ["ea"],
 };
+const DENSITY_VOLUME_UNIT_OPTIONS = ["fl oz", "mL", "L", "qt", "gal", "pt", "cups", "tbsp", "tsp"];
 
 function unitOptionsHtml(measureType, selectedUnit) {
   const options = ITEM_UNIT_OPTIONS[measureType] || ITEM_UNIT_OPTIONS.FLUID;
   return options
     .map((unit) => `<option value="${unit}" ${unit === selectedUnit ? "selected" : ""}>${unit}</option>`)
     .join("");
+}
+
+function syncDensityFieldState(selectNode, measureType) {
+  if (!selectNode) return;
+  const enabled = measureType === "WEIGHT";
+  selectNode.disabled = !enabled;
+  if (!enabled) selectNode.value = "";
 }
 
 function toFloz(amount, unit) {
@@ -422,6 +430,7 @@ async function initAddItemPage() {
   const itemMeasureType = byId("item-measure-type");
   const itemPurchaseUnit = byId("item-purchase-unit");
   const itemPurchaseCost = byId("item-purchase-cost");
+  const itemDensitySelect = byId("item-density");
   const itemCostPreview = byId("item-cost-preview");
   const sizeRowsContainer = byId("size-rows");
   const addSizeRowButton = byId("add-size-row");
@@ -451,6 +460,15 @@ async function initAddItemPage() {
     itemVendorSelect.innerHTML = vendors.map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
   }
 
+  async function loadDensities() {
+    if (!itemDensitySelect) return;
+    const rows = await api("/api/admin/densities");
+    const options = rows
+      .map((row) => `<option value="${row.id}">${row.ingredientName}</option>`)
+      .join("");
+    itemDensitySelect.innerHTML = `<option value="">None</option>${options}`;
+  }
+
   itemForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
@@ -467,6 +485,7 @@ async function initAddItemPage() {
           caseSize: Number(itemCaseSizeInput.value),
           areaType: itemAreaTypeSelect.value,
           measureType: itemMeasureType.value,
+          densityId: parseNullableNumber(itemDensitySelect?.value),
           purchaseUnit: itemPurchaseUnit.value,
           purchaseCost: parseNullableNumber(itemPurchaseCost.value),
           sizes: collectSizesFrom(sizeRowsContainer),
@@ -477,6 +496,8 @@ async function initAddItemPage() {
       itemCaseSizeInput.value = 12;
       itemAreaTypeSelect.value = "FOH";
       itemMeasureType.value = "FLUID";
+      if (itemDensitySelect) itemDensitySelect.value = "";
+      syncDensityFieldState(itemDensitySelect, itemMeasureType.value);
       itemPurchaseUnit.value = "BOTTLE";
       itemPurchaseCost.value = "";
       sizeRowsContainer.innerHTML = "";
@@ -511,6 +532,7 @@ async function initAddItemPage() {
       const fallback = options.includes(selected) ? selected : options[0];
       select.innerHTML = unitOptionsHtml(itemMeasureType.value, fallback);
     });
+    syncDensityFieldState(itemDensitySelect, itemMeasureType.value);
     refreshAddPreview();
   });
   sizeRowsContainer.addEventListener("input", refreshAddPreview);
@@ -530,8 +552,10 @@ async function initAddItemPage() {
     undefined,
     itemMeasureType.value
   );
+  syncDensityFieldState(itemDensitySelect, itemMeasureType.value);
   refreshAddPreview();
   await loadVendors();
+  await loadDensities();
 }
 
 async function initItemCatalogPage() {
@@ -557,6 +581,7 @@ async function initItemCatalogPage() {
   const editItemAreaType = byId("edit-item-area-type");
   const editItemMeasureType = byId("edit-item-measure-type");
   const editItemVendor = byId("edit-item-vendor");
+  const editItemDensity = byId("edit-item-density");
   const editItemCaseSize = byId("edit-item-case-size");
   const editItemPurchaseUnit = byId("edit-item-purchase-unit");
   const editItemPurchaseCost = byId("edit-item-purchase-cost");
@@ -564,6 +589,7 @@ async function initItemCatalogPage() {
 
   let vendors = [];
   let items = [];
+  let densities = [];
 
   function refreshEditPreview() {
     const tracked = trackedSizeInfoFromRows(editSizeRows);
@@ -699,6 +725,17 @@ async function initItemCatalogPage() {
     selectNode.innerHTML = vendors.map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
   }
 
+  function loadDensityOptions(selectNode, selectedDensityId = null) {
+    if (!selectNode) return;
+    const options = densities
+      .map((d) => `<option value="${d.id}">${d.ingredientName}</option>`)
+      .join("");
+    selectNode.innerHTML = `<option value="">None</option>${options}`;
+    if (selectedDensityId) {
+      selectNode.value = String(selectedDensityId);
+    }
+  }
+
   function loadVendorFilterOptions() {
     const currentValue = filterVendorSelect.value;
     const options = vendors
@@ -722,6 +759,8 @@ async function initItemCatalogPage() {
     editItemPurchaseUnit.value = item.purchaseUnit || "BOTTLE";
     editItemPurchaseCost.value = formatNumberInput(item.purchaseCost, 2);
     loadVendorOptions(editItemVendor);
+    loadDensityOptions(editItemDensity, item.density?.id ?? null);
+    syncDensityFieldState(editItemDensity, editItemMeasureType.value);
     editItemVendor.value = String(item.vendor.id);
 
     editSizeRows.innerHTML = "";
@@ -751,8 +790,16 @@ async function initItemCatalogPage() {
   }
 
   async function reloadData() {
-    vendors = await api("/api/vendors");
-    items = await api("/api/items");
+    const [vendorRows, itemRows, densityRows] = await Promise.all([
+      api("/api/vendors"),
+      api("/api/items"),
+      api("/api/admin/densities"),
+    ]);
+    vendors = vendorRows;
+    items = itemRows;
+    densities = densityRows;
+    loadDensityOptions(byId("item-density"));
+    syncDensityFieldState(byId("item-density"), byId("item-measure-type")?.value || "FLUID");
     loadVendorFilterOptions();
     renderCatalog();
   }
@@ -793,6 +840,7 @@ async function initItemCatalogPage() {
       const fallback = options.includes(selected) ? selected : options[0];
       select.innerHTML = unitOptionsHtml(editItemMeasureType.value, fallback);
     });
+    syncDensityFieldState(editItemDensity, editItemMeasureType.value);
     refreshEditPreview();
   });
   editSizeRows.addEventListener("input", refreshEditPreview);
@@ -813,6 +861,7 @@ async function initItemCatalogPage() {
           areaType: editItemAreaType.value,
           measureType: editItemMeasureType.value,
           vendorId: Number(editItemVendor.value),
+          densityId: parseNullableNumber(editItemDensity?.value),
           caseSize: Number(editItemCaseSize.value),
           purchaseUnit: editItemPurchaseUnit.value,
           purchaseCost: parseNullableNumber(editItemPurchaseCost.value),
@@ -1341,8 +1390,16 @@ async function initRecipeBuilderPage() {
   function ingredientUnitOptions(selectedItemId, selectedUnit = "") {
     const item = optionItems.find((entry) => Number(entry.id) === Number(selectedItemId));
     const measureType = item?.measureType || "FLUID";
-    const defaultUnit = item?.measureType === "FLUID" ? "fl oz" : (ITEM_UNIT_OPTIONS[measureType] || ["ea"])[0];
-    return unitOptionsHtml(measureType, selectedUnit || defaultUnit);
+    const hasDensityBridge =
+      measureType === "WEIGHT" &&
+      ((item?.densityGramsPerCup !== null && item?.densityGramsPerCup !== undefined) ||
+        (item?.densityCupsPerLb !== null && item?.densityCupsPerLb !== undefined));
+    const baseOptions = ITEM_UNIT_OPTIONS[measureType] || ITEM_UNIT_OPTIONS.FLUID;
+    const options = hasDensityBridge ? [...baseOptions, ...DENSITY_VOLUME_UNIT_OPTIONS] : baseOptions;
+    const defaultUnit = item?.measureType === "FLUID" ? "fl oz" : options[0];
+    return options
+      .map((unit) => `<option value="${unit}" ${unit === (selectedUnit || defaultUnit) ? "selected" : ""}>${unit}</option>`)
+      .join("");
   }
 
   function recipeOptionsHtml(selectedId = null) {

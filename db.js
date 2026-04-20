@@ -48,6 +48,7 @@ class SqliteClient {
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
         measure_type TEXT NOT NULL DEFAULT 'FLUID' CHECK(measure_type IN ('FLUID', 'WEIGHT', 'EA')),
+        density_id INTEGER,
         purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
         purchase_cost REAL,
         sku TEXT NOT NULL DEFAULT '',
@@ -343,6 +344,19 @@ class SqliteClient {
     if (!itemColumnNames.has("measure_type")) {
       this.db.exec("ALTER TABLE items ADD COLUMN measure_type TEXT NOT NULL DEFAULT 'FLUID';");
     }
+    if (!itemColumnNames.has("density_id")) {
+      this.db.exec("ALTER TABLE items ADD COLUMN density_id INTEGER;");
+    }
+    this.db.exec(`
+      UPDATE items
+      SET density_id = (
+        SELECT d.id
+        FROM pricebook_densities d
+        WHERE LOWER(TRIM(d.ingredient_name)) = LOWER(TRIM(items.name))
+        LIMIT 1
+      )
+      WHERE density_id IS NULL;
+    `);
 
     const sizeColumns = this.db.prepare("PRAGMA table_info(item_sizes)").all();
     const sizeColumnNames = new Set(sizeColumns.map((column) => column.name));
@@ -452,6 +466,7 @@ class PostgresClient {
         case_size INTEGER NOT NULL CHECK(case_size > 0),
         area_type TEXT NOT NULL DEFAULT 'FOH' CHECK(area_type IN ('FOH', 'BOH')),
         measure_type TEXT NOT NULL DEFAULT 'FLUID' CHECK(measure_type IN ('FLUID', 'WEIGHT', 'EA')),
+        density_id BIGINT,
         purchase_unit TEXT NOT NULL DEFAULT 'BOTTLE',
         purchase_cost DOUBLE PRECISION,
         sku TEXT NOT NULL DEFAULT '',
@@ -478,6 +493,16 @@ class PostgresClient {
     `);
     await this.query(`
       ALTER TABLE items ADD COLUMN IF NOT EXISTS measure_type TEXT NOT NULL DEFAULT 'FLUID'
+    `);
+    await this.query(`
+      ALTER TABLE items ADD COLUMN IF NOT EXISTS density_id BIGINT
+    `);
+    await this.query(`
+      UPDATE items i
+      SET density_id = d.id
+      FROM pricebook_densities d
+      WHERE i.density_id IS NULL
+        AND LOWER(BTRIM(i.name)) = LOWER(BTRIM(d.ingredient_name))
     `);
     await this.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS idx_items_name_vendor

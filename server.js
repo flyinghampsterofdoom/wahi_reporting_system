@@ -60,6 +60,7 @@ const itemSchema = z.object({
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
   measureType: z.enum(["FLUID", "WEIGHT", "EA"]).optional().default("FLUID"),
+  densityId: z.number().int().positive().nullable().optional(),
   purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
   purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
@@ -81,6 +82,7 @@ const itemUpdateSchema = z.object({
   caseSize: z.number().int().positive(),
   areaType: z.enum(["FOH", "BOH"]),
   measureType: z.enum(["FLUID", "WEIGHT", "EA"]).optional().default("FLUID"),
+  densityId: z.number().int().positive().nullable().optional(),
   purchaseUnit: z.enum(["CASE", "BOTTLE"]).optional().default("BOTTLE"),
   purchaseCost: z.number().nonnegative().nullable().optional(),
   sizes: z
@@ -365,8 +367,31 @@ function recipeUnitCategory(value) {
   const unit = normalizeRecipeUnit(value);
   if (!unit) return "OTHER";
 
-  const volumeUnits = new Set(["ml", "l", "fl oz", "floz", "oz", "qt", "gal", "cup", "tbsp", "tsp", "pt", "pint"]);
-  const weightUnits = new Set(["g", "kg", "oz wt", "lb", "lbs"]);
+  const volumeUnits = new Set([
+    "ml",
+    "l",
+    "fl oz",
+    "floz",
+    "oz",
+    "qt",
+    "quart",
+    "quarts",
+    "gal",
+    "gallon",
+    "gallons",
+    "cup",
+    "cups",
+    "tbsp",
+    "tablespoon",
+    "tablespoons",
+    "tsp",
+    "teaspoon",
+    "teaspoons",
+    "pt",
+    "pint",
+    "pints",
+  ]);
+  const weightUnits = new Set(["g", "gram", "grams", "kg", "oz wt", "oz", "ounce", "ounces", "lb", "lbs", "pound", "pounds"]);
   const eachUnits = new Set(["ea", "each", "x", "count"]);
 
   if (volumeUnits.has(unit)) return "VOLUME";
@@ -389,10 +414,20 @@ function recipeUnitFactor(unit, category) {
       qt: 32,
       gal: 128,
       cup: 8,
+      cups: 8,
       tbsp: 0.5,
+      tablespoon: 0.5,
+      tablespoons: 0.5,
       tsp: 1 / 6,
+      teaspoon: 1 / 6,
+      teaspoons: 1 / 6,
       pt: 16,
       pint: 16,
+      pints: 16,
+      quart: 32,
+      quarts: 32,
+      gallon: 128,
+      gallons: 128,
     };
     return map[normalized] ?? null;
   }
@@ -400,10 +435,16 @@ function recipeUnitFactor(unit, category) {
   if (category === "WEIGHT") {
     const map = {
       g: 1,
+      gram: 1,
+      grams: 1,
       kg: 1000,
       oz: 28.349523125,
+      ounce: 28.349523125,
+      ounces: 28.349523125,
       lb: 453.59237,
       lbs: 453.59237,
+      pound: 453.59237,
+      pounds: 453.59237,
     };
     return map[normalized] ?? null;
   }
@@ -531,6 +572,21 @@ function toFluidOz(sizeAmount, sizeUnit) {
   return null;
 }
 
+function toCups(quantity, unit) {
+  const qty = Number(quantity);
+  if (!Number.isFinite(qty) || qty <= 0) return null;
+  const converted = convertRecipeQuantity(qty, unit || "cup", "cup");
+  return converted === null || converted <= 0 ? null : converted;
+}
+
+function gramsPerCupFromDensity(gramsPerCup, cupsPerLb) {
+  const gpc = Number(gramsPerCup);
+  if (Number.isFinite(gpc) && gpc > 0) return gpc;
+  const cplb = Number(cupsPerLb);
+  if (Number.isFinite(cplb) && cplb > 0) return 453.59237 / cplb;
+  return null;
+}
+
 async function getRecipeBaseRows(tx) {
   const { rows } = await tx.query(`
     SELECT id, name, category, status, yield_qty, yield_unit, notes, created_at, updated_at
@@ -574,10 +630,13 @@ async function getRecipeLines(tx, recipeId) {
       rr.name AS ingredient_recipe_name,
       tis.unit_cost AS ingredient_item_cost,
       tis.size_amount AS ingredient_size_amount,
-      tis.size_unit AS ingredient_size_unit
+      tis.size_unit AS ingredient_size_unit,
+      d.grams_per_cup AS ingredient_density_grams_per_cup,
+      d.cups_per_lb AS ingredient_density_cups_per_lb
     FROM recipe_builder_lines l
     LEFT JOIN items i ON i.id = l.ingredient_item_id
     LEFT JOIN item_sizes tis ON tis.item_id = i.id AND tis.is_tracked = 1
+    LEFT JOIN pricebook_densities d ON d.id = i.density_id
     LEFT JOIN recipe_builder_recipes rr ON rr.id = l.ingredient_recipe_id
     WHERE l.recipe_id = $1
     ORDER BY l.sort_order, l.id
@@ -603,6 +662,14 @@ async function getRecipeLines(tx, recipeId) {
         ? null
         : Number(row.ingredient_size_amount),
     ingredientSizeUnit: row.ingredient_size_unit || null,
+    ingredientDensityGramsPerCup:
+      row.ingredient_density_grams_per_cup === null || row.ingredient_density_grams_per_cup === undefined
+        ? null
+        : Number(row.ingredient_density_grams_per_cup),
+    ingredientDensityCupsPerLb:
+      row.ingredient_density_cups_per_lb === null || row.ingredient_density_cups_per_lb === undefined
+        ? null
+        : Number(row.ingredient_density_cups_per_lb),
     ingredientRecipeId: row.ingredient_recipe_id ? Number(row.ingredient_recipe_id) : null,
     ingredientRecipeName: row.ingredient_recipe_name || null,
     quantity: row.quantity === null ? null : Number(row.quantity),
@@ -692,7 +759,17 @@ function ingredientLineCost(line) {
   }
 
   if (measureType === "WEIGHT") {
-    const qtyGrams = convertRecipeQuantity(qty, line.unit || "g", "g");
+    let qtyGrams = convertRecipeQuantity(qty, line.unit || "g", "g");
+    if (qtyGrams === null) {
+      const gramsPerCup = gramsPerCupFromDensity(
+        line.ingredientDensityGramsPerCup,
+        line.ingredientDensityCupsPerLb
+      );
+      const qtyCups = toCups(qty, line.unit || "cup");
+      if (gramsPerCup && qtyCups) {
+        qtyGrams = qtyCups * gramsPerCup;
+      }
+    }
     if (qtyGrams === null) return null;
     const costPerGram = line.ingredientItemCost / baseQtyPerTracked;
     return qtyGrams * costPerGram;
@@ -1056,10 +1133,12 @@ app.get("/api/items", async (_req, res) => {
       i.case_size,
       i.area_type,
       i.measure_type,
+      i.density_id,
       i.purchase_unit,
       i.purchase_cost,
       v.id AS vendor_id,
       v.name AS vendor_name,
+      d.ingredient_name AS density_ingredient_name,
       s.id AS size_id,
       s.size_label,
       s.size_amount,
@@ -1069,6 +1148,7 @@ app.get("/api/items", async (_req, res) => {
       s.is_tracked
     FROM items i
     JOIN vendors v ON v.id = i.vendor_id
+    LEFT JOIN pricebook_densities d ON d.id = i.density_id
     JOIN item_sizes s ON s.item_id = i.id
     ORDER BY v.name, i.name, s.volume_ml DESC
   `);
@@ -1082,6 +1162,13 @@ app.get("/api/items", async (_req, res) => {
         caseSize: Number(row.case_size),
         areaType: row.area_type,
         measureType: row.measure_type || "FLUID",
+        density:
+          row.density_id === null || row.density_id === undefined
+            ? null
+            : {
+                id: Number(row.density_id),
+                ingredientName: row.density_ingredient_name || "",
+              },
         purchaseUnit: row.purchase_unit || "BOTTLE",
         purchaseCost:
           row.purchase_cost === null || row.purchase_cost === undefined ? null : roundTo(row.purchase_cost, 2),
@@ -1131,6 +1218,7 @@ app.post("/api/items", async (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
   const { name, vendorId, caseSize, areaType, measureType, purchaseUnit } = parsed.data;
+  const densityId = parsed.data.densityId ?? null;
   const purchaseCost = roundTo(parsed.data.purchaseCost ?? null, 2);
   const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, parsed.data.sizes).map((size) => ({
     ...size,
@@ -1146,10 +1234,14 @@ app.post("/api/items", async (req, res) => {
     const itemId = await db.transaction(async (tx) => {
       const vendor = await tx.query("SELECT id FROM vendors WHERE id = $1", [vendorId]);
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
+      if (densityId !== null) {
+        const density = await tx.query("SELECT id FROM pricebook_densities WHERE id = $1", [densityId]);
+        if (!density.rows.length) throw new Error("DENSITY_NOT_FOUND");
+      }
 
       const inserted = await tx.query(
-        "INSERT INTO items (name, vendor_id, case_size, area_type, measure_type, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost]
+        "INSERT INTO items (name, vendor_id, case_size, area_type, measure_type, density_id, purchase_unit, purchase_cost) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+        [name, vendorId, caseSize, areaType, measureType, densityId, purchaseUnit, purchaseCost]
       );
 
       const id = Number(inserted.rows[0].id);
@@ -1176,6 +1268,9 @@ app.post("/api/items", async (req, res) => {
     if (error.message === "VENDOR_NOT_FOUND") {
       return res.status(404).json({ error: "Vendor not found." });
     }
+    if (error.message === "DENSITY_NOT_FOUND") {
+      return res.status(404).json({ error: "Density not found." });
+    }
     return res.status(500).json({ error: "Failed to create item." });
   }
 });
@@ -1190,6 +1285,7 @@ app.put("/api/items/:id", async (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: "Invalid item payload." });
 
   const { name, vendorId, caseSize, areaType, measureType, purchaseUnit } = parsed.data;
+  const densityId = parsed.data.densityId ?? null;
   const purchaseCost = roundTo(parsed.data.purchaseCost ?? null, 2);
   const sizes = applyPurchasePricing(caseSize, purchaseUnit, purchaseCost, parsed.data.sizes).map((size) => ({
     ...size,
@@ -1211,10 +1307,14 @@ app.put("/api/items/:id", async (req, res) => {
 
       const vendor = await tx.query("SELECT id FROM vendors WHERE id = $1", [vendorId]);
       if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
+      if (densityId !== null) {
+        const density = await tx.query("SELECT id FROM pricebook_densities WHERE id = $1", [densityId]);
+        if (!density.rows.length) throw new Error("DENSITY_NOT_FOUND");
+      }
 
       await tx.query(
-        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, measure_type = $5, purchase_unit = $6, purchase_cost = $7 WHERE id = $8",
-        [name, vendorId, caseSize, areaType, measureType, purchaseUnit, purchaseCost, itemId]
+        "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, measure_type = $5, density_id = $6, purchase_unit = $7, purchase_cost = $8 WHERE id = $9",
+        [name, vendorId, caseSize, areaType, measureType, densityId, purchaseUnit, purchaseCost, itemId]
       );
 
       const sourceSystem = String(item.rows[0].source_system || "");
@@ -1278,6 +1378,7 @@ app.put("/api/items/:id", async (req, res) => {
   } catch (error) {
     if (error.message === "ITEM_NOT_FOUND") return res.status(404).json({ error: "Item not found." });
     if (error.message === "VENDOR_NOT_FOUND") return res.status(404).json({ error: "Vendor not found." });
+    if (error.message === "DENSITY_NOT_FOUND") return res.status(404).json({ error: "Density not found." });
     if (error.message === "SIZE_NOT_FOUND") {
       return res.status(400).json({ error: "One or more sizes were invalid for this item." });
     }
@@ -1890,12 +1991,17 @@ app.get("/api/recipe-builder/options", async (req, res) => {
         v.name AS vendor_name,
         i.area_type,
         i.measure_type,
+        i.density_id,
+        d.ingredient_name AS density_ingredient_name,
+        d.grams_per_cup AS density_grams_per_cup,
+        d.cups_per_lb AS density_cups_per_lb,
         s.size_label,
         s.size_amount,
         s.size_unit,
         s.unit_cost
       FROM items i
       JOIN vendors v ON v.id = i.vendor_id
+      LEFT JOIN pricebook_densities d ON d.id = i.density_id
       JOIN item_sizes s ON s.item_id = i.id AND s.is_tracked = 1
       ORDER BY i.name
     `),
@@ -1913,6 +2019,16 @@ app.get("/api/recipe-builder/options", async (req, res) => {
       row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
     trackedSizeUnit: row.size_unit || null,
     trackedUnitCost: row.unit_cost === null ? null : roundTo(row.unit_cost, 4),
+    densityId: row.density_id === null || row.density_id === undefined ? null : Number(row.density_id),
+    densityIngredientName: row.density_ingredient_name || null,
+    densityGramsPerCup:
+      row.density_grams_per_cup === null || row.density_grams_per_cup === undefined
+        ? null
+        : Number(row.density_grams_per_cup),
+    densityCupsPerLb:
+      row.density_cups_per_lb === null || row.density_cups_per_lb === undefined
+        ? null
+        : Number(row.density_cups_per_lb),
   }));
 
   const recipes = recipesResult.rows
