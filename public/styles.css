@@ -76,6 +76,10 @@ p {
   }
 }
 
+.grid.two.editor-only {
+  grid-template-columns: 1fr;
+}
+
 .stack {
   display: grid;
   gap: 0.6rem;

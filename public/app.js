@@ -1301,6 +1301,8 @@ async function initRecipeBuilderPage() {
   const pageParams = new URLSearchParams(window.location.search);
   const isViewMode = String(pageParams.get("mode") || "").toLowerCase() === "view";
 
+  const recipeListCard = recipeList.closest("article");
+  const recipeBuilderGrid = byId("recipe-builder-grid");
   const editorCard = byId("recipe-editor-card");
   const editorTitle = byId("editor-title");
   const editorRecipeId = byId("editor-recipe-id");
@@ -1318,9 +1320,15 @@ async function initRecipeBuilderPage() {
   const recipeLines = byId("recipe-lines");
 
   let recipes = [];
+  let recipeListLoaded = false;
   let optionItems = [];
   let optionRecipes = [];
   let optionYields = [];
+
+  function setEditorOnlyMode(enabled) {
+    if (recipeListCard) recipeListCard.hidden = enabled;
+    if (recipeBuilderGrid) recipeBuilderGrid.classList.toggle("editor-only", enabled);
+  }
 
   function applyEditorReadOnlyState() {
     if (!isViewMode || !editorCard || editorCard.hidden) return;
@@ -1872,6 +1880,7 @@ async function initRecipeBuilderPage() {
   }
 
   async function openRecipe(recipeId) {
+    setEditorOnlyMode(true);
     const recipe = await api(`/api/recipe-builder/recipes/${recipeId}`);
     await loadOptions(recipeId);
 
@@ -1893,7 +1902,9 @@ async function initRecipeBuilderPage() {
   }
 
   async function loadRecipes() {
+    setEditorOnlyMode(false);
     recipes = await api("/api/recipe-builder/recipes");
+    recipeListLoaded = true;
     if (!recipes.length) {
       recipeList.innerHTML = "<p>No recipes yet.</p>";
       return;
@@ -1940,7 +1951,8 @@ async function initRecipeBuilderPage() {
           notes: editorRecipeNotes.value.trim() || "",
         }),
       });
-      await loadRecipes();
+      if (recipeListLoaded && !recipeListCard?.hidden) await loadRecipes();
+      editorTitle.textContent = `Recipe Editor: ${editorRecipeName.value.trim()}`;
       showToast("Recipe header saved.");
     } catch (error) {
       showToast(error.message, true);
@@ -1955,7 +1967,7 @@ async function initRecipeBuilderPage() {
         method: "PUT",
         body: JSON.stringify({ lines: collectLinesPayload() }),
       });
-      await loadRecipes();
+      if (recipeListLoaded && !recipeListCard?.hidden) await loadRecipes();
       await openRecipe(id);
       showToast("Recipe lines saved.");
     } catch (error) {
@@ -1979,10 +1991,11 @@ async function initRecipeBuilderPage() {
     });
   }
 
-  await loadRecipes();
   const presetRecipeId = Number(pageParams.get("recipeId") || 0);
   if (Number.isInteger(presetRecipeId) && presetRecipeId > 0) {
     await openRecipe(presetRecipeId);
+  } else {
+    await loadRecipes();
   }
 }
 
