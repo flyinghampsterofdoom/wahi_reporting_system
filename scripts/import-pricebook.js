@@ -5,28 +5,6 @@ const XLSX = require("xlsx");
 const { createDbClient } = require("../db");
 const { syncPricebookToCatalog } = require("../lib/pricebook-sync");
 
-const sourcePath = process.argv[2];
-if (!sourcePath) {
-  // eslint-disable-next-line no-console
-  console.error("Usage: npm run import:pricebook -- /absolute/path/to/Wahi-Price-Book.xlsx");
-  process.exit(1);
-}
-
-if (!fs.existsSync(sourcePath)) {
-  // eslint-disable-next-line no-console
-  console.error(`File not found: ${sourcePath}`);
-  process.exit(1);
-}
-
-const sourceFile = path.basename(sourcePath);
-const workbook = XLSX.readFile(sourcePath, { cellDates: true });
-
-function rows(sheetName) {
-  const sheet = workbook.Sheets[sheetName];
-  if (!sheet) return [];
-  return XLSX.utils.sheet_to_json(sheet, { defval: null, raw: true });
-}
-
 function str(v) {
   if (v === null || v === undefined) return null;
   const s = String(v).trim();
@@ -55,9 +33,26 @@ function defaultBaseUnit(unitType) {
   return "";
 }
 
-async function run() {
-  const db = createDbClient();
-  await db.init();
+async function importPricebook(sourcePath, existingDb = null) {
+  if (!sourcePath) {
+    throw new Error("Usage: npm run import:pricebook -- /absolute/path/to/Wahi-Price-Book.xlsx");
+  }
+
+  if (!fs.existsSync(sourcePath)) {
+    throw new Error(`File not found: ${sourcePath}`);
+  }
+
+  const sourceFile = path.basename(sourcePath);
+  const workbook = XLSX.readFile(sourcePath, { cellDates: true });
+
+  function rows(sheetName) {
+    const sheet = workbook.Sheets[sheetName];
+    if (!sheet) return [];
+    return XLSX.utils.sheet_to_json(sheet, { defval: null, raw: true });
+  }
+
+  const db = existingDb || createDbClient();
+  if (!existingDb) await db.init();
 
   await db.transaction(async (tx) => {
     await tx.query("DELETE FROM pricebook_recipe_lines");
@@ -318,8 +313,7 @@ async function run() {
 
   const pick = (q) => Number(q.rows[0].c);
   const catalogSync = await syncPricebookToCatalog(db);
-  // eslint-disable-next-line no-console
-  console.log("Price book import complete:", {
+  return {
     ingredients: pick(counts[0]),
     recipes: pick(counts[1]),
     recipeLines: pick(counts[2]),
@@ -330,11 +324,23 @@ async function run() {
     foodCatalog: pick(counts[7]),
     syrupCatalog: pick(counts[8]),
     catalogSync,
+  };
+}
+
+async function run() {
+  const summary = await importPricebook(process.argv[2]);
+  // eslint-disable-next-line no-console
+  console.log("Price book import complete:", summary);
+}
+
+if (require.main === module) {
+  run().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error("Import failed:", error);
+    process.exit(1);
   });
 }
 
-run().catch((error) => {
-  // eslint-disable-next-line no-console
-  console.error("Import failed:", error);
-  process.exit(1);
-});
+module.exports = {
+  importPricebook,
+};

@@ -7,7 +7,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "import:pricebook": "node scripts/import-pricebook.js",
-    "import:builder": "node scripts/import-builder-from-pricebook.js"
+    "import:builder": "node scripts/import-builder-from-pricebook.js",
+    "import:workbook": "node scripts/import-workbook-once.js"
   },
   "keywords": [],
   "author": "",

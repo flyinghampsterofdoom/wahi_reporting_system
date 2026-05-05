@@ -48,9 +48,9 @@ function parseSourceNameFromNotes(notes) {
   return match ? String(match[1] || "").trim() : null;
 }
 
-async function run() {
-  const db = createDbClient();
-  await db.init();
+async function importBuilderFromPricebook(existingDb = null) {
+  const db = existingDb || createDbClient();
+  if (!existingDb) await db.init();
 
   const result = await db.transaction(async (tx) => {
     const [
@@ -299,17 +299,28 @@ async function run() {
   ]);
 
   const pick = (q) => Number(q.rows[0].c);
-  // eslint-disable-next-line no-console
-  console.log("Recipe Builder import complete:", {
+  return {
     ...result,
     recipeBuilderRecipes: pick(counts[0]),
     recipeBuilderLines: pick(counts[1]),
     categories: counts[2].rows,
+  };
+}
+
+async function run() {
+  const summary = await importBuilderFromPricebook();
+  // eslint-disable-next-line no-console
+  console.log("Recipe Builder import complete:", summary);
+}
+
+if (require.main === module) {
+  run().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error("Recipe Builder import failed:", error);
+    process.exit(1);
   });
 }
 
-run().catch((error) => {
-  // eslint-disable-next-line no-console
-  console.error("Recipe Builder import failed:", error);
-  process.exit(1);
-});
+module.exports = {
+  importBuilderFromPricebook,
+};
