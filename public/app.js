@@ -1599,7 +1599,9 @@ async function initRecipeBuilderPage() {
             perText = `$${Number(item.trackedUnitCost).toFixed(4)} / ${item.trackedSizeUnit || "unit"}`;
           }
         }
-        return `<option value="${item.id}" ${selected}>${item.name} (${item.trackedSizeLabel}, ${perText})</option>`;
+        return `<option value="${item.id}" ${selected}>${escapeHtml(item.name)} (${escapeHtml(
+          item.trackedSizeLabel
+        )}, ${escapeHtml(perText)})</option>`;
       })
       .join("");
   }
@@ -1615,7 +1617,12 @@ async function initRecipeBuilderPage() {
     const options = hasDensityBridge ? [...baseOptions, ...DENSITY_VOLUME_UNIT_OPTIONS] : baseOptions;
     const defaultUnit = item?.measureType === "FLUID" ? "fl oz" : options[0];
     return options
-      .map((unit) => `<option value="${unit}" ${unit === (selectedUnit || defaultUnit) ? "selected" : ""}>${unit}</option>`)
+      .map(
+        (unit) =>
+          `<option value="${escapeHtml(unit)}" ${
+            unit === (selectedUnit || defaultUnit) ? "selected" : ""
+          }>${escapeHtml(unit)}</option>`
+      )
       .join("");
   }
 
@@ -1623,7 +1630,7 @@ async function initRecipeBuilderPage() {
     return optionRecipes
       .map((recipe) => {
         const selected = Number(selectedId) === recipe.id ? "selected" : "";
-        return `<option value="${recipe.id}" ${selected}>${recipe.name}</option>`;
+        return `<option value="${recipe.id}" ${selected}>${escapeHtml(recipe.name)}</option>`;
       })
       .join("");
   }
@@ -1924,19 +1931,29 @@ async function initRecipeBuilderPage() {
 
     if (type === "INGREDIENT") {
       body.innerHTML = `
-        <label>
-          Item Catalog Ingredient
+        <label class="rb-field rb-main-field">
+          <span>Ingredient</span>
           <select class="rb-ingredient-item">
             <option value="">Select item</option>
             ${itemOptionsHtml(line.ingredientItemId)}
           </select>
         </label>
-        <div class="line">
-          <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? ""}" /></label>
-          <label>Unit <select class="rb-unit">${ingredientUnitOptions(line.ingredientItemId, line.unit || "")}</select></label>
-          <label>Line Cost <input type="text" class="rb-line-cost" value="${lineCostDisplay(line)}" readonly /></label>
-          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
-        </div>
+        <label class="rb-field rb-qty-field">
+          <span>Quantity</span>
+          <input type="number" min="0" step="0.01" class="rb-qty" value="${escapeHtml(line.quantity ?? "")}" />
+        </label>
+        <label class="rb-field rb-unit-field">
+          <span>Unit</span>
+          <select class="rb-unit">${ingredientUnitOptions(line.ingredientItemId, line.unit || "")}</select>
+        </label>
+        <label class="rb-field rb-cost-field">
+          <span>Line Cost</span>
+          <input type="text" class="rb-line-cost" value="${escapeHtml(lineCostDisplay(line))}" readonly />
+        </label>
+        <label class="rb-field rb-notes-field">
+          <span>Notes</span>
+          <input type="text" class="rb-notes" value="${escapeHtml(line.notes ?? "")}" />
+        </label>
       `;
       const itemSelect = body.querySelector(".rb-ingredient-item");
       const unitSelect = body.querySelector(".rb-unit");
@@ -1954,19 +1971,29 @@ async function initRecipeBuilderPage() {
 
     if (type === "RECIPE") {
       body.innerHTML = `
-        <label>
-          Recipe Component
+        <label class="rb-field rb-main-field">
+          <span>Recipe</span>
           <select class="rb-ingredient-recipe">
             <option value="">Select recipe</option>
             ${recipeOptionsHtml(line.ingredientRecipeId)}
           </select>
         </label>
-        <div class="line">
-          <label>Quantity <input type="number" min="0" step="0.01" class="rb-qty" value="${line.quantity ?? "1"}" /></label>
-          <label>Unit <input type="text" class="rb-unit" value="${line.unit ?? "x"}" /></label>
-          <label>Line Cost <input type="text" class="rb-line-cost" value="${lineCostDisplay(line)}" readonly /></label>
-          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
-        </div>
+        <label class="rb-field rb-qty-field">
+          <span>Quantity</span>
+          <input type="number" min="0" step="0.01" class="rb-qty" value="${escapeHtml(line.quantity ?? "1")}" />
+        </label>
+        <label class="rb-field rb-unit-field">
+          <span>Unit</span>
+          <input type="text" class="rb-unit" value="${escapeHtml(line.unit ?? "x")}" />
+        </label>
+        <label class="rb-field rb-cost-field">
+          <span>Line Cost</span>
+          <input type="text" class="rb-line-cost" value="${escapeHtml(lineCostDisplay(line))}" readonly />
+        </label>
+        <label class="rb-field rb-notes-field">
+          <span>Notes</span>
+          <input type="text" class="rb-notes" value="${escapeHtml(line.notes ?? "")}" />
+        </label>
       `;
       body.querySelector(".rb-ingredient-recipe")?.addEventListener("change", () => updateRowLineCost(row));
       body.querySelector(".rb-qty")?.addEventListener("input", () => updateRowLineCost(row));
@@ -1977,9 +2004,9 @@ async function initRecipeBuilderPage() {
 
     if (type === "DIRECTION") {
       body.innerHTML = `
-        <label>
-          Direction
-          <textarea class="rb-direction" rows="2">${line.directionText ?? ""}</textarea>
+        <label class="rb-field rb-wide-field">
+          <span>Direction</span>
+          <textarea class="rb-direction" rows="1">${escapeHtml(line.directionText ?? "")}</textarea>
         </label>
       `;
       return;
@@ -1987,30 +2014,44 @@ async function initRecipeBuilderPage() {
 
     if (type === "COOK_TEMPERATURE") {
       body.innerHTML = `
-        <div class="line">
-          <label>Temperature <input type="number" min="0" step="0.1" class="rb-cook-temp" value="${line.cookTemperature ?? ""}" /></label>
-          <label>Unit <input type="text" class="rb-cook-temp-unit" value="${line.cookTemperatureUnit ?? "F"}" /></label>
-          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
-        </div>
+        <label class="rb-field rb-main-field">
+          <span>Temperature</span>
+          <input type="number" min="0" step="0.1" class="rb-cook-temp" value="${escapeHtml(line.cookTemperature ?? "")}" />
+        </label>
+        <label class="rb-field rb-unit-field">
+          <span>Unit</span>
+          <input type="text" class="rb-cook-temp-unit" value="${escapeHtml(line.cookTemperatureUnit ?? "F")}" />
+        </label>
+        <label class="rb-field rb-notes-field rb-notes-wide-field">
+          <span>Notes</span>
+          <input type="text" class="rb-notes" value="${escapeHtml(line.notes ?? "")}" />
+        </label>
       `;
       return;
     }
 
     if (type === "TIME") {
       body.innerHTML = `
-        <div class="line">
-          <label>Time Value <input type="number" min="0" step="0.1" class="rb-time-value" value="${line.timeValue ?? ""}" /></label>
-          <label>Time Unit <input type="text" class="rb-time-unit" value="${line.timeUnit ?? "minutes"}" /></label>
-          <label>Notes <input type="text" class="rb-notes" value="${line.notes ?? ""}" /></label>
-        </div>
+        <label class="rb-field rb-main-field">
+          <span>Time</span>
+          <input type="number" min="0" step="0.1" class="rb-time-value" value="${escapeHtml(line.timeValue ?? "")}" />
+        </label>
+        <label class="rb-field rb-unit-field">
+          <span>Unit</span>
+          <input type="text" class="rb-time-unit" value="${escapeHtml(line.timeUnit ?? "minutes")}" />
+        </label>
+        <label class="rb-field rb-notes-field rb-notes-wide-field">
+          <span>Notes</span>
+          <input type="text" class="rb-notes" value="${escapeHtml(line.notes ?? "")}" />
+        </label>
       `;
       return;
     }
 
     body.innerHTML = `
-      <label>
-        Note
-        <textarea class="rb-notes" rows="2">${line.notes ?? ""}</textarea>
+      <label class="rb-field rb-wide-field">
+        <span>Note</span>
+        <textarea class="rb-notes" rows="1">${escapeHtml(line.notes ?? "")}</textarea>
       </label>
     `;
   }
@@ -2019,9 +2060,9 @@ async function initRecipeBuilderPage() {
     const row = document.createElement("div");
     row.className = "recipe-line";
     row.innerHTML = `
-      <div class="recipe-line-head">
-        <label>
-          Line Type
+      <div class="recipe-line-grid">
+        <label class="rb-field rb-line-type-field">
+          <span>Line Type</span>
           <select class="rb-line-type">
             <option value="INGREDIENT">Ingredient</option>
             <option value="RECIPE">Recipe</option>
@@ -2031,9 +2072,9 @@ async function initRecipeBuilderPage() {
             <option value="NOTE">Note</option>
           </select>
         </label>
+        <div class="recipe-line-body"></div>
         <button type="button" class="secondary mini-btn rb-remove-line">Remove</button>
       </div>
-      <div class="recipe-line-body"></div>
     `;
 
     const typeSelect = row.querySelector(".rb-line-type");

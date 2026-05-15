@@ -345,26 +345,87 @@ body.modal-open {
 
 .recipe-line {
   border: 1px solid var(--border);
-  border-radius: 0.55rem;
-  padding: 0.7rem;
+  border-radius: 0.45rem;
+  padding: 0.45rem;
   background: #fffdf9;
-  display: grid;
-  gap: 0.5rem;
 }
 
-.recipe-line-head {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  flex-wrap: wrap;
+.recipe-line-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(8rem, 0.8fr)
+    minmax(15rem, 2fr)
+    minmax(6rem, 0.6fr)
+    minmax(6rem, 0.65fr)
+    minmax(7rem, 0.7fr)
+    minmax(9rem, 1fr)
+    auto;
+  gap: 0.4rem;
+  align-items: end;
 }
 
 .recipe-line-body {
-  display: grid;
-  gap: 0.5rem;
+  display: contents;
+}
+
+.rb-field {
+  min-width: 0;
+  gap: 0.18rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.rb-field input,
+.rb-field select,
+.rb-field textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0.38rem 0.45rem;
+  font-size: 0.86rem;
+  color: var(--text);
+}
+
+.rb-field textarea {
+  min-height: 2.15rem;
+  resize: vertical;
+}
+
+.rb-wide-field {
+  grid-column: span 5;
+}
+
+.rb-notes-wide-field {
+  grid-column: span 2;
+}
+
+.recipe-line .rb-remove-line {
+  grid-column: -2 / -1;
+  align-self: end;
 }
 
 .rb-line-cost {
   background: #f7f7f7;
   font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .recipe-line-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .recipe-line-body {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .rb-wide-field,
+  .rb-notes-wide-field {
+    grid-column: 1 / -1;
+  }
+
+  .recipe-line .rb-remove-line {
+    grid-column: auto;
+  }
 }
