@@ -1521,6 +1521,7 @@ async function initRecipeBuilderPage() {
   const editorRecipeYieldUnit = byId("editor-recipe-yield-unit");
   const editorRecipeNotes = byId("editor-recipe-notes");
   const editorTotalCost = byId("editor-total-cost");
+  const editorUnitCost = byId("editor-unit-cost");
   const saveRecipeMeta = byId("save-recipe-meta");
   const saveRecipeLines = byId("save-recipe-lines");
   const addRecipeLine = byId("add-recipe-line");
@@ -1586,8 +1587,9 @@ async function initRecipeBuilderPage() {
     return optionItems
       .map((item) => {
         const selected = Number(selectedId) === item.id ? "selected" : "";
-        let perText = "No Cost";
-        if (item.trackedUnitCost !== null) {
+        const pricebookUnitCost = pricebookCostPerSizeUnit(item);
+        let perText = pricebookUnitCost === null ? "No Cost" : `$${pricebookUnitCost.toFixed(4)} / ${displayTrackedSizeUnit(item)}`;
+        if (pricebookUnitCost === null && item.trackedUnitCost !== null && item.trackedUnitCost !== undefined) {
           if (item.measureType === "FLUID") {
             const floz = toFloz(item.trackedSizeAmount, item.trackedSizeUnit);
             if (floz && floz > 0) {
@@ -1604,6 +1606,49 @@ async function initRecipeBuilderPage() {
         )}, ${escapeHtml(perText)})</option>`;
       })
       .join("");
+  }
+
+  function approximatelyEqualAmount(left, right, tolerance = 0.0001) {
+    const l = Number(left);
+    const r = Number(right);
+    if (!Number.isFinite(l) || !Number.isFinite(r)) return false;
+    return Math.abs(l - r) <= Math.max(tolerance, Math.abs(r) * 1e-8);
+  }
+
+  function isPricebookItem(item) {
+    return String(item?.sourceSystem || "").toLowerCase() === "pricebook";
+  }
+
+  function displayTrackedSizeUnit(item) {
+    const unit = item?.trackedSizeUnit || "unit";
+    if (String(item?.measureType || "").toUpperCase() === "FLUID" && String(unit).toLowerCase() === "oz") {
+      return "fl oz";
+    }
+    return unit;
+  }
+
+  function pricebookUnitCostIsPackageCost(item) {
+    const trackedUnitCost = Number(item?.trackedUnitCost);
+    const purchaseCost = Number(item?.purchaseCost);
+    const trackedSizeAmount = Number(item?.trackedSizeAmount);
+    return (
+      isPricebookItem(item) &&
+      Number.isFinite(trackedUnitCost) &&
+      Number.isFinite(purchaseCost) &&
+      Number.isFinite(trackedSizeAmount) &&
+      trackedSizeAmount > 0 &&
+      approximatelyEqualAmount(trackedUnitCost, purchaseCost)
+    );
+  }
+
+  function pricebookCostPerSizeUnit(item) {
+    if (!isPricebookItem(item)) return null;
+    const trackedUnitCost = Number(item?.trackedUnitCost);
+    if (!Number.isFinite(trackedUnitCost) || trackedUnitCost < 0) return null;
+    if (pricebookUnitCostIsPackageCost(item)) {
+      return trackedUnitCost / Number(item.trackedSizeAmount);
+    }
+    return trackedUnitCost;
   }
 
   function ingredientUnitOptions(selectedItemId, selectedUnit = "") {
@@ -1640,6 +1685,22 @@ async function initRecipeBuilderPage() {
     const n = Number(line.lineCost);
     if (!Number.isFinite(n)) return "n/a";
     return `$${n.toFixed(4)}`;
+  }
+
+  function costPerYieldUnit(recipe) {
+    const explicit = Number(recipe?.costPerYieldUnit);
+    if (Number.isFinite(explicit) && explicit >= 0) return explicit;
+    const total = Number(recipe?.totalCost);
+    const yieldQty = Number(recipe?.yieldQty);
+    if (!Number.isFinite(total) || !Number.isFinite(yieldQty) || yieldQty <= 0) return null;
+    return total / yieldQty;
+  }
+
+  function costPerYieldDisplay(recipe) {
+    const unitCost = costPerYieldUnit(recipe);
+    if (unitCost === null) return "n/a";
+    const unit = String(recipe?.yieldUnit || "yield unit").trim() || "yield unit";
+    return `$${unitCost.toFixed(4)} / ${unit}`;
   }
 
   function normalizeEditorUnit(value) {
@@ -1798,6 +1859,13 @@ async function initRecipeBuilderPage() {
     return value || null;
   }
 
+  function parseSourceLineCostFromNotesText(text) {
+    const match = String(text || "").match(/LineCost:\s*([0-9]+(?:\.[0-9]+)?)/i);
+    if (!match) return null;
+    const value = Number(match[1]);
+    return Number.isFinite(value) ? value : null;
+  }
+
   function optionYieldUnitPrice(y) {
     const direct = Number(y?.pricePerYieldUnit);
     if (Number.isFinite(direct) && direct >= 0) return direct;
@@ -1849,6 +1917,9 @@ async function initRecipeBuilderPage() {
     const trackedSizeUnit = item.trackedSizeUnit || null;
     if (!Number.isFinite(trackedUnitCost) || trackedUnitCost < 0) return null;
 
+    const pricebookCost = pricebookLiveLineCost(item, qty, unit, sourceNoteText);
+    if (pricebookCost !== null) return pricebookCost;
+
     if (measureType === "FLUID") {
       const baseQtyPerTracked = convertEditorQuantity(trackedSizeAmount, trackedSizeUnit || "fl oz", "fl oz");
       const qtyFloz = convertEditorQuantity(qty, unit || "fl oz", "fl oz");
@@ -1877,6 +1948,37 @@ async function initRecipeBuilderPage() {
     }
 
     return null;
+  }
+
+  function pricebookLiveLineCost(item, qty, unit, sourceNoteText = "") {
+    if (!isPricebookItem(item)) return null;
+    const amount = Number(qty);
+    const trackedUnitCost = Number(item.trackedUnitCost);
+    const trackedSizeUnit = item.trackedSizeUnit || null;
+    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(trackedUnitCost) || trackedUnitCost < 0 || !trackedSizeUnit) {
+      return null;
+    }
+
+    const qtyInSizeUnit = convertEditorQuantity(amount, unit || trackedSizeUnit, trackedSizeUnit);
+    if (qtyInSizeUnit === null || !Number.isFinite(qtyInSizeUnit)) return null;
+
+    const directCost = qtyInSizeUnit * trackedUnitCost;
+    const trackedSizeAmount = Number(item.trackedSizeAmount);
+    const packageCost =
+      Number.isFinite(trackedSizeAmount) && trackedSizeAmount > 0
+        ? qtyInSizeUnit * (trackedUnitCost / trackedSizeAmount)
+        : null;
+    const sourceLineCost = parseSourceLineCostFromNotesText(sourceNoteText);
+
+    if (sourceLineCost !== null && packageCost !== null) {
+      return Math.abs(packageCost - sourceLineCost) < Math.abs(directCost - sourceLineCost) ? packageCost : directCost;
+    }
+
+    if (packageCost !== null && pricebookUnitCostIsPackageCost(item)) {
+      return packageCost;
+    }
+
+    return directCost;
   }
 
   function nestedRecipeLiveLineCost(recipe, qty, unit) {
@@ -2141,6 +2243,7 @@ async function initRecipeBuilderPage() {
     editorRecipeYieldUnit.value = recipe.yieldUnit ?? "";
     editorRecipeNotes.value = recipe.notes ?? "";
     editorTotalCost.textContent = `$${Number(recipe.totalCost || 0).toFixed(2)}`;
+    if (editorUnitCost) editorUnitCost.textContent = `Cost / yield: ${costPerYieldDisplay(recipe)}`;
     editorTitle.textContent = `${isViewMode ? "Recipe View" : "Recipe Editor"}: ${recipe.name}`;
 
     recipeLines.innerHTML = "";
@@ -2161,7 +2264,7 @@ async function initRecipeBuilderPage() {
 
     recipeList.innerHTML = `
       <table>
-        <thead><tr><th>Name</th><th>Category</th><th>Status</th><th>Total Cost</th><th>Action</th></tr></thead>
+        <thead><tr><th>Name</th><th>Category</th><th>Status</th><th>Batch Cost</th><th>Yield Cost</th><th>Action</th></tr></thead>
         <tbody>
           ${recipes
             .map(
@@ -2170,6 +2273,7 @@ async function initRecipeBuilderPage() {
                 <td>${recipe.category || ""}</td>
                 <td>${recipe.status || ""}</td>
                 <td>$${Number(recipe.totalCost || 0).toFixed(2)}</td>
+                <td>${costPerYieldDisplay(recipe)}</td>
                 <td><button type="button" class="secondary mini-btn rb-open-recipe" data-recipe-id="${recipe.id}">Open</button></td>
               </tr>`
             )
@@ -2662,6 +2766,13 @@ async function initRecipeBooksPage() {
 
   let activeBook = "Prep";
 
+  function recipeBookYieldText(row) {
+    const qty = Number(row.yieldQty);
+    const unit = String(row.yieldUnit || "").trim();
+    if (!Number.isFinite(qty) || qty <= 0) return unit || "n/a";
+    return `${Number(qty.toFixed(4))}${unit ? ` ${unit}` : ""}`;
+  }
+
   function setBook(book) {
     activeBook = book;
     title.textContent = `${book} Recipes`;
@@ -2686,7 +2797,9 @@ async function initRecipeBooksPage() {
         <thead>
           <tr>
             <th>Recipe</th>
-            <th>Cost</th>
+            <th>Yield</th>
+            <th>Unit Cost</th>
+            <th>Batch Cost</th>
             <th>Retail Price</th>
             <th>Margin %</th>
             <th>Profit</th>
@@ -2699,7 +2812,9 @@ async function initRecipeBooksPage() {
               (row) => `
             <tr data-recipe-id="${row.recipeId}" data-recipe-name="${encodeURIComponent(row.recipeName)}">
               <td>${row.recipeName}</td>
+              <td>${recipeBookYieldText(row)}</td>
               <td>$${Number(row.cost ?? 0).toFixed(2)}</td>
+              <td>$${Number(row.batchCost ?? row.cost ?? 0).toFixed(2)}</td>
               <td><input type="number" min="0" step="0.01" class="rb-retail" value="${row.retailPrice ?? ""}" /></td>
               <td>${row.marginPercent === null ? "n/a" : `${Number(row.marginPercent).toFixed(2)}%`}</td>
               <td>${row.profit === null ? "n/a" : `$${Number(row.profit).toFixed(2)}`}</td>

@@ -377,6 +377,24 @@ class SqliteClient {
       WHERE size_amount IS NULL OR size_unit IS NULL;
     `);
 
+    this.db.exec(`
+      UPDATE item_sizes
+      SET unit_cost = unit_cost / size_amount
+      WHERE unit_cost IS NOT NULL
+        AND size_amount IS NOT NULL
+        AND size_amount > 0
+        AND EXISTS (
+          SELECT 1
+          FROM items i
+          LEFT JOIN pricebook_ingredients pi ON i.source_key = ('ingredient:' || pi.id)
+          WHERE i.id = item_sizes.item_id
+            AND i.source_system = 'pricebook'
+            AND i.purchase_cost IS NOT NULL
+            AND ABS(item_sizes.unit_cost - i.purchase_cost) <= 0.0001
+            AND (pi.per_price IS NULL OR ABS(item_sizes.unit_cost - pi.per_price) > 0.0001)
+        );
+    `);
+
     const conversionColumns = this.db.prepare("PRAGMA table_info(pricebook_conversions)").all();
     const conversionColumnNames = new Set(conversionColumns.map((column) => column.name));
     if (!conversionColumnNames.has("base_unit")) {
@@ -536,6 +554,21 @@ class PostgresClient {
       SET size_amount = COALESCE(size_amount, volume_ml),
           size_unit = COALESCE(size_unit, 'mL')
       WHERE size_amount IS NULL OR size_unit IS NULL
+    `);
+
+    await this.query(`
+      UPDATE item_sizes s
+      SET unit_cost = s.unit_cost / s.size_amount
+      FROM items i
+      LEFT JOIN pricebook_ingredients pi ON i.source_key = ('ingredient:' || pi.id)
+      WHERE i.id = s.item_id
+        AND i.source_system = 'pricebook'
+        AND i.purchase_cost IS NOT NULL
+        AND s.unit_cost IS NOT NULL
+        AND s.size_amount IS NOT NULL
+        AND s.size_amount > 0
+        AND ABS(s.unit_cost - i.purchase_cost) <= 0.0001
+        AND (pi.per_price IS NULL OR ABS(s.unit_cost - pi.per_price) > 0.0001)
     `);
 
     await this.query(`

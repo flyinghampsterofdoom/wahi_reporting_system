@@ -358,6 +358,13 @@ function roundTo(value, places = 4) {
   return Math.round(n * factor) / factor;
 }
 
+function costPerYieldUnit(totalCost, yieldQty, places = 4) {
+  const cost = Number(totalCost);
+  const qty = Number(yieldQty);
+  if (!Number.isFinite(cost) || !Number.isFinite(qty) || qty <= 0) return null;
+  return roundTo(cost / qty, places);
+}
+
 function defaultBaseUnitForType(unitType) {
   const type = String(unitType || "").trim().toLowerCase();
   if (type === "volume") return "fl oz";
@@ -646,6 +653,7 @@ async function getRecipeLines(tx, recipeId) {
       i.name AS ingredient_item_name,
       i.measure_type AS ingredient_measure_type,
       i.source_system AS ingredient_source_system,
+      i.purchase_cost AS ingredient_purchase_cost,
       rr.name AS ingredient_recipe_name,
       tis.unit_cost AS ingredient_item_cost,
       tis.size_amount AS ingredient_size_amount,
@@ -672,6 +680,10 @@ async function getRecipeLines(tx, recipeId) {
     ingredientItemName: row.ingredient_item_name || null,
     ingredientMeasureType: row.ingredient_measure_type || null,
     ingredientSourceSystem: row.ingredient_source_system || null,
+    ingredientPurchaseCost:
+      row.ingredient_purchase_cost === null || row.ingredient_purchase_cost === undefined
+        ? null
+        : Number(row.ingredient_purchase_cost),
     ingredientItemCost:
       row.ingredient_item_cost === null || row.ingredient_item_cost === undefined
         ? null
@@ -956,7 +968,42 @@ function trackedIngredientBaseQuantity(line) {
   return null;
 }
 
-function ingredientLineCost(line) {
+function approximatelyEqualAmount(left, right, tolerance = 0.0001) {
+  const l = Number(left);
+  const r = Number(right);
+  if (!Number.isFinite(l) || !Number.isFinite(r)) return false;
+  return Math.abs(l - r) <= Math.max(tolerance, Math.abs(r) * 1e-8);
+}
+
+function pricebookIngredientLineCost(line, sourceLineCost = null) {
+  const qty = Number(line.quantity ?? 0);
+  const unitCost = Number(line.ingredientItemCost);
+  const sizeUnit = line.ingredientSizeUnit || null;
+  if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(unitCost) || unitCost < 0 || !sizeUnit) {
+    return null;
+  }
+
+  const qtyInSizeUnit = convertRecipeQuantity(qty, line.unit || sizeUnit, sizeUnit);
+  if (qtyInSizeUnit === null || !Number.isFinite(qtyInSizeUnit)) return null;
+
+  const directCost = qtyInSizeUnit * unitCost;
+  const sizeAmount = Number(line.ingredientSizeAmount);
+  const packageCost =
+    Number.isFinite(sizeAmount) && sizeAmount > 0 ? qtyInSizeUnit * (unitCost / sizeAmount) : null;
+  const sourceCost = Number(sourceLineCost);
+
+  if (Number.isFinite(sourceCost) && packageCost !== null) {
+    return Math.abs(packageCost - sourceCost) < Math.abs(directCost - sourceCost) ? packageCost : directCost;
+  }
+
+  if (packageCost !== null && approximatelyEqualAmount(unitCost, line.ingredientPurchaseCost)) {
+    return packageCost;
+  }
+
+  return directCost;
+}
+
+function ingredientLineCost(line, sourceLineCost = null) {
   const qty = line.quantity ?? 0;
   if (!Number.isFinite(qty) || qty <= 0 || line.ingredientItemCost === null) {
     return null;
@@ -966,10 +1013,8 @@ function ingredientLineCost(line) {
   const isPricebookSource = String(line.ingredientSourceSystem || "").toLowerCase() === "pricebook";
 
   if (isPricebookSource && line.ingredientSizeUnit) {
-    const qtyInSizeUnit = convertRecipeQuantity(qty, line.unit || line.ingredientSizeUnit, line.ingredientSizeUnit);
-    if (qtyInSizeUnit !== null) {
-      return qtyInSizeUnit * line.ingredientItemCost;
-    }
+    const pricebookCost = pricebookIngredientLineCost(line, sourceLineCost);
+    if (pricebookCost !== null) return pricebookCost;
   }
 
   const baseQtyPerTracked = trackedIngredientBaseQuantity(line);
@@ -1028,7 +1073,7 @@ async function calculateRecipeLineCost(
       if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
       return 0;
     }
-    const derived = ingredientLineCost(line);
+    const derived = ingredientLineCost(line, sourceLineCost);
     if (derived !== null) return Number(derived.toFixed(4));
     if (sourceLineCost !== null) return Number(sourceLineCost.toFixed(4));
     return Number((qty * line.ingredientItemCost).toFixed(4));
@@ -2204,7 +2249,7 @@ app.get("/api/recipe-books", async (req, res) => {
 
   const rows = await db.transaction(async (tx) => {
     const recipes = await tx.query(`
-      SELECT id, name, category
+      SELECT id, name, category, yield_qty, yield_unit
       FROM recipe_builder_recipes
       ORDER BY name
     `);
@@ -2230,7 +2275,8 @@ app.get("/api/recipe-books", async (req, res) => {
     for (const row of recipes.rows) {
       if (categoryToBook(row.category) !== book) continue;
       const liveCost = await calculateRecipeCost(tx, Number(row.id), new Set(), totalCache, metaCache);
-      const cost = roundTo(liveCost ?? 0, 4);
+      const batchCost = roundTo(liveCost ?? 0, 4);
+      const cost = costPerYieldUnit(batchCost, row.yield_qty) ?? batchCost;
       const retailPriceRaw = overrideMap.has(row.name) ? overrideMap.get(row.name) : null;
       const retailPrice = roundTo(retailPriceRaw === null || retailPriceRaw === undefined ? null : Number(retailPriceRaw), 2);
       const profit = retailPrice === null ? null : roundTo(retailPrice - cost, 2);
@@ -2240,6 +2286,9 @@ app.get("/api/recipe-books", async (req, res) => {
         recipeName: row.name,
         book,
         cost,
+        batchCost,
+        yieldQty: row.yield_qty === null || row.yield_qty === undefined ? null : Number(row.yield_qty),
+        yieldUnit: row.yield_unit || null,
         retailPrice,
         marginPercent: margin,
         profit,
@@ -2289,6 +2338,8 @@ app.get("/api/recipe-builder/options", async (req, res) => {
           v.name AS vendor_name,
           i.area_type,
           i.measure_type,
+          i.source_system,
+          i.purchase_cost,
           i.density_id,
           d.ingredient_name AS density_ingredient_name,
           d.grams_per_cup AS density_grams_per_cup,
@@ -2332,11 +2383,14 @@ app.get("/api/recipe-builder/options", async (req, res) => {
       vendorName: row.vendor_name,
       areaType: row.area_type,
       measureType: row.measure_type || "FLUID",
+      sourceSystem: row.source_system || "",
+      purchaseCost:
+        row.purchase_cost === null || row.purchase_cost === undefined ? null : Number(row.purchase_cost),
       trackedSizeLabel: row.size_label,
       trackedSizeAmount:
         row.size_amount === null || row.size_amount === undefined ? null : Number(row.size_amount),
       trackedSizeUnit: row.size_unit || null,
-      trackedUnitCost: row.unit_cost === null ? null : roundTo(row.unit_cost, 4),
+      trackedUnitCost: row.unit_cost === null ? null : Number(row.unit_cost),
       densityId: row.density_id === null || row.density_id === undefined ? null : Number(row.density_id),
       densityIngredientName: row.density_ingredient_name || null,
       densityGramsPerCup:
@@ -2373,7 +2427,11 @@ app.get("/api/recipe-builder/recipes", async (_req, res) => {
     const enriched = [];
     for (const recipe of base) {
       const totalCost = await calculateRecipeCost(tx, recipe.id);
-      enriched.push({ ...recipe, totalCost });
+      enriched.push({
+        ...recipe,
+        totalCost,
+        costPerYieldUnit: costPerYieldUnit(totalCost, recipe.yieldQty),
+      });
     }
     return enriched;
   });
@@ -2438,17 +2496,19 @@ app.get("/api/recipe-builder/recipes/:id", async (req, res) => {
       });
     }
     const totalCost = await calculateRecipeCost(tx, recipeId, new Set(), totalCache, metaCache);
+    const yieldQty = rows[0].yield_qty === null ? null : Number(rows[0].yield_qty);
     return {
       id: Number(rows[0].id),
       name: rows[0].name,
       category: rows[0].category,
       status: rows[0].status,
-      yieldQty: rows[0].yield_qty === null ? null : Number(rows[0].yield_qty),
+      yieldQty,
       yieldUnit: rows[0].yield_unit || null,
       notes: rows[0].notes || "",
       createdAt: rows[0].created_at,
       updatedAt: rows[0].updated_at,
       totalCost,
+      costPerYieldUnit: costPerYieldUnit(totalCost, yieldQty),
       lines: linesWithCost,
     };
   });
