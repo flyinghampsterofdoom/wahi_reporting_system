@@ -45,11 +45,11 @@ function escapeHtml(value) {
 }
 
 const ITEM_UNIT_OPTIONS = {
-  FLUID: ["fl oz", "mL", "L", "qt", "gal"],
+  FLUID: ["fl oz", "oz", "cup", "tbsp", "tsp", "pt", "qt", "gal", "mL", "L"],
   WEIGHT: ["g", "kg", "oz", "lb"],
   EA: ["ea"],
 };
-const DENSITY_VOLUME_UNIT_OPTIONS = ["fl oz", "mL", "L", "qt", "gal", "pt", "cups", "tbsp", "tsp"];
+const DENSITY_VOLUME_UNIT_OPTIONS = ["fl oz", "oz", "cup", "cups", "tbsp", "tsp", "pt", "qt", "gal", "mL", "L"];
 
 function unitOptionsHtml(measureType, selectedUnit) {
   const options = ITEM_UNIT_OPTIONS[measureType] || ITEM_UNIT_OPTIONS.FLUID;
