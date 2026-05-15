@@ -1651,6 +1651,35 @@ async function initRecipeBuilderPage() {
     return trackedUnitCost;
   }
 
+  function pricebookQuantityInSizeUnit(item, qty, unit) {
+    const trackedSizeUnit = item?.trackedSizeUnit || null;
+    if (!trackedSizeUnit) return null;
+
+    const fromUnit = unit || trackedSizeUnit;
+    const direct = convertEditorQuantity(qty, fromUnit, trackedSizeUnit);
+    if (direct !== null && Number.isFinite(direct)) return direct;
+
+    const gramsPerCup = editorGramsPerCup(item);
+    if (!gramsPerCup) return null;
+
+    const sizeCategory = editorUnitCategory(trackedSizeUnit);
+    const fromCategory = editorUnitCategory(fromUnit);
+
+    if (sizeCategory === "WEIGHT" && fromCategory === "VOLUME") {
+      const qtyCups = convertEditorQuantity(qty, fromUnit, "cup");
+      if (qtyCups === null) return null;
+      return convertEditorQuantity(qtyCups * gramsPerCup, "g", trackedSizeUnit);
+    }
+
+    if (sizeCategory === "VOLUME" && fromCategory === "WEIGHT") {
+      const qtyGrams = convertEditorQuantity(qty, fromUnit, "g");
+      if (qtyGrams === null) return null;
+      return convertEditorQuantity(qtyGrams / gramsPerCup, "cup", trackedSizeUnit);
+    }
+
+    return null;
+  }
+
   function ingredientUnitOptions(selectedItemId, selectedUnit = "") {
     const item = optionItems.find((entry) => Number(entry.id) === Number(selectedItemId));
     const measureType = item?.measureType || "FLUID";
@@ -1954,12 +1983,11 @@ async function initRecipeBuilderPage() {
     if (!isPricebookItem(item)) return null;
     const amount = Number(qty);
     const trackedUnitCost = Number(item.trackedUnitCost);
-    const trackedSizeUnit = item.trackedSizeUnit || null;
-    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(trackedUnitCost) || trackedUnitCost < 0 || !trackedSizeUnit) {
+    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(trackedUnitCost) || trackedUnitCost < 0) {
       return null;
     }
 
-    const qtyInSizeUnit = convertEditorQuantity(amount, unit || trackedSizeUnit, trackedSizeUnit);
+    const qtyInSizeUnit = pricebookQuantityInSizeUnit(item, amount, unit);
     if (qtyInSizeUnit === null || !Number.isFinite(qtyInSizeUnit)) return null;
 
     const directCost = qtyInSizeUnit * trackedUnitCost;

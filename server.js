@@ -975,6 +975,35 @@ function approximatelyEqualAmount(left, right, tolerance = 0.0001) {
   return Math.abs(l - r) <= Math.max(tolerance, Math.abs(r) * 1e-8);
 }
 
+function pricebookQuantityInSizeUnit(line, qty, sizeUnit) {
+  const fromUnit = line.unit || sizeUnit;
+  const direct = convertRecipeQuantity(qty, fromUnit, sizeUnit);
+  if (direct !== null && Number.isFinite(direct)) return direct;
+
+  const gramsPerCup = gramsPerCupFromDensity(
+    line.ingredientDensityGramsPerCup,
+    line.ingredientDensityCupsPerLb
+  );
+  if (!gramsPerCup) return null;
+
+  const sizeCategory = recipeUnitCategory(sizeUnit);
+  const fromCategory = recipeUnitCategory(fromUnit);
+
+  if (sizeCategory === "WEIGHT" && fromCategory === "VOLUME") {
+    const qtyCups = toCups(qty, fromUnit);
+    if (qtyCups === null) return null;
+    return convertRecipeQuantity(qtyCups * gramsPerCup, "g", sizeUnit);
+  }
+
+  if (sizeCategory === "VOLUME" && fromCategory === "WEIGHT") {
+    const qtyGrams = convertRecipeQuantity(qty, fromUnit, "g");
+    if (qtyGrams === null) return null;
+    return convertRecipeQuantity(qtyGrams / gramsPerCup, "cup", sizeUnit);
+  }
+
+  return null;
+}
+
 function pricebookIngredientLineCost(line, sourceLineCost = null) {
   const qty = Number(line.quantity ?? 0);
   const unitCost = Number(line.ingredientItemCost);
@@ -983,7 +1012,7 @@ function pricebookIngredientLineCost(line, sourceLineCost = null) {
     return null;
   }
 
-  const qtyInSizeUnit = convertRecipeQuantity(qty, line.unit || sizeUnit, sizeUnit);
+  const qtyInSizeUnit = pricebookQuantityInSizeUnit(line, qty, sizeUnit);
   if (qtyInSizeUnit === null || !Number.isFinite(qtyInSizeUnit)) return null;
 
   const directCost = qtyInSizeUnit * unitCost;
