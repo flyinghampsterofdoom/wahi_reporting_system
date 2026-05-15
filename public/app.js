@@ -31,6 +31,19 @@ function formatNumberInput(value, places = 4) {
   return String(Number(n.toFixed(places)));
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return map[char];
+  });
+}
+
 const ITEM_UNIT_OPTIONS = {
   FLUID: ["fl oz", "mL", "L", "qt", "gal"],
   WEIGHT: ["g", "kg", "oz", "lb"],
@@ -568,6 +581,8 @@ async function initItemCatalogPage() {
   const filterAreaSelect = byId("catalog-filter-area");
   const filterNameInput = byId("catalog-filter-name");
   const refreshButton = byId("refresh-catalog");
+  const saveCatalogEditsButton = byId("save-catalog-edits");
+  const catalogSaveStatus = byId("catalog-save-status");
   const openAddItemButton = byId("open-add-item");
   const addItemSection = byId("add-item-section");
   const editSection = byId("edit-item-section");
@@ -590,6 +605,7 @@ async function initItemCatalogPage() {
   let vendors = [];
   let items = [];
   let densities = [];
+  let pendingInlineEdits = new Map();
 
   function refreshEditPreview() {
     const tracked = trackedSizeInfoFromRows(editSizeRows);
@@ -602,6 +618,106 @@ async function initItemCatalogPage() {
       tracked.unit,
       editItemMeasureType.value
     );
+  }
+
+  function vendorForId(vendorId) {
+    return vendors.find((vendor) => Number(vendor.id) === Number(vendorId)) || null;
+  }
+
+  function basicValuesFor(item) {
+    const pending = pendingInlineEdits.get(item.id);
+    const vendorId = pending ? pending.vendorId : item.vendor.id;
+    return {
+      id: item.id,
+      name: pending ? pending.name : item.name,
+      vendorId: Number(vendorId),
+      caseSize: pending ? pending.caseSize : item.caseSize,
+      areaType: pending ? pending.areaType : item.areaType,
+    };
+  }
+
+  function displayItem(item) {
+    const values = basicValuesFor(item);
+    const vendor = vendorForId(values.vendorId) || item.vendor;
+    return {
+      ...item,
+      name: values.name,
+      vendor,
+      caseSize: values.caseSize,
+      areaType: values.areaType,
+    };
+  }
+
+  function updateInlineSaveState() {
+    const count = pendingInlineEdits.size;
+    if (saveCatalogEditsButton) saveCatalogEditsButton.disabled = count === 0;
+    if (catalogSaveStatus) {
+      catalogSaveStatus.textContent =
+        count === 0 ? "No unsaved list changes" : `${count} unsaved list ${count === 1 ? "change" : "changes"}`;
+    }
+  }
+
+  function normalizeInlineValues(values) {
+    return {
+      name: String(values.name || "").trim(),
+      vendorId: Number(values.vendorId),
+      caseSize: Number(values.caseSize),
+      areaType: values.areaType,
+    };
+  }
+
+  function markInlineEdit(itemId, values) {
+    const item = items.find((entry) => entry.id === itemId);
+    if (!item) return;
+
+    const normalized = normalizeInlineValues(values);
+    const baseline = {
+      name: item.name,
+      vendorId: Number(item.vendor.id),
+      caseSize: Number(item.caseSize),
+      areaType: item.areaType,
+    };
+    const changed =
+      normalized.name !== baseline.name ||
+      normalized.vendorId !== baseline.vendorId ||
+      normalized.caseSize !== baseline.caseSize ||
+      normalized.areaType !== baseline.areaType;
+
+    if (changed) {
+      pendingInlineEdits.set(itemId, normalized);
+    } else {
+      pendingInlineEdits.delete(itemId);
+    }
+
+    const row = catalogList.querySelector(`tr[data-item-id="${itemId}"]`);
+    if (row) row.classList.toggle("dirty-row", pendingInlineEdits.has(itemId));
+    updateInlineSaveState();
+  }
+
+  function inlineValuesFromRow(row) {
+    return {
+      name: row.querySelector(".catalog-name-input")?.value || "",
+      vendorId: row.querySelector(".catalog-vendor-select")?.value || "",
+      areaType: row.querySelector(".catalog-area-select")?.value || "",
+      caseSize: row.querySelector(".catalog-case-size-input")?.value || "",
+    };
+  }
+
+  function vendorOptionsHtml(selectedVendorId) {
+    return vendors
+      .map(
+        (vendor) =>
+          `<option value="${vendor.id}" ${Number(vendor.id) === Number(selectedVendorId) ? "selected" : ""}>${escapeHtml(
+            vendor.name
+          )}</option>`
+      )
+      .join("");
+  }
+
+  function areaOptionsHtml(selectedArea) {
+    return ["FOH", "BOH"]
+      .map((area) => `<option value="${area}" ${area === selectedArea ? "selected" : ""}>${area}</option>`)
+      .join("");
   }
 
   function sortItems(inputItems) {
@@ -643,7 +759,8 @@ async function initItemCatalogPage() {
   }
 
   function renderCatalog() {
-    const filteredItems = applyFilters(items);
+    const displayItems = items.map(displayItem);
+    const filteredItems = applyFilters(displayItems);
     const sortedItems = sortItems(filteredItems);
 
     if (!sortedItems.length) {
@@ -661,20 +778,45 @@ async function initItemCatalogPage() {
             const costText =
               s.unitCost === null || s.unitCost === undefined ? "No Cost" : `$${Number(s.unitCost).toFixed(2)}`;
 
-            return `<div class="size-line">${s.sizeLabel} (${s.sizeAmount} ${s.sizeUnit}, ${costText}) ${trackControl}</div>`;
+            return `<div class="size-line">${escapeHtml(s.sizeLabel)} (${escapeHtml(s.sizeAmount)} ${escapeHtml(
+              s.sizeUnit
+            )}, ${costText}) ${trackControl}</div>`;
           })
           .join("");
         const perText =
           item.trackedCostPerUnit === null
             ? "Tracked price/unit not set"
-            : `Tracked Price: $${Number(item.trackedCostPerUnit).toFixed(4)} / ${item.trackedCostPerUnitLabel || "unit"}`;
+            : `Tracked Price: $${Number(item.trackedCostPerUnit).toFixed(4)} / ${escapeHtml(
+                item.trackedCostPerUnitLabel || "unit"
+              )}`;
+        const isDirty = pendingInlineEdits.has(item.id);
 
         return `
-          <tr>
-            <td>${item.vendor.name}</td>
-            <td>${item.areaType}</td>
-            <td>${item.name}</td>
-            <td>${item.caseSize}</td>
+          <tr data-item-id="${item.id}" class="${isDirty ? "dirty-row" : ""}">
+            <td>
+              <select class="catalog-inline-control catalog-vendor-select" data-inline-field="vendorId" aria-label="Vendor for ${escapeHtml(
+                item.name
+              )}">
+                ${vendorOptionsHtml(item.vendor.id)}
+              </select>
+            </td>
+            <td>
+              <select class="catalog-inline-control catalog-area-select" data-inline-field="areaType" aria-label="FOH or BOH for ${escapeHtml(
+                item.name
+              )}">
+                ${areaOptionsHtml(item.areaType)}
+              </select>
+            </td>
+            <td>
+              <input class="catalog-inline-control catalog-name-input" data-inline-field="name" type="text" value="${escapeHtml(
+                item.name
+              )}" aria-label="Item name" />
+            </td>
+            <td>
+              <input class="catalog-inline-control catalog-case-size-input" data-inline-field="caseSize" type="number" min="1" step="1" value="${escapeHtml(
+                item.caseSize
+              )}" aria-label="Case size for ${escapeHtml(item.name)}" />
+            </td>
             <td>${sizes}<div class="muted-note">${perText}</div></td>
             <td><button class="secondary edit-item-btn" data-item-id="${item.id}">Edit Item</button></td>
           </tr>
@@ -683,19 +825,21 @@ async function initItemCatalogPage() {
       .join("");
 
     catalogList.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Vendor</th>
-            <th>FOH/BOH</th>
-            <th>Item Name</th>
-            <th>Case Size</th>
-            <th>Bottle Sizes</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="table-scroll">
+        <table class="catalog-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>FOH/BOH</th>
+              <th>Item Name</th>
+              <th>Case Size</th>
+              <th>Bottle Sizes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     `;
 
     catalogList.querySelectorAll(".edit-item-btn").forEach((btn) => {
@@ -711,9 +855,8 @@ async function initItemCatalogPage() {
             method: "POST",
             body: JSON.stringify({ itemSizeId }),
           });
-          await reloadData();
+          await reloadData({ preservePending: true });
           showToast("Tracked item size updated.");
-          window.dispatchEvent(new CustomEvent("catalog-data-changed"));
         } catch (error) {
           showToast(error.message, true);
         }
@@ -722,7 +865,7 @@ async function initItemCatalogPage() {
   }
 
   function loadVendorOptions(selectNode) {
-    selectNode.innerHTML = vendors.map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
+    selectNode.innerHTML = vendorOptionsHtml(null);
   }
 
   function loadDensityOptions(selectNode, selectedDensityId = null) {
@@ -739,7 +882,7 @@ async function initItemCatalogPage() {
   function loadVendorFilterOptions() {
     const currentValue = filterVendorSelect.value;
     const options = vendors
-      .map((v) => `<option value="${v.id}">${v.name}</option>`)
+      .map((v) => `<option value="${v.id}">${escapeHtml(v.name)}</option>`)
       .join("");
     filterVendorSelect.innerHTML = `<option value="">All Vendors</option>${options}`;
     if ([...vendors.map((v) => String(v.id)), ""].includes(currentValue)) {
@@ -750,18 +893,19 @@ async function initItemCatalogPage() {
   function startEdit(itemId) {
     const item = items.find((entry) => entry.id === itemId);
     if (!item) return;
+    const basicValues = basicValuesFor(item);
 
     editItemId.value = String(item.id);
-    editItemName.value = item.name;
-    editItemAreaType.value = item.areaType;
+    editItemName.value = basicValues.name;
+    editItemAreaType.value = basicValues.areaType;
     editItemMeasureType.value = item.measureType || "FLUID";
-    editItemCaseSize.value = String(item.caseSize);
+    editItemCaseSize.value = String(basicValues.caseSize);
     editItemPurchaseUnit.value = item.purchaseUnit || "BOTTLE";
     editItemPurchaseCost.value = formatNumberInput(item.purchaseCost, 2);
     loadVendorOptions(editItemVendor);
     loadDensityOptions(editItemDensity, item.density?.id ?? null);
     syncDensityFieldState(editItemDensity, editItemMeasureType.value);
-    editItemVendor.value = String(item.vendor.id);
+    editItemVendor.value = String(basicValues.vendorId);
 
     editSizeRows.innerHTML = "";
     item.sizes.forEach((size) =>
@@ -789,7 +933,7 @@ async function initItemCatalogPage() {
     document.body.classList.remove("modal-open");
   }
 
-  async function reloadData() {
+  async function reloadData({ preservePending = false } = {}) {
     const [vendorRows, itemRows, densityRows] = await Promise.all([
       api("/api/vendors"),
       api("/api/items"),
@@ -798,13 +942,65 @@ async function initItemCatalogPage() {
     vendors = vendorRows;
     items = itemRows;
     densities = densityRows;
+    if (preservePending) {
+      const itemIds = new Set(items.map((item) => item.id));
+      [...pendingInlineEdits.keys()].forEach((id) => {
+        if (!itemIds.has(id)) pendingInlineEdits.delete(id);
+      });
+    } else {
+      pendingInlineEdits.clear();
+    }
     loadDensityOptions(byId("item-density"));
     syncDensityFieldState(byId("item-density"), byId("item-measure-type")?.value || "FLUID");
     loadVendorFilterOptions();
     renderCatalog();
+    updateInlineSaveState();
   }
 
-  refreshButton.addEventListener("click", () => reloadData().catch((e) => showToast(e.message, true)));
+  async function saveInlineEdits() {
+    const updates = [...pendingInlineEdits.entries()].map(([id, values]) => ({
+      id,
+      ...normalizeInlineValues(values),
+    }));
+    if (!updates.length) return;
+
+    const invalid = updates.find(
+      (update) =>
+        !update.name ||
+        !Number.isInteger(update.vendorId) ||
+        update.vendorId <= 0 ||
+        !Number.isInteger(update.caseSize) ||
+        update.caseSize <= 0 ||
+        !["FOH", "BOH"].includes(update.areaType)
+    );
+    if (invalid) {
+      showToast("Check item name, vendor, FOH/BOH, and case size before saving.", true);
+      return;
+    }
+
+    try {
+      if (saveCatalogEditsButton) saveCatalogEditsButton.disabled = true;
+      if (catalogSaveStatus) catalogSaveStatus.textContent = `Saving ${updates.length} list ${updates.length === 1 ? "change" : "changes"}...`;
+      const result = await api("/api/items/batch-basic", {
+        method: "PATCH",
+        body: JSON.stringify({ items: updates }),
+      });
+      pendingInlineEdits.clear();
+      await reloadData();
+      showToast(`Saved ${result.updated} list ${result.updated === 1 ? "change" : "changes"}.`);
+    } catch (error) {
+      showToast(error.message, true);
+      updateInlineSaveState();
+    }
+  }
+
+  refreshButton.addEventListener("click", () => {
+    if (pendingInlineEdits.size && !window.confirm("Discard unsaved list changes and refresh?")) return;
+    reloadData().catch((e) => showToast(e.message, true));
+  });
+  if (saveCatalogEditsButton) {
+    saveCatalogEditsButton.addEventListener("click", () => saveInlineEdits());
+  }
   if (openAddItemButton && addItemSection) {
     openAddItemButton.addEventListener("click", () => {
       addItemSection.hidden = !addItemSection.hidden;
@@ -818,6 +1014,18 @@ async function initItemCatalogPage() {
   filterVendorSelect.addEventListener("change", renderCatalog);
   filterAreaSelect.addEventListener("change", renderCatalog);
   filterNameInput.addEventListener("input", renderCatalog);
+  catalogList.addEventListener("input", (event) => {
+    if (!event.target.matches("[data-inline-field]")) return;
+    const row = event.target.closest("tr[data-item-id]");
+    if (!row) return;
+    markInlineEdit(Number(row.dataset.itemId), inlineValuesFromRow(row));
+  });
+  catalogList.addEventListener("change", (event) => {
+    if (!event.target.matches("[data-inline-field]")) return;
+    const row = event.target.closest("tr[data-item-id]");
+    if (!row) return;
+    markInlineEdit(Number(row.dataset.itemId), inlineValuesFromRow(row));
+  });
   cancelEditButton.addEventListener("click", closeEdit);
   if (closeEditXButton) {
     closeEditXButton.addEventListener("click", closeEdit);
@@ -869,17 +1077,17 @@ async function initItemCatalogPage() {
         }),
       });
 
-      await reloadData();
+      pendingInlineEdits.delete(id);
+      await reloadData({ preservePending: true });
       closeEdit();
       showToast("Item updated.");
-      window.dispatchEvent(new CustomEvent("catalog-data-changed"));
     } catch (error) {
       showToast(error.message, true);
     }
   });
 
   window.addEventListener("catalog-data-changed", () => {
-    reloadData().catch((e) => showToast(e.message, true));
+    reloadData({ preservePending: true }).catch((e) => showToast(e.message, true));
   });
 
   await reloadData();

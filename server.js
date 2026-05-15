@@ -4,7 +4,6 @@ const crypto = require("crypto");
 const { promisify } = require("util");
 const { z } = require("zod");
 const { createDbClient, DB_CLIENT } = require("./db");
-const { syncPricebookToCatalog } = require("./lib/pricebook-sync");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -100,6 +99,20 @@ const itemUpdateSchema = z.object({
         sizeUnit: z.string().trim().min(1),
         isTracked: z.boolean(),
         unitCost: z.number().nonnegative().nullable().optional(),
+      })
+    )
+    .min(1),
+});
+
+const itemBatchBasicUpdateSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        id: z.number().int().positive(),
+        name: z.string().trim().min(1),
+        vendorId: z.number().int().positive(),
+        caseSize: z.number().int().positive(),
+        areaType: z.enum(["FOH", "BOH"]),
       })
     )
     .min(1),
@@ -1501,6 +1514,43 @@ app.post("/api/items", async (req, res) => {
   }
 });
 
+app.patch("/api/items/batch-basic", async (req, res) => {
+  const parsed = itemBatchBasicUpdateSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid item batch payload." });
+
+  const updates = parsed.data.items;
+  const uniqueIds = new Set(updates.map((item) => item.id));
+  if (uniqueIds.size !== updates.length) {
+    return res.status(400).json({ error: "Each item can only appear once in a batch save." });
+  }
+
+  try {
+    await db.transaction(async (tx) => {
+      for (const update of updates) {
+        const item = await tx.query("SELECT id FROM items WHERE id = $1", [update.id]);
+        if (!item.rows.length) throw new Error("ITEM_NOT_FOUND");
+
+        const vendor = await tx.query("SELECT id FROM vendors WHERE id = $1", [update.vendorId]);
+        if (!vendor.rows.length) throw new Error("VENDOR_NOT_FOUND");
+
+        await tx.query(
+          "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4 WHERE id = $5",
+          [update.name, update.vendorId, update.caseSize, update.areaType, update.id]
+        );
+      }
+    });
+
+    return res.json({ updated: updates.length });
+  } catch (error) {
+    if (error.message === "ITEM_NOT_FOUND") return res.status(404).json({ error: "Item not found." });
+    if (error.message === "VENDOR_NOT_FOUND") return res.status(404).json({ error: "Vendor not found." });
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "An item with that name and vendor already exists." });
+    }
+    return res.status(500).json({ error: "Failed to save item list changes." });
+  }
+});
+
 app.put("/api/items/:id", async (req, res) => {
   const itemId = Number(req.params.id);
   if (!Number.isInteger(itemId) || itemId <= 0) {
@@ -1525,10 +1575,7 @@ app.put("/api/items/:id", async (req, res) => {
 
   try {
     await db.transaction(async (tx) => {
-      const item = await tx.query(
-        "SELECT id, source_system, source_key FROM items WHERE id = $1",
-        [itemId]
-      );
+      const item = await tx.query("SELECT id FROM items WHERE id = $1", [itemId]);
       if (!item.rows.length) throw new Error("ITEM_NOT_FOUND");
 
       const vendor = await tx.query("SELECT id FROM vendors WHERE id = $1", [vendorId]);
@@ -1542,18 +1589,6 @@ app.put("/api/items/:id", async (req, res) => {
         "UPDATE items SET name = $1, vendor_id = $2, case_size = $3, area_type = $4, measure_type = $5, density_id = $6, purchase_unit = $7, purchase_cost = $8 WHERE id = $9",
         [name, vendorId, caseSize, areaType, measureType, densityId, purchaseUnit, purchaseCost, itemId]
       );
-
-      const sourceSystem = String(item.rows[0].source_system || "");
-      const sourceKey = String(item.rows[0].source_key || "");
-      if (sourceSystem === "pricebook" && sourceKey.startsWith("ingredient:")) {
-        const ingredientId = Number(sourceKey.split(":")[1]);
-        if (Number.isInteger(ingredientId) && ingredientId > 0) {
-          await tx.query(
-            "UPDATE pricebook_ingredients SET buy_price = $1 WHERE id = $2",
-            [purchaseCost, ingredientId]
-          );
-        }
-      }
 
       const existing = await tx.query("SELECT id FROM item_sizes WHERE item_id = $1", [itemId]);
       const existingIds = new Set(existing.rows.map((r) => Number(r.id)));
@@ -1607,6 +1642,9 @@ app.put("/api/items/:id", async (req, res) => {
     if (error.message === "DENSITY_NOT_FOUND") return res.status(404).json({ error: "Density not found." });
     if (error.message === "SIZE_NOT_FOUND") {
       return res.status(400).json({ error: "One or more sizes were invalid for this item." });
+    }
+    if (normalizeSqlError(error) === "UNIQUE") {
+      return res.status(409).json({ error: "An item with that name and vendor already exists." });
     }
     return res.status(500).json({ error: "Failed to update item." });
   }
@@ -1837,15 +1875,6 @@ app.get("/api/pricebook/summary", async (_req, res) => {
     foodCatalog: pick(foodCatalog),
     syrupCatalog: pick(syrupCatalog),
   });
-});
-
-app.post("/api/pricebook/sync-catalog", async (_req, res) => {
-  try {
-    const stats = await syncPricebookToCatalog(db);
-    return res.json({ ok: true, stats });
-  } catch (_error) {
-    return res.status(500).json({ error: "Failed to sync price book into item catalog." });
-  }
 });
 
 app.get("/api/pricebook/recipes", async (_req, res) => {

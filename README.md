@@ -55,7 +55,7 @@ npm run import:workbook -- "/absolute/path/to/Wahi Price Book V2.1.xlsx"
 
 This validates the V2.1 workbook tabs, imports workbook data into the `pricebook_*` source tables, syncs ingredients into the Item Catalog, and populates the website-owned `recipe_builder_recipes` and `recipe_builder_lines` tables that Recipe Builder and Recipe Books use.
 
-After this import, build and edit recipes in the website. Re-running this command will refresh imported workbook recipes and replace their imported line items from the workbook.
+After this import, the website database is the source of truth. Build and edit catalog items and recipes in the website. Re-run this command only when you intentionally want to pull the workbook through again; it will refresh imported workbook recipes and replace their imported line items from the workbook.
 
 ## Import price book source tables only
 
@@ -94,6 +94,7 @@ This preserves workbook math inputs in dedicated tables and syncs `Ingredients` 
 - `POST /api/vendors`
 - `GET /api/items`
 - `POST /api/items`
+- `PATCH /api/items/batch-basic`
 - `GET /api/counts?date=YYYY-MM-DD`
 - `POST /api/counts`
 - `GET /api/par-levels?area=FOH|BOH`
