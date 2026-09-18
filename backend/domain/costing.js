@@ -2,10 +2,12 @@
 const { Exact: E } = require('./exact');
 const { latest, grouped } = require('./history');
 const { resolveConversion } = require('./measurements');
+const resolution = require('./resolution-context');
 
 function costIngredient(state, request) {
   const { at, knownAt, currency = 'USD' } = request;
-  const select = rows => latest(rows,at,knownAt);
+  const select = rows => resolution.select(state,rows,at,knownAt);
+  const cache=resolution.context(state);
   const zero = () => ({material:E.of('0'),labor:E.of('0'),blockers:[],references:[],resolvedComponents:0,totalComponents:0});
   function block(result,reason,path,details={}) { result.blockers.push({reason,ingredientId:path.at(-1),path:[...path],...details}); }
   function merge(target,child,factor=E.of('1')) {
@@ -20,15 +22,17 @@ function costIngredient(state, request) {
   function walk(id,qty,requestedUnit,path=[]) {
     const result=zero();
     if(path.includes(id)) { block(result,'cycle',[...path,id],{cyclePath:[...path.slice(path.indexOf(id)),id]}); return result; }
+    const memoKey=JSON.stringify([id,String(qty instanceof E?qty.n+'/'+qty.d:qty),requestedUnit,at,knownAt,currency]);
+    if(cache?.costs.has(memoKey)){cache.stats.costHits++;const saved=cache.costs.get(memoKey);return {...saved,blockers:[],references:[...saved.references]};}
     path=[...path,id];
     if (!state.ingredients.some(i=>i.id===id)) { block(result,'missing_ingredient',path);return result; }
-    const basis=select(state.bases.filter(r=>r.ingredientId===id));
+    const basis=select(resolution.rows(state,'bases','ingredientId',id));
     if(!basis) {block(result,'missing_cost_basis',path);return result;}
     result.references.push(basis.id);
     if(basis.kind==='purchase') {
       result.totalComponents++;
       const option=state.purchaseOptions.find(o=>o.id===basis.purchaseOptionId);
-      const price=option && select(state.prices.filter(p=>p.purchaseOptionId===option.id));
+      const price=option && select(resolution.rows(state,'prices','purchaseOptionId',option.id));
       if(!option) block(result,'missing_purchase_option',path);
       else {
         result.references.push(option.id);
@@ -42,7 +46,7 @@ function costIngredient(state, request) {
       }
     } else if(basis.kind==='source') {
       result.totalComponents++;
-      const y=select(state.yields.filter(r=>r.ingredientId===id));
+      const y=select(resolution.rows(state,'yields','ingredientId',id));
       if(!y || !y.sourceQuantity || !y.sourceUnit || !y.outputQuantity || !y.outputUnit) block(result,'missing_yield',path,{sourceIngredientId:y?.sourceIngredientId||null});
       else {
         result.references.push(y.id);
@@ -55,7 +59,7 @@ function costIngredient(state, request) {
       }
     } else if(basis.kind==='recipe') {
       const recipe=state.recipes.find(r=>r.id===basis.recipeId && r.outputIngredientId===id);
-      const revision=recipe && select(state.recipeRevisions.filter(r=>r.recipeId===recipe.id));
+      const revision=recipe && select(resolution.rows(state,'recipeRevisions','recipeId',recipe.id));
       if(!revision) block(result,'missing_recipe_revision',path,{recipeId:basis.recipeId});
       else {
         result.references.push(revision.id); result.totalComponents+=revision.lines.length;
@@ -76,7 +80,7 @@ function costIngredient(state, request) {
       }
     } else if(basis.kind!=='labor_only') block(result,'invalid_cost_basis',path);
 
-    const labor=grouped(state.labor.filter(r=>r.ingredientId===id),'componentKey',at,knownAt);
+    const labor=grouped(resolution.rows(state,'labor','ingredientId',id),'componentKey',at,knownAt);
     if(basis.kind==='labor_only'&&!labor.length) block(result,'missing_labor',path);
     for(const component of labor) {
       result.totalComponents++;result.references.push(component.id);
@@ -89,7 +93,7 @@ function costIngredient(state, request) {
         amount=E.of(component.amount);
       } else {
         if(component.minutes===null || !component.department) {block(result,'incomplete_labor',path,{laborId:component.id});continue;}
-        const rate=select(state.laborRates.filter(r=>r.department===component.department));
+        const rate=select(resolution.rows(state,'laborRates','department',component.department));
         if(!rate) {block(result,'missing_labor_rate',path,{department:component.department});continue;}
         result.references.push(rate.id);
         if(rate.currency!==currency) {block(result,'currency_mismatch',path,{laborId:component.id});continue;}
@@ -97,6 +101,8 @@ function costIngredient(state, request) {
       }
       result.labor=result.labor.add(amount.mul(out).div(E.of(component.outputQuantity)));result.resolvedComponents++;
     }
+    // Unresolved results carry caller-specific blocker paths and are not shared.
+    if(cache&&!result.blockers.length)cache.costs.set(memoKey,{...result,references:[...result.references]});
     return result;
   }
   const result=walk(request.ingredientId,request.quantity,request.unit);

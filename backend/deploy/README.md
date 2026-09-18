@@ -27,3 +27,18 @@ Intentional reimport requires a maintenance window, current v2 database backup, 
 `npm test --prefix backend` runs the complete suite. Migration/drop/vendor tests use private workbook-derived fixtures at `backend/test/fixtures/`; obtain these through the owner's private development artifacts. They are deliberately not published in the public repository. Tests fail if required fixtures are absent; no tests are silently skipped. PostgreSQL tests use a separate disposable local cluster (`WAHI_TEST_PG_BIN` selects PostgreSQL binaries) and never use the hosted URL.
 
 Render reference: [deploy behavior](https://render.com/docs/deploys), [health checks](https://render.com/docs/health-checks), [environment updates](https://api-docs.render.com/reference/update-env-var).
+
+Current operational views use `/api/views/*`: one statement-level PostgreSQL
+snapshot selecting the latest applicable, non-superseded fact per stream. Item
+and recipe details restrict the returned graph to the requested identity and its
+current dependencies. NUMERIC quantities are serialized as strings. Audit and
+import evidence are retrieved separately on explicit history requests.
+
+Resolution caches belong only to a newly loaded request snapshot. There is no
+cross-request cost cache or background materialization to invalidate. Future
+boundaries and all committed revisions are visible to the next request. Write
+transactions and explicit historical reconstruction retain their original paths.
+
+Hosted HTML references content-fingerprinted JS/CSS with immutable public caching.
+HTML, unversioned assets and authenticated API responses remain `no-store`.
+`Server-Timing: app` reports handler duration without data or SQL text.

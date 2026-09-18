@@ -9,11 +9,14 @@ async function body(req){let s='';for await(const c of req){s+=c;if(Buffer.byteL
 function potentialHealth(req,runtime){return runtime.hosted&&req.method==='GET'&&req.url==='/healthz';}
 function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore}){
   const sessions=new Map(),attempts=new Map();
+  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','shell-model.js','shell.js'];
+  const assets=Promise.all(assetNames.map(async name=>{const content=await fs.readFile(path.join(__dirname,'public',name));return {name,content,url:'/'+name.replace(/(\.[^.]+)$/,'.'+crypto.createHash('sha256').update(content).digest('hex').slice(0,16)+'$1')};}));
   const tokenHash=s=>crypto.createHash('sha256').update(s).digest('hex');
   const server=http.createServer(async(req,res)=>{
     const origin=runtime.hosted?runtime.origin:'http://127.0.0.1:'+server.address().port;
     const expectedHost=new URL(origin).host,cookieName=runtime.hosted?'__Host-wahi_session':'wahi_review_session',cookieFlags=runtime.hosted?'; Secure':'';
-    const send=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json'});res.end(JSON.stringify(data));};
+    const started=performance.now();
+    const send=(status,data)=>{res.setHeader('Server-Timing','app;dur='+(performance.now()-started).toFixed(2));res.writeHead(status,{'Content-Type':'application/json'});res.end(JSON.stringify(data));};
     if(!runtime.hosted)res.setHeader('X-Wahi-Review','local-review');else res.setHeader('Strict-Transport-Security','max-age=31536000');res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
     try{
       if(potentialHealth(req,runtime)){try{await service.repository.pool.query('SELECT 1');send(200,{status:'ok'});}catch{send(503,{status:'unavailable'});}return;}
@@ -23,8 +26,10 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
         if(req.headers.origin!==origin)throw error('forbidden','Same-origin request required');
         if(!String(req.headers['content-type']).startsWith('application/json'))throw error('invalid_request','JSON required');
       }
-      if(req.method==='GET'&&['/','/app.js','/style.css','/management-ui.js','/table-model.js','/currency.js','/shell-model.js','/shell.js'].includes(p)){
-        const filename=p==='/'?'index.html':p.slice(1);res.setHeader('Content-Type',p.endsWith('.js')?'text/javascript':p.endsWith('.css')?'text/css':'text/html');let content=await fs.readFile(path.join(__dirname,'public',filename));if(runtime.hosted&&filename==='index.html')content=content.toString().replace('Wahi — Owner Review','Wahi').replace(/<div class="review-banner">.*?<\/div>/,'<div class="review-banner" hidden></div>').replace('<span>Owner review</span>','<span>Management</span>').replace('Try the current workflows.','Log in to Wahi.').replace('Use your local review credentials. Production logins are separate.','Use your Wahi account.');return res.end(content);
+      if(req.method==='GET'){
+        const entries=await assets,asset=entries.find(a=>p===a.url||p==='/'+a.name);
+        if(asset){res.setHeader('Content-Type',asset.name.endsWith('.js')?'text/javascript':'text/css');if(runtime.hosted&&p===asset.url)res.setHeader('Cache-Control','public, max-age=31536000, immutable');return res.end(asset.content);}
+        if(p==='/'){res.setHeader('Content-Type','text/html');let content=await fs.readFile(path.join(__dirname,'public','index.html'),'utf8');if(runtime.hosted){content=content.replace('Wahi — Owner Review','Wahi').replace(/<div class="review-banner">.*?<\/div>/,'<div class="review-banner" hidden></div>').replace('<span>Owner review</span>','<span>Management</span>').replace('Try the current workflows.','Log in to Wahi.').replace('Use your local review credentials. Production logins are separate.','Use your Wahi account.');for(const a of entries)content=content.replaceAll('/'+a.name,a.url);}return res.end(content);}
       }
       if(p==='/api/login'&&req.method==='POST'){
         const data=z.object({username:z.string().max(100),password:z.string().min(1).max(200)}).strict().parse(await body(req));
@@ -44,7 +49,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       if(!session?.user||session.expires<Date.now())throw error('unauthenticated','Please log in');
       const actor={id:session.user.id,role:session.user.role};
       if(req.method==='POST'&&req.headers['x-csrf-token']!==session.csrf)throw error('forbidden','Refresh your session before saving');
-      if(p==='/api/me'&&req.method==='GET'){send(200,{id:actor.id,username:session.user.username,role:actor.role,capabilities:CAPABILITIES[actor.role],csrf:session.csrf,environment:runtime.environment,hosted:runtime.hosted,demo:!(await service.repository.read()).importRecords.length});return;}
+      if(p==='/api/me'&&req.method==='GET'){send(200,{id:actor.id,username:session.user.username,role:actor.role,capabilities:CAPABILITIES[actor.role],csrf:session.csrf,environment:runtime.environment,hosted:runtime.hosted,demo:service.repository.hasImportedData?!await service.repository.hasImportedData():!(await service.repository.read()).importRecords.length});return;}
       if(p==='/api/logout'&&req.method==='POST'){if(sessionStore)await sessionStore.delete(tokenHash(cookie));else sessions.delete(tokenHash(cookie));res.setHeader('Set-Cookie',`${cookieName}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${cookieFlags}`);send(200,{ok:true});return;}
       if(p==='/api/catalog'&&req.method==='GET'){
         authorize(actor);const s=await service.repository.read(),now=new Date().toISOString();
@@ -64,6 +69,13 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
         if(can(actor,'internal_cost.read')){const m=await require('./management').management(service,actor);data.unresolvedRecipeCosts=m.recipes.filter(r=>!r.cost||r.cost.completeCost===null).length;}
         if(can(actor,'inventory.history'))data.recentCounts=s.countSessions.filter(c=>c.status==='submitted').sort((a,b)=>b.observedAt.localeCompare(a.observedAt)).slice(0,5).map(c=>({id:c.id,observedAt:c.observedAt,locationName:c.snapshot.location.name}));
         send(200,data);return;
+      }
+      if(p.startsWith('/api/views/')&&req.method==='GET'){
+        const views=require('./views'),kind=p.slice('/api/views/'.length),id=u.searchParams.get('id');
+        if(kind==='references'){send(200,await views.references(service,actor,{inventoryOnly:u.searchParams.get('mode')==='inventory'}));return;}
+        if(kind==='item-history'){send(200,await views.itemHistory(service,actor,z.string().uuid().parse(id)));return;}
+        if(['items','recipes','item','recipe','overview'].includes(kind)){if(['item','recipe'].includes(kind))z.string().uuid().parse(id);send(200,await views.view(service,actor,kind,id));return;}
+        throw error('not_found','Page not found');
       }
       if(p==='/api/management'&&req.method==='GET'){send(200,await require('./management').management(service,actor));return;}
       if(p==='/api/item'&&req.method==='GET'){send(200,await require('./items').itemRecord(service,actor,u.searchParams.get('id')));return;}

@@ -266,3 +266,39 @@ test('hosted PostgreSQL sessions survive store recreation and logout; login limi
 });
 test('hosted importer rejects wrong database before inserting into any schema',async()=>{const before=await new PostgresRepository(pool).read();await assert.rejects(require('../deploy/import').importEmpty(pool,before),/Unexpected import database/);assert.deepEqual(await new PostgresRepository(pool).read(),before);});
 test('hosted batched importer uses canonical mappings, preserves exact facts and rolls back safely',async()=>{const {insertState}=require('../deploy/import'),{build}=require('../import/importer'),{replaceSchema}=require('../import/run');const state=(await build(require('./fixtures/drop-source.json'),{activationAt:'2026-09-18T00:00:00.000Z'})).state,c=await pool.connect();try{await replaceSchema(c,require('../domain/state').emptyState());await c.query('BEGIN');await insertState(c,state);await c.query('COMMIT');const stored=await new PostgresRepository(pool).read();for(const k of Object.keys(state))assert.deepEqual(stored[k].sort((a,b)=>a.id.localeCompare(b.id)),state[k].sort((a,b)=>a.id.localeCompare(b.id)));await c.query('BEGIN');await assert.rejects(insertState(c,state));await c.query('ROLLBACK');assert.equal((await new PostgresRepository(pool).read()).ingredients.length,state.ingredients.length);}finally{c.release();}});
+
+test('current SQL snapshot is one bounded exact read, without audit/import/history reconstruction',async()=>{
+ const f=fixture(new PostgresRepository(pool)),a=await f.bought('Current bounded decimal','3.123456789123456789'),other=await f.bought('Unrelated current item');
+ const r=await f.recipe('Current bounded recipe',[{ingredientId:a.id,quantity:'2',unit:'each'}]);
+ const at='2028-01-01T00:00:00.000Z',full=await f.repository.read();let calls=0;
+ const repo=new PostgresRepository({query:async(...args)=>{calls++;return pool.query(...args);}});
+ const s=await repo.readCurrent({at,recipeId:r.id});assert.equal(calls,1);assert.deepEqual(new Set(s.ingredients.map(i=>i.id)),new Set([a.id,r.output]));assert.ok(!s.ingredients.some(i=>i.id===other.id));assert.equal(s.audit.length,0);assert.equal(s.importRecords.length,0);
+ const {costIngredient}=require('../domain/costing'),req={ingredientId:r.output,quantity:'1',unit:'each',at,knownAt:at};assert.deepEqual(costIngredient(s,req),costIngredient(full,req));assert.equal(s.prices.find(p=>p.purchaseOptionId===a.option).amount,'3.123456789123456789');
+});
+
+test('current SQL selects supersession and future boundaries identically to historical authority',async()=>{
+ const f=fixture(new PostgresRepository(pool)),a=await f.bought('Current boundary','2');
+ const first=(await f.repository.read()).prices.find(p=>p.purchaseOptionId===a.option);
+ await f.run('addPrice',{purchaseOptionId:a.option,amount:'4',currency:'USD',effectiveAt:early,supersedesId:first.id});
+ await f.run('addPrice',{purchaseOptionId:a.option,amount:'9',currency:'USD',effectiveAt:'2030-01-01T00:00:00.000Z'});
+ const {costIngredient}=require('../domain/costing');
+ for(const at of ['2026-09-18T12:00:03.000Z','2029-01-01T00:00:00.000Z','2031-01-01T00:00:00.000Z']){const full=await f.repository.read(),s=await f.repository.readCurrent({at,itemId:a.id}),req={ingredientId:a.id,quantity:'2',unit:'each',at,knownAt:at};assert.deepEqual(costIngredient(s,req),costIngredient(full,req));assert.ok(s.prices.length<=1);}
+});
+
+test('current projections use fresh SQL after price mutation and restoration; history remains exact',async()=>{
+ const f=fixture(new PostgresRepository(pool)),a=await f.bought('Current mutation','2'),r=await f.recipe('Current downstream',[{ingredientId:a.id,quantity:'3',unit:'each'}]);const at='2027-01-01T00:00:00.000Z';
+ const svc=new (require('../service').DomainService)(f.repository,{clock:()=>at}),{view}=require('../review/views');
+ const cost=async()=>(await view(svc,admin,'recipe',r.id)).recipe.cost.completeCost;
+ assert.equal(await cost(),'6.000000000000');
+ const historicalAt='2026-09-18T11:59:59.000Z',historical=await f.cost(r.output,'1','each',{at:historicalAt,knownAt:at});
+ await f.run('addPrice',{purchaseOptionId:a.option,amount:'5',currency:'USD'});assert.equal(await cost(),'15.000000000000');
+ await f.run('addPrice',{purchaseOptionId:a.option,amount:'2',currency:'USD'});assert.equal(await cost(),'6.000000000000');
+ assert.deepEqual(await f.cost(r.output,'1','each',{at:historicalAt,knownAt:at}),historical);
+});
+
+test('current SQL vendor eligibility retains future-only and historical source evidence without returning history',async()=>{
+ const f=fixture(new PostgresRepository(pool)),a=await f.bought('Current vendor'),supplier=await f.run('createSupplier',{name:'Future current vendor',contact:''});
+ const option=await f.run('createPurchaseOption',{ingredientId:a.id,supplierId:supplier.id,label:'Future source',contentQuantity:'1',contentUnit:'each'});
+ await f.run('addPrice',{purchaseOptionId:option.id,amount:'9',currency:'USD',effectiveAt:'2030-01-01T00:00:00.000Z'});
+ const {currentVendors}=require('../review/vendors');for(const at of ['2027-01-01T00:00:00.000Z','2031-01-01T00:00:00.000Z']){const s=await f.repository.readCurrent({at,itemId:a.id}),full=await f.repository.read();assert.deepEqual(currentVendors(s,a.id,at),currentVendors(full,a.id,at));}
+});

@@ -35,6 +35,8 @@ async function insert(client,name,row) {
 }
 class PostgresRepository {
   constructor(pool) {this.pool=pool;}
+  async readCurrent(options) { return require('./current').readCurrent(this.pool,options); }
+  async hasImportedData() { return (await this.pool.query('SELECT EXISTS(SELECT 1 FROM wahi_v2.import_records) AS present')).rows[0].present; }
   async read() {
     const c=await this.pool.connect();
     try {await c.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');const result=await readState(c);await c.query('COMMIT');return result;}

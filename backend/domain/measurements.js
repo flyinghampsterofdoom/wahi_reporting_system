@@ -1,6 +1,7 @@
 'use strict';
 const { Exact: E } = require('./exact');
 const { grouped } = require('./history');
+const resolution=require('./resolution-context');
 
 const STANDARD = Object.freeze({
   g: ['mass','1'], kg: ['mass','1000'], oz_wt: ['mass','28.349523125'], lb: ['mass','453.59237'],
@@ -16,9 +17,20 @@ function unit(value) {
   throw new Error('Unknown or ambiguous unit: ' + value);
 }
 function activeMeasurements(state, ingredientId, at, knownAt) {
-  return grouped(state.measurements.filter(r => r.ingredientId === ingredientId),'measurementKey',at,knownAt);
+  return grouped(resolution.rows(state,'measurements','ingredientId',ingredientId),'measurementKey',at,knownAt);
 }
-function resolveConversion(state, { ingredientId, quantity, fromUnit, toUnit, at, knownAt }) {
+function resolveConversion(state, request) {
+  const cache=resolution.context(state);
+  if(!cache)return uncachedConversion(state,request);
+  // Resolve a unit quantity once; scaling remains exact. Invalid quantities must
+  // still be rejected before reusing any path. Cache status/provenance as well.
+  try{const q=E.of(request.quantity);if(!q.nonnegative())throw new Error('Quantity must be nonnegative');
+   const key=JSON.stringify([request.ingredientId,request.fromUnit,request.toUnit,request.at,request.knownAt]);
+   let c=cache.conversions.get(key);if(!c){c=uncachedConversion(state,{...request,quantity:'1'});cache.conversions.set(key,c);}else cache.stats.conversionHits++;
+   return c.status==='resolved'?{...c,amount:c.amount.mul(q),measurementIds:[...c.measurementIds]}:{...c};
+  }catch(error){return {status:'invalid_request',message:error.message};}
+}
+function uncachedConversion(state, { ingredientId, quantity, fromUnit, toUnit, at, knownAt }) {
   try {
     const q = E.of(quantity), from = unit(fromUnit), to = unit(toUnit);
     if (!q.nonnegative()) throw new Error('Quantity must be nonnegative');

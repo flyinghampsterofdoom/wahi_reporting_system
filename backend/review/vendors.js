@@ -8,7 +8,7 @@ function currentVendors(state,ingredientId,at,knownAt=at){
  for(const p of state.purchaseOptions.filter(p=>p.ingredientId===ingredientId&&p.active&&p.createdAt<=at&&p.createdAt<=knownAt)){
   const prices=state.prices.filter(x=>x.purchaseOptionId===p.id),bases=state.bases.filter(x=>x.purchaseOptionId===p.id);
   const currentPrice=latest(prices,at,knownAt);
-  if(!currentPrice&&basis?.purchaseOptionId!==p.id&&(prices.length||bases.length))continue;
+  if(!currentPrice&&basis?.purchaseOptionId!==p.id&&(prices.length||bases.length||p.hasPriceFacts||p.hasBasisFacts))continue;
   const v=supplier(state,p.supplierId);if(v?.active)vendors.set(v.id,v);
  }
  return [...vendors.values()].sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
