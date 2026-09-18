@@ -14,10 +14,18 @@ function pg(command,args){return execFileSync(path.join(bin,command),args,{stdio
 function running(){try{pg('pg_ctl',['-D',data,'status']);return true;}catch{return false;}}
 function startDb(){if(!running())pg('pg_ctl',['-D',data,'-l',path.join(root,'postgres.log'),'-o',`-k ${root} -h '' -p 55441`,'-w','start']);}
 function pool(){return new Pool({host:root,port:55441,user:'wahi_review',database:'postgres',max:5});}
+async function localIntegrationKey(db){
+ if(process.env.WAHI_INTEGRATION_KEY_BASE64)return process.env.WAHI_INTEGRATION_KEY_BASE64;
+ const filename=path.join(root,'integration.key');
+ try{const stat=await fs.stat(filename);if(stat.mode&0o077)throw new Error('Integration key file must have private permissions');return (await fs.readFile(filename,'utf8')).trim();}catch(e){if(e.code!=='ENOENT')throw e;}
+ const count=(await db.query("SELECT count(*)::int AS n FROM wahi_v2.integration_settings WHERE sealed_secret IS NOT NULL")).rows[0].n;
+ if(count)return null; // Never silently replace a lost key for existing ciphertext.
+ const key=crypto.randomBytes(32).toString('base64');try{await fs.writeFile(filename,key,{mode:0o600,flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;return (await fs.readFile(filename,'utf8')).trim();}return key;
+}
 async function openReview(){
   const marker=JSON.parse(await fs.readFile(path.join(root,'ready.json'),'utf8'));
   if(marker.kind!=='wahi-isolated-owner-review')throw new Error('Invalid review database marker');
-  const db=pool();try{await checkSchema(db);return {service:new DomainService(new PostgresRepository(db)),pool:db,users:JSON.parse(await fs.readFile(path.join(root,'users.json'),'utf8'))};}catch(e){await db.end();throw e;}
+  const db=pool();try{await checkSchema(db);const integrationKey=await localIntegrationKey(db);return {integrations:new (require('../integrations/toast').ToastSettings)(db,{environment:'local-review',key:integrationKey}),service:new DomainService(new PostgresRepository(db)),pool:db,users:JSON.parse(await fs.readFile(path.join(root,'users.json'),'utf8'))};}catch(e){await db.end();throw e;}
 }
 async function setup(){
   try{await fs.access(path.join(root,'ready.json'));console.log('Review already provisioned. Existing data retained.');return;}catch{}
@@ -31,14 +39,14 @@ async function setup(){
   }
   await fs.writeFile(path.join(root,'users.json'),JSON.stringify(users,null,2),{mode:0o600});
   await fs.writeFile(path.join(root,'access.json'),JSON.stringify(accounts,null,2),{mode:0o600});
-  await fs.writeFile(path.join(root,'ACCESS.md'),'# Local Wahi owner review\n\nOpen http://127.0.0.1:4317\n\nSynthetic data only. These logins do not access production.\n\n'+accounts.map(a=>`- ${a.role}: username \`${a.username}\`, password \`${a.password}\``).join('\n')+'\n',{mode:0o600});
+  await fs.writeFile(path.join(root,'ACCESS.md'),'# Local Wahi owner review\n\nOpen http://127.0.0.1:4317\n\nLocal review only. These logins do not access production.\n\n'+accounts.map(a=>`- ${a.role}: username \`${a.username}\`, password \`${a.password}\``).join('\n')+'\n',{mode:0o600});
   await fs.writeFile(path.join(root,'ready.json'),JSON.stringify({kind:'wahi-isolated-owner-review',createdAt:new Date().toISOString()}),{mode:0o600});
   console.log('Provisioned isolated PostgreSQL and synthetic review data. Credentials: backend/review/.runtime/ACCESS.md');
 }
 async function start(){
   await fs.access(path.join(root,'ready.json'));startDb();
   let response;try{response=await fetch('http://127.0.0.1:4317/api/me');}catch{}
-  if(response){if(response.headers.get('x-wahi-review')==='local-synthetic'){console.log('Review is already running at http://127.0.0.1:4317');return;}throw new Error('Port 4317 is occupied. No process was replaced.');}
+  if(response){if(['local-synthetic','local-review'].includes(response.headers.get('x-wahi-review'))){console.log('Review is already running at http://127.0.0.1:4317');return;}throw new Error('Port 4317 is occupied. No process was replaced.');}
   const log=await fs.open(path.join(root,'http.log'),'a',0o600);
   const child=spawn(process.execPath,[path.join(__dirname,'server.js')],{detached:true,stdio:['ignore',log.fd,log.fd]});child.unref();await log.close();await fs.writeFile(path.join(root,'http.pid'),String(child.pid),{mode:0o600});
   console.log('Starting owner review at http://127.0.0.1:4317');

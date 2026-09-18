@@ -27,4 +27,4 @@ if(require.main===module) {
   if(!process.argv.includes('--apply')) {console.error('Explicit --apply is required. Uses WAHI_DATABASE_URL and wahi_v2 schema only.');process.exitCode=1;}
   else {const pool=localPool();migrate(pool).then(x=>console.log({applied:x})).catch(e=>{console.error(e.message);process.exitCode=1;}).finally(()=>pool.end());}
 }
-module.exports={migrate,checkSchema};
+module.exports={migrate,checkSchema,migrationFiles};

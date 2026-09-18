@@ -10,7 +10,7 @@ const {authorize,can,ingredientView,recipeView,costView}=require('./auth');
 const id=z.string().uuid();
 const text=z.string().trim().min(1).max(500);
 const decimal=z.string().max(100).refine(v=>{try{return E.of(v).nonnegative();}catch{return false;}},'Expected nonnegative decimal string');
-const positive=decimal.refine(v=>E.of(v).positive(),'Expected positive decimal string');
+const positive=decimal.refine(v=>{try{return E.of(v).positive();}catch{return false;}},'Expected positive decimal string');
 const measure=z.string().refine(v=>{try{unit(v);return true;}catch{return false;}},'Unknown or ambiguous unit');
 const currency=z.string().regex(/^[A-Z]{3}$/);
 const optionalQty=positive.nullable().default(null), optionalUnit=measure.nullable().default(null);
@@ -33,7 +33,7 @@ const schemas={
   setYield:z.object({...common,ingredientId:id,sourceIngredientId:id,sourceQuantity:optionalQty,sourceUnit:optionalUnit,outputQuantity:optionalQty,outputUnit:optionalUnit}).strict(),
   addMeasurement:z.object({...common,ingredientId:id,measurementKey:id.optional(),fromQuantity:positive,fromUnit:measure,toQuantity:positive,toUnit:measure}).strict(),
   reviseRecipe:z.object({...common,recipeId:id,outputQuantity:optionalQty,outputUnit:optionalUnit,
-    lines:z.array(z.object({ingredientId:id,quantity:decimal.nullable().default(null),unit:optionalUnit}).strict()).max(1000),
+    lines:z.array(z.object({ingredientId:id,quantity:decimal.nullable().default(null),unit:optionalUnit,notes:z.string().max(4000).optional()}).strict()).max(1000),
     steps:z.array(z.string().min(1).max(10000)).max(1000).default([])}).strict(),
   addPrice:z.object({...common,purchaseOptionId:id,amount:decimal,currency}).strict(),
   setLabor:z.object({...common,ingredientId:id,componentKey:id.optional(),kind:z.enum(['fixed','time']),outputQuantity:optionalQty,outputUnit:optionalUnit,
@@ -70,7 +70,7 @@ class DomainService {
           const old=existing.find(r=>r.id===metadata.supersedesId);
           if(!old || old.effectiveAt!==effectiveAt || state[collection].some(r=>r.supersedesId===old.id)) throw new Error('Correction must supersede an unsuperseded record in the same scope and effective time');
           previous=old;
-        } else if(effectiveAt!==null && existing.some(r=>r.effectiveAt===effectiveAt)) throw new Error('Effective-time collision requires explicit supersedesId');
+        } else if(effectiveAt!==null && existing.some(r=>r.effectiveAt===effectiveAt)) throw Object.assign(new Error('Effective-time collision requires explicit supersedesId'),{code:'effective_time_collision'});
         const next={id:randomUUID(),...fields,effectiveAt,recordedAt:now,actorId:actor.id,provenance:metadata.provenance,note:metadata.note||null,supersedesId:metadata.supersedesId||null,active:metadata.active!==false};
         state[collection].push(next);audit(collection,previous,next,effectiveAt);return next;
       }
@@ -165,7 +165,11 @@ class DomainService {
   }
   async audit(actor,entityId) {authorize(actor,'internal_cost.read');return (await this.repository.read()).audit.filter(e=>e.entityId===entityId);}
   async menu(actor,menuItemId,input={}) {
-    authorize(actor);const s=await this.repository.read(),c=this.context(input),m=s.menuItems.find(r=>r.id===menuItemId);if(!m)return null;
+    authorize(actor);return this.menuFromState(actor,await this.repository.read(),menuItemId,input);
+  }
+  // Project a catalog from one consistent repository snapshot.
+  menuFromState(actor,s,menuItemId,input={}) {
+    authorize(actor);const c=this.context(input),m=s.menuItems.find(r=>r.id===menuItemId);if(!m)return null;
     const price=latest(s.sellingPrices.filter(r=>r.menuItemId===m.id),c.at,c.knownAt),mapping=latest(s.menuMappings.filter(r=>r.menuItemId===m.id),c.at,c.knownAt);
     const output={id:m.id,name:m.name,active:m.active,sellingPrice:price?{amount:price.amount,currency:price.currency}:null,
       recipe:mapping?{recipeId:mapping.recipeId,quantity:mapping.quantity,unit:mapping.unit}:null};

@@ -1,7 +1,7 @@
 'use strict';
 const {emptyState,COLLECTIONS}=require('../domain/state');
 const {definitions,snake}=require('./schema');
-const jsonFields=new Set(['tags','provenance','previous','next','snapshot','conversion']);
+const jsonFields=new Set(['tags','provenance','previous','next','snapshot','conversion','sourceValues','issues','entityIds']);
 function localPool() {
   const connectionString=process.env.WAHI_DATABASE_URL;
   if(!connectionString)throw new Error('WAHI_DATABASE_URL is required; legacy DATABASE_URL is never used');
@@ -19,7 +19,7 @@ async function readState(client) {
   const lines=(await client.query('SELECT * FROM wahi_v2.recipe_lines ORDER BY position')).rows;
   const steps=(await client.query('SELECT * FROM wahi_v2.recipe_steps ORDER BY position')).rows;
   for(const r of s.recipeRevisions) {
-    r.lines=lines.filter(l=>l.recipe_revision_id===r.id).map(l=>({id:l.id,ingredientId:l.ingredient_id,quantity:l.quantity,unit:l.unit}));
+    r.lines=lines.filter(l=>l.recipe_revision_id===r.id).map(l=>({id:l.id,ingredientId:l.ingredient_id,quantity:l.quantity,unit:l.unit,notes:l.notes}));
     r.steps=steps.filter(l=>l.recipe_revision_id===r.id).map(l=>({id:l.id,position:l.position,instruction:l.instruction}));
   }
   return s;
@@ -29,7 +29,7 @@ async function insert(client,name,row) {
   const values=keys.map(k=>jsonFields.has(k)&&row[k]!==null?JSON.stringify(row[k]):row[k]);
   await client.query(`INSERT INTO wahi_v2.${snake(name)} (${keys.map(snake).join(',')}) VALUES (${keys.map((_,i)=>'$'+(i+1)).join(',')})`,values);
   if(name==='recipeRevisions') {
-    for(const [position,l] of row.lines.entries())await client.query('INSERT INTO wahi_v2.recipe_lines (id,recipe_revision_id,position,ingredient_id,quantity,unit) VALUES ($1,$2,$3,$4,$5,$6)',[l.id,row.id,position,l.ingredientId,l.quantity,l.unit]);
+    for(const [position,l] of row.lines.entries())await client.query('INSERT INTO wahi_v2.recipe_lines (id,recipe_revision_id,position,ingredient_id,quantity,unit,notes) VALUES ($1,$2,$3,$4,$5,$6,$7)',[l.id,row.id,position,l.ingredientId,l.quantity,l.unit,l.notes||'']);
     for(const step of row.steps)await client.query('INSERT INTO wahi_v2.recipe_steps (id,recipe_revision_id,position,instruction) VALUES ($1,$2,$3,$4)',[step.id,row.id,step.position,step.instruction]);
   }
 }
@@ -64,4 +64,4 @@ class PostgresRepository {
     }catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}
   }
 }
-module.exports={PostgresRepository,localPool};
+module.exports={PostgresRepository,localPool,insert};

@@ -1,0 +1,8 @@
+'use strict';
+(function(root){
+ const definitions=[{id:'home',name:'Overview',icon:'O',routes:['home']},{id:'inventory-area',name:'Inventory & Costing',icon:'IC',capability:'inventory.count',routes:['inventory-area','catalog','recipes','inventory','count','sheet','history','setup'],functions:[['inventory-area','Overview'],['catalog','Items','internal_cost.read'],['recipes','Recipes','internal_cost.read'],['inventory','Inventory','inventory.count'],['count','Count Inventory','inventory.count'],['history','Count History','inventory.history'],['setup','Locations','inventory.configure']]},...[['time','Time Management','TM'],['food-safety','Food Safety','FS'],['waste','Waste','W'],['reporting','Reporting','R']].map(([id,name,icon])=>({id,name,icon,capability:'domain.write',routes:[id]})),{id:'admin',name:'Administration',icon:'A',capability:'administration.access',routes:['admin'],functions:[['admin','Overview'],['admin/integrations','Integrations','integrations.manage'],['admin/settings','System Settings']]}];
+ function areas(capabilities){return definitions.filter(a=>!a.capability||capabilities.includes(a.capability)).map(a=>({...a,functions:(a.functions||[]).filter(f=>!f[2]||capabilities.includes(f[2]))}));}
+ function areaFor(route){return definitions.find(a=>a.routes.includes(route.split('/')[0]))||definitions[0];}
+ function toggle(state,tablet){return tablet?{...state,drawer:!state.drawer}:{...state,collapsed:!state.collapsed};}
+ const model={areas,areaFor,toggle};if(typeof module!=='undefined')module.exports=model;else root.WahiShell=model;
+})(typeof window==='undefined'?{}:window);

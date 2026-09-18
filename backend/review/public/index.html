@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wahi — Owner Review</title><link rel="stylesheet" href="/style.css"><script defer src="/table-model.js"></script><script defer src="/app.js"></script><script defer src="/management-ui.js"></script></head>
-<body><div class="review-banner">OWNER REVIEW · Isolated demo environment · Synthetic data, not migrated Wahi records</div>
-<header><a href="#home" class="brand">WAHI <span>Owner review</span></a><div id="account"></div></header>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wahi — Owner Review</title><link rel="stylesheet" href="/style.css"><script defer src="/table-model.js"></script><script defer src="/currency.js"></script><script defer src="/shell-model.js"></script><script defer src="/app.js"></script><script defer src="/management-ui.js"></script><script defer src="/shell.js"></script></head>
+<body><div class="review-banner">OWNER REVIEW · Isolated local environment · Not production</div>
+<header><button id="nav-toggle" class="secondary" aria-controls="nav" aria-expanded="true" hidden>☰</button><a href="#home" class="brand">WAHI <span>Owner review</span></a><div id="account"></div></header>
 <div id="notice" role="status" aria-live="polite"></div>
 <section id="login"><div class="login-card"><p class="eyebrow">Wahi v2</p><h1>Try the current workflows.</h1><p>Count a location, review its history, and inspect the existing catalog and costing foundation.</p><form id="login-form"><label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button>Log in</button></form><p class="muted">Use your local review credentials. Production logins are separate.</p></div></section>
-<div id="workspace" hidden><nav id="nav"></nav><main id="main"></main></div>
+<div id="workspace" hidden><button id="drawer-scrim" aria-label="Close navigation" tabindex="-1"></button><nav id="nav" aria-label="Wahi areas"></nav><div class="content-shell"><nav id="area-nav" aria-label="Area functions"></nav><main id="main"></main></div></div>
 </body></html>

@@ -5,6 +5,7 @@ const revision={id:'UUID PRIMARY KEY',effectiveAt:'TIMESTAMPTZ',recordedAt:'TIME
 const ref=(table,required=true)=>`UUID ${required?'NOT NULL ':''}REFERENCES wahi_v2.${table}(id) ON DELETE RESTRICT`;
 const quantity='NUMERIC CHECK (% > 0)', money='NUMERIC CHECK (% >= 0)';
 const definitions={
+  importRecords:{id:'UUID PRIMARY KEY',sourceFile:'TEXT NOT NULL',sourceHash:'TEXT NOT NULL',sheet:'TEXT NOT NULL',sourceRow:'INTEGER NOT NULL',logicalType:'TEXT NOT NULL',sourceValues:'JSONB NOT NULL',classification:'TEXT NOT NULL',issues:'JSONB NOT NULL',entityIds:'JSONB NOT NULL',importedAt:'TIMESTAMPTZ NOT NULL'},
   recipeCategories:{...identity,name:'TEXT NOT NULL',sortOrder:'INTEGER NOT NULL',active:'BOOLEAN NOT NULL'},
   recipeCategoryAssignments:{...revision,recipeId:ref('recipes'),categoryId:ref('recipe_categories',false)},
   ...require('./inventory-schema'),

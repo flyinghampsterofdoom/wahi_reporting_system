@@ -3,3 +3,7 @@ data.db
 data.db-shm
 data.db-wal
 npm-debug.log*
+
+# Private workbook-derived test data; not published to the public repository.
+backend/test/fixtures/
+.DS_Store
