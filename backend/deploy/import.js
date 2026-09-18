@@ -12,12 +12,19 @@ function validateCheckpoint(fresh,state){
  for(const k of ['ingredients','recipes','suppliers','recipeCategories','inventoryLocations'])if(fresh.state[k].some(r=>!state[k].some(v=>v.id===r.id)))throw new Error('Reviewed checkpoint missing imported identities');
  return state;
 }
+async function insertState(client,state){
+ // Reuse the canonical insert mapping; combine parameterized statements to avoid
+ // one transcontinental network round trip per imported fact.
+ for(const name of COLLECTIONS){const groups=new Map();for(const row of state[name])await insert({query:async(sql,values)=>{if(!groups.has(sql))groups.set(sql,[]);groups.get(sql).push(values);}},name,row);
+  for(const [sql,rows]of groups){const marker=sql.indexOf(' VALUES '),prefix=sql.slice(0,marker+8),template=sql.slice(marker+8);if(marker<0)throw new Error('Unexpected import insert mapping');for(let start=0;start<rows.length;start+=100){const chunk=rows.slice(start,start+100),width=chunk[0].length;await client.query(prefix+chunk.map((_,i)=>template.replace(/\$(\d+)/g,(_m,n)=>'$'+(Number(n)+i*width))).join(','),chunk.flat());}}
+ }
+}
 async function importEmpty(pool,state){await checkSchema(pool);const c=await pool.connect();try{
  await c.query('BEGIN');await c.query('SELECT pg_advisory_xact_lock(781902641)');
  const identity=(await c.query('SELECT current_database() AS db')).rows[0];if(identity.db!=='wahi_reporting_db')throw new Error('Unexpected import database');
  for(const name of COLLECTIONS){const table=require('../repository/schema').snake(name);if((await c.query(`SELECT EXISTS(SELECT 1 FROM wahi_v2.${table}) AS occupied`)).rows[0].occupied)throw new Error('Refusing duplicate import into populated v2 schema');}
- for(const name of COLLECTIONS)for(const row of state[name])await insert(c,name,row);
+ await insertState(c,state);
  await c.query('COMMIT');
  }catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}}
 async function prepare(sourceFile,checkpointFile,activationAt){const workbook=JSON.parse(await fs.readFile(sourceFile,'utf8'));const fresh=await build(workbook,{activationAt});return checkpointFile?validateCheckpoint(fresh,JSON.parse(await fs.readFile(checkpointFile,'utf8'))):fresh.state;}
-module.exports={validateCheckpoint,importEmpty,prepare};
+module.exports={validateCheckpoint,importEmpty,prepare,insertState};
