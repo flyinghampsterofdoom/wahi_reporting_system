@@ -4,8 +4,8 @@ const fail=code=>Object.assign(new Error(code),{code});
 function date(s){if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s)||!Number.isFinite(Date.parse(s))||new Date(s).toISOString().slice(0,10)!==s)throw fail('invalid_labor_date');return s;}
 const addDays=(s,n)=>new Date(Date.parse(date(s))+n*86400000).toISOString().slice(0,10);
 function businessDate(now,timezone,cutoff){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now).map(p=>[p.type,p.value]));const d=`${parts.year}-${parts.month}-${parts.day}`;return Number(parts.hour)<cutoff?addDays(d,-1):d;}
-function weekFor(day,rules){const rule=rules.filter(r=>r.effective_date<=day).sort((a,b)=>b.effective_date.localeCompare(a.effective_date)||String(b.recorded_at).localeCompare(String(a.recorded_at)))[0];if(!rule)return null;const weekday=new Date(day+'T12:00:00Z').getUTCDay();const start=addDays(day,-((weekday-rule.week_start+7)%7));return start<rule.effective_date?null:start;}
-function weekEnd(start,rules){const next=rules.filter(r=>r.effective_date>start).map(r=>r.effective_date).sort()[0];const end=addDays(start,6);return next&&next<=end?addDays(next,-1):end;}
+function weekFor(day){return addDays(date(day),-new Date(day+'T12:00:00Z').getUTCDay());}
+function weekEnd(start){return addDays(start,6);}
 function amount(s){const x=Exact.of(s);if(!x.nonnegative())throw fail('invalid_labor_hours');return x;}
 const instant=s=>{const n=Date.parse(s);if(!Number.isFinite(n))throw fail('invalid_labor_entry');return n;};
 function worked(entry,now){if(entry.deleted)return {hours:Exact.of('0'),provisional:false};if(entry.out_date){if(instant(entry.out_date)<instant(entry.in_date))throw fail('invalid_labor_entry');return {hours:amount(entry.regular_hours).add(amount(entry.overtime_hours)),provisional:false};}

@@ -6,8 +6,9 @@ The labor subsystem is separate from domain/costing state and named authenticati
 
 ## Policy
 
-No default week, target, or job classification exists. Admin selects a weekday and its first effective business date. Subsequent rule changes must be future-dated and cannot intersect existing target weeks. A transition to another weekday truncates the preceding interval at the transition; the displayed range identifies any shorter interval. Targets belong to an explicit starting date. Revisions change only the selected week and preserve prior versions; optimistic concurrency rejects stale saves. Copy previous week fills a form and requires an explicit save.
+The labor week is permanently Sunday–Saturday. Admin saves one standing FOH/BOH pair in Time Management → Settings, without choosing dates or creating individual weeks. The server determines the current business date from the existing Toast timezone/cutoff and records its Sunday as the revision's effective week. A new revision applies to that current week and all future weeks; completed weeks resolve the latest revision effective on or before their Sunday. A monotonically increasing revision handles multiple saves at the same instant. Targets remain unset until Admin supplies values. Expected-ID concurrency and transactional audit are retained.
 
+Migration 011 retains previous target/week-rule records and all job mappings. If old targets exist, the latest applicable value is carried forward from the migration's current week, with its source ID retained; earlier explicit weekly values remain a historical fallback. No values are synthesized when there are no targets. Original week rules are retained for provenance but do not control the permanent Sunday calendar.
 Job assignments resolve by the time entry's job GUID and Toast business date. Initial classification can cover imported history, but subsequent assignments must start on a future day later than the existing policy. They never reinterpret earlier days. Explicit Excluded and incomplete Unassigned remain separate. Unknown historical job references are retrieved by GUID, including archived jobs.
 
 ## Hours and refresh
