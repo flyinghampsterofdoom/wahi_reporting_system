@@ -25,7 +25,7 @@ async function localIntegrationKey(db){
 async function openReview(){
   const marker=JSON.parse(await fs.readFile(path.join(root,'ready.json'),'utf8'));
   if(marker.kind!=='wahi-isolated-owner-review')throw new Error('Invalid review database marker');
-  const db=pool();try{await checkSchema(db);const integrationKey=await localIntegrationKey(db);return {integrations:new (require('../integrations/toast').ToastSettings)(db,{environment:'local-review',key:integrationKey}),service:new DomainService(new PostgresRepository(db)),pool:db,users:JSON.parse(await fs.readFile(path.join(root,'users.json'),'utf8'))};}catch(e){await db.end();throw e;}
+  const db=pool();try{await checkSchema(db);const integrationKey=await localIntegrationKey(db);const users=JSON.parse(await fs.readFile(path.join(root,'users.json'),'utf8'));const {UserAccounts,NamedSessionStore}=require('../accounts/service');const accounts=new UserAccounts(db);await accounts.bootstrap(users);return {accounts,sessionStore:new NamedSessionStore(db),integrations:new (require('../integrations/toast').ToastSettings)(db,{environment:'local-review',key:integrationKey}),service:new DomainService(new PostgresRepository(db)),pool:db,users:JSON.parse(await fs.readFile(path.join(root,'users.json'),'utf8'))};}catch(e){await db.end();throw e;}
 }
 async function setup(){
   try{await fs.access(path.join(root,'ready.json'));console.log('Review already provisioned. Existing data retained.');return;}catch{}

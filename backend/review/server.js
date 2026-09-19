@@ -7,9 +7,9 @@ const {verify}=require('./auth');
 function error(code,message){return Object.assign(new Error(message),{code});}
 async function body(req){let s='';for await(const c of req){s+=c;if(Buffer.byteLength(s)>128000)throw error('invalid_request','Request too large');}try{return JSON.parse(s);}catch{throw error('invalid_request','Invalid JSON');}}
 function potentialHealth(req,runtime){return runtime.hosted&&req.method==='GET'&&req.url==='/healthz';}
-function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore}){
+function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore,accounts}){
   const sessions=new Map(),attempts=new Map();
-  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','shell-model.js','shell.js'];
+  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','shell-model.js','shell.js','users-ui.js'];
   const assets=Promise.all(assetNames.map(async name=>{const content=await fs.readFile(path.join(__dirname,'public',name));return {name,content,url:'/'+name.replace(/(\.[^.]+)$/,'.'+crypto.createHash('sha256').update(content).digest('hex').slice(0,16)+'$1')};}));
   const tokenHash=s=>crypto.createHash('sha256').update(s).digest('hex');
   const server=http.createServer(async(req,res)=>{
@@ -31,12 +31,17 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
         if(asset){res.setHeader('Content-Type',asset.name.endsWith('.js')?'text/javascript':'text/css');if(runtime.hosted&&p===asset.url)res.setHeader('Cache-Control','public, max-age=31536000, immutable');return res.end(asset.content);}
         if(p==='/'){res.setHeader('Content-Type','text/html');let content=await fs.readFile(path.join(__dirname,'public','index.html'),'utf8');if(runtime.hosted){content=content.replace('Wahi — Owner Review','Wahi').replace(/<div class="review-banner">.*?<\/div>/,'<div class="review-banner" hidden></div>').replace('<span>Owner review</span>','<span>Management</span>').replace('Try the current workflows.','Log in to Wahi.').replace('Use your local review credentials. Production logins are separate.','Use your Wahi account.');for(const a of entries)content=content.replaceAll('/'+a.name,a.url);}return res.end(content);}
       }
+      if(p==='/api/account/setup'&&req.method==='POST'){
+        if(!accounts)throw error('not_found','Not available');
+        if(!await sessionStore.allowLogin(tokenHash('setup:'+req.socket.remoteAddress))){send(429,{error:'Try again later.'});return;}
+        send(200,await accounts.establish(await body(req)));return;
+      }
       if(p==='/api/login'&&req.method==='POST'){
         const data=z.object({username:z.string().max(100),password:z.string().min(1).max(200)}).strict().parse(await body(req));
+        const user=accounts?await accounts.findLogin(data.username):users.find(x=>x.username===data.username);
         const key=req.socket.remoteAddress,now=Date.now();let rate=attempts.get(key);
         if(!rate||rate.until<now){rate={n:0,until:now+60000};attempts.set(key,rate);}
-        if(sessionStore?!await sessionStore.allowLogin(tokenHash('login:'+(users.some(u=>u.username===data.username)?data.username:'unknown'))):++rate.n>20){send(429,{error:'Too many login attempts. Try again in a minute.'});return;}
-        const user=users.find(x=>x.username===data.username);
+        if(sessionStore?!await sessionStore.allowLogin(tokenHash('login:'+(user?user.username:'unknown'))):++rate.n>20){send(429,{error:'Too many login attempts. Try again in a minute.'});return;}
         if(!await verify(user,data.password)){send(401,{error:'Invalid username or password'});return;}
         for(const [key,value]of sessions)if(value.expires<now)sessions.delete(key);
         const token=crypto.randomBytes(32).toString('hex'),csrf=crypto.randomBytes(24).toString('hex');
@@ -45,7 +50,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       }
       const cookie=String(req.headers.cookie??'').split(';').map(x=>x.trim()).find(x=>x.startsWith(cookieName+'='))?.split('=')[1];
       const session=cookie?(sessionStore?await sessionStore.get(tokenHash(cookie)):sessions.get(tokenHash(cookie))):null;
-      if(sessionStore&&session)session.user=users.find(u=>u.id===session.userId);
+      if(sessionStore&&session&&!session.user)session.user=users.find(u=>u.id===session.userId);
       if(!session?.user||session.expires<Date.now())throw error('unauthenticated','Please log in');
       const actor={id:session.user.id,role:session.user.role};
       if(req.method==='POST'&&req.headers['x-csrf-token']!==session.csrf)throw error('forbidden','Refresh your session before saving');
@@ -57,7 +62,14 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       }
       if(p.startsWith('/api/admin')){
         authorize(actor,'administration.access');
-        if(p==='/api/admin'&&req.method==='GET'){send(200,{environment:runtime.environment,deployment:runtime.hosted?'Hosted Wahi':'Local owner review',capabilities:['Integrations','System Settings'],operationalSync:false});return;}
+        if(p.startsWith('/api/admin/users')){
+          authorize(actor,'users.manage');if(!accounts)throw error('not_found','Not available');
+          if(p==='/api/admin/users'&&req.method==='GET'){send(200,await accounts.list(actor));return;}
+          if(p==='/api/admin/users/detail'&&req.method==='GET'){send(200,await accounts.detail(actor,u.searchParams.get('id')));return;}
+          if(req.method==='POST'&&['create','update','revoke','issue-setup'].includes(p.slice('/api/admin/users/'.length))){const action=p.slice('/api/admin/users/'.length);send(200,action==='create'?await accounts.create(actor,await body(req)):await accounts.mutate(actor,action,await body(req)));return;}
+          throw error('not_found','Page not found');
+        }
+        if(p==='/api/admin'&&req.method==='GET'){send(200,{environment:runtime.environment,deployment:runtime.hosted?'Hosted Wahi':'Local owner review',capabilities:['Users & Access','Integrations','System Settings'],operationalSync:false});return;}
         if(p==='/api/admin/integrations/toast'&&['GET','POST'].includes(req.method)){
           authorize(actor,'integrations.manage');if(!integrations)throw error('integration_key_unavailable','Integration service unavailable');
           send(200,req.method==='GET'?await integrations.read(actor):await integrations.save(actor,await body(req)));return;
@@ -106,7 +118,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
     }catch(e){
       const status=e.code==='unauthenticated'?401:e.code==='forbidden'?403:e.code==='not_found'?404:e.code==='revision_conflict'?409:e.name==='ZodError'||['invalid_request','inactive_reference','missing_inventory_unit','not_on_sheet','invalid_state','invalid_observation_time','immutable_observation','invalid_command','cycle'].includes(e.code)?400:400;
       // Never send SQL messages, stacks, rejected payload values, or internal objects.
-      const messages={invalid_integration_configuration:'Check the Toast host, client ID, restaurant GUID and environment. No changes were saved.',integration_key_unavailable:'Secure integration storage is unavailable. Restore the server encryption key before saving.',integration_secret_required:'Configure a client secret before enabling Toast.',integration_save_failed:'Integration settings could not be saved. Existing settings were retained.',package_contents_required:'Could not save purchasing information. Supply known package contents before recording a price; existing package contents cannot be cleared.',effective_time_collision:'A fact already exists at that exact effective time. Choose a later effective time or use an explicit history correction.',unauthenticated:'Please log in',forbidden:'You do not have access to this action',revision_conflict:'This record changed. Reload it before saving.',cycle:'This change creates a circular ingredient dependency.',not_found:'Record not found',inactive_reference:'An archived record cannot be selected here.',missing_inventory_unit:'Configure the inventory base unit first.',not_on_sheet:'This item is not on the saved count sheet.',invalid_state:'This action is not available for the current count status.',invalid_observation_time:'Check the physical observation date and time.',immutable_observation:'A quantity correction must retain the original unit and time.',invalid_command:'Unknown action',invalid_request:'Check the request fields.'};
+      const messages={account_conflict:'That username or email is already assigned. No changes were saved.',invalid_setup:'This code cannot be used, or the password does not meet the 12–128 character requirement. Ask an Admin for a current code.',last_admin:'Keep at least one active Admin with an established password.',self_access_change:'You cannot disable or reduce access for your own account.',invalid_integration_configuration:'Check the Toast host, client ID, restaurant GUID and environment. No changes were saved.',integration_key_unavailable:'Secure integration storage is unavailable. Restore the server encryption key before saving.',integration_secret_required:'Configure a client secret before enabling Toast.',integration_save_failed:'Integration settings could not be saved. Existing settings were retained.',package_contents_required:'Could not save purchasing information. Supply known package contents before recording a price; existing package contents cannot be cleared.',effective_time_collision:'A fact already exists at that exact effective time. Choose a later effective time or use an explicit history correction.',unauthenticated:'Please log in',forbidden:'You do not have access to this action',revision_conflict:'This record changed. Reload it before saving.',cycle:'This change creates a circular ingredient dependency.',not_found:'Record not found',inactive_reference:'An archived record cannot be selected here.',missing_inventory_unit:'Configure the inventory base unit first.',not_on_sheet:'This item is not on the saved count sheet.',invalid_state:'This action is not available for the current count status.',invalid_observation_time:'Check the physical observation date and time.',immutable_observation:'A quantity correction must retain the original unit and time.',invalid_command:'Unknown action',invalid_request:'Check the request fields.'};
       const publicCode=Object.hasOwn(messages,e.code)?e.code:'invalid_request';
       const measurementError=e.name==='ZodError'&&e.issues?.some(i=>i.path.some(p=>['measurement','fromQuantity','toQuantity','fromUnit','toUnit'].includes(p)));
       const safe=measurementError?'Could not save measurement. Supply both positive decimal quantities and valid units (for example, 1 and 0.00113636); enter units in the unit selectors.':e.name==='ZodError'?'Check the required fields, quantities, units and dates.':messages[e.code]??'Could not save. Check references and effective dates; existing facts may require an explicit correction.';
@@ -117,7 +129,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
 }
 module.exports={createReviewServer};
 if(require.main===module){(async()=>{
-  const {openReview}=require('./runtime');const {service,pool,users,integrations}=await openReview();
-  const server=createReviewServer({service,users,integrations});server.listen(4317,'127.0.0.1',()=>console.log('Wahi owner review: http://127.0.0.1:4317 (isolated local review)'));
+  const {openReview}=require('./runtime');const {service,pool,users,integrations,accounts,sessionStore}=await openReview();
+  const server=createReviewServer({service,users,integrations,accounts,sessionStore});server.listen(4317,'127.0.0.1',()=>console.log('Wahi owner review: http://127.0.0.1:4317 (isolated local review)'));
   const shutdown=()=>server.close(()=>pool.end().then(()=>process.exit(0)));process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);
 })().catch(e=>{console.error('Review startup failed:',e.message);process.exitCode=1;});}
