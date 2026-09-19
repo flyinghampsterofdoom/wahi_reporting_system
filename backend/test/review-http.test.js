@@ -10,7 +10,7 @@ async function request(path,{auth,body,headers={}}={}){const r=await fetch(base+
 async function login(role){const r=await request('login',{body:{username:role.toLowerCase(),password}});assert.equal(r.status,200);assert.match(r.headers.get('set-cookie'),/HttpOnly; SameSite=Strict/);const auth={cookie:r.headers.get('set-cookie').split(';')[0]};const me=await request('me',{auth});auth.csrf=me.body.csrf;return auth;}
 
 test('review HTTP: login required, bad password rejected, principal cannot be supplied by request',async()=>{
-  assert.equal((await request('catalog')).status,401);assert.equal((await request('login',{body:{username:'admin',password:'wrong'}})).status,401);
+  assert.equal((await request('recipe/create',{body:{}})).status,401);assert.equal((await request('catalog')).status,401);assert.equal((await request('login',{body:{username:'admin',password:'wrong'}})).status,401);
   assert.equal((await request('login',{body:{username:'staff',password,role:'ADMIN'}})).status,400);
   const auth=await login('STAFF');assert.equal((await request('me',{auth,headers:{'X-Role':'ADMIN'}})).body.role,'STAFF');
   assert.equal((await request('domain/command',{auth,body:{command:'createIngredient',input:{name:'Forbidden',provenance:{kind:'manual'}},actor:{role:'ADMIN'}}})).status,400);
@@ -18,6 +18,7 @@ test('review HTTP: login required, bad password rejected, principal cannot be su
 
 test('review HTTP: origin and CSRF protection reject unauthorized browser writes',async()=>{
   const auth=await login('ADMIN');
+  assert.equal((await request('recipe/create',{auth,body:{},headers:{'X-CSRF-Token':'wrong'}})).status,403);assert.equal((await request('recipe/create',{auth,body:{outputIngredientId:'forged'}})).status,400);
   assert.equal((await request('inventory/command',{auth,body:{command:'createLocation',input:{name:'CSRF'}},headers:{Origin:'https://evil.example'}})).status,403);
   assert.equal((await request('inventory/command',{auth,body:{command:'createLocation',input:{name:'CSRF'}},headers:{'X-CSRF-Token':'wrong'}})).status,403);
   assert.equal((await request('login',{body:{username:'admin',password},headers:{Origin:'https://evil.example'}})).status,403);
@@ -27,6 +28,7 @@ for(const role of ['STAFF','LEAD'])test(`review HTTP: ${role} catalog and invent
   const auth=await login(role),c=await request('catalog',{auth});assert.equal(c.status,200);
   const inspect=x=>{if(!x||typeof x!=='object')return;for(const [key,v]of Object.entries(x)){assert.ok(!['internalCost','provenance','purchaseOptions','supplierId','purchaseOptionId','knownSubtotal','materialSubtotal','laborSubtotal'].includes(key),key);inspect(v);}};inspect(c.body);assert.ok(c.body.menuItems.some(m=>m.sellingPrice?.amount==='16'));
   for(const route of ['internal','history','audit?id=invalid','cost?id=invalid&quantity=1&unit=each','domain-history?collection=prices&id=invalid'])assert.equal((await request(route,{auth})).status,403,route);
+  assert.equal((await request('recipe/create',{auth,body:{},headers:{'X-Role':'ADMIN'}})).status,403);
   for(const command of ['createLocation','correctCount','configureItem'])assert.equal((await request('inventory/command',{auth,body:{command,input:{}}})).status,403);
 });
 
