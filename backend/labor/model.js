@@ -6,6 +6,15 @@ const addDays=(s,n)=>new Date(Date.parse(date(s))+n*86400000).toISOString().slic
 function businessDate(now,timezone,cutoff){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now).map(p=>[p.type,p.value]));const d=`${parts.year}-${parts.month}-${parts.day}`;return Number(parts.hour)<cutoff?addDays(d,-1):d;}
 function weekFor(day){return addDays(date(day),-new Date(day+'T12:00:00Z').getUTCDay());}
 function weekEnd(start){return addDays(start,6);}
+function periodFor(today,selection={}){
+ if(typeof selection==='string')selection={date:selection};
+ if(selection===null)selection={};
+ const allowed=['period','start','end','date'];if(Object.keys(selection).some(k=>!allowed.includes(k)))throw fail('invalid_labor_range');
+ if(selection.date){if(selection.period||selection.start||selection.end)throw fail('invalid_labor_range');const start=weekFor(date(selection.date));return {start,end:weekEnd(start),period:'custom',weekly:true};}
+ const mode=selection.period||'this';if(!['this','last','custom'].includes(mode))throw fail('invalid_labor_range');
+ let start,end;if(mode==='custom'){start=date(selection.start);end=date(selection.end);if(end<start)throw fail('invalid_labor_range');}else{if(selection.start||selection.end)throw fail('invalid_labor_range');if(!today)return null;start=addDays(weekFor(today),mode==='last'?-7:0);end=weekEnd(start);}
+ return {start,end,period:mode,weekly:weekFor(start)===start&&weekEnd(start)===end};
+}
 function amount(s){const x=Exact.of(s);if(!x.nonnegative())throw fail('invalid_labor_hours');return x;}
 const instant=s=>{const n=Date.parse(s);if(!Number.isFinite(n))throw fail('invalid_labor_entry');return n;};
 function worked(entry,now){if(entry.deleted)return {hours:Exact.of('0'),provisional:false};if(entry.out_date){if(instant(entry.out_date)<instant(entry.in_date))throw fail('invalid_labor_entry');return {hours:amount(entry.regular_hours).add(amount(entry.overtime_hours)),provisional:false};}
@@ -18,4 +27,4 @@ function metric(used,target){const t=target===null?null:amount(target),delta=t?u
 function aggregate(entries,jobs,mappings,target,now){const totals={FOH:Exact.of('0'),BOH:Exact.of('0'),Excluded:Exact.of('0'),Unassigned:Exact.of('0')},detail=new Map();let provisional=Exact.of('0'),unresolved=0;for(const e of entries){if(e.deleted)continue;const m=mappings.filter(m=>m.job_guid===e.job_guid&&m.effective_date<=e.business_date).sort((a,b)=>b.effective_date.localeCompare(a.effective_date)||String(b.recorded_at).localeCompare(String(a.recorded_at)))[0];const area=m?.area||'Unassigned',key=(e.job_guid||'unknown')+':'+area;let hours;try{hours=worked(e,now);}catch{unresolved++;continue;}totals[area]=totals[area].add(hours.hours);if(hours.provisional)provisional=provisional.add(hours.hours);const row=detail.get(key)||{jobGuid:e.job_guid,name:jobs.find(j=>j.guid===e.job_guid)?.name||'Unknown Toast job',area,hours:Exact.of('0'),entries:0};row.hours=row.hours.add(hours.hours);row.entries++;detail.set(key,row);}
  const overall=totals.FOH.add(totals.BOH),overallTarget=target?amount(target.foh).add(amount(target.boh)).decimal():null;
  return {foh:metric(totals.FOH,target?.foh??null),boh:metric(totals.BOH,target?.boh??null),overall:metric(overall,overallTarget),unclassified:totals.Unassigned.decimal(1),excluded:totals.Excluded.decimal(1),provisional:provisional.decimal(1),unresolvedEntries:unresolved,unassignedJobs:[...new Set([...detail.values()].filter(d=>d.area==='Unassigned').map(d=>d.jobGuid))].length,detail:[...detail.values()].map(r=>({...r,hours:r.hours.decimal(1)}))};}
-module.exports={date,addDays,businessDate,weekFor,weekEnd,amount,worked,metric,aggregate,fail};
+module.exports={periodFor,date,addDays,businessDate,weekFor,weekEnd,amount,worked,metric,aggregate,fail};
