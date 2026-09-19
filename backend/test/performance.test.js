@@ -24,7 +24,8 @@ test('memoization never reuses unresolved caller-specific blocker paths',async()
 
 test('compact DTOs omit formulas/history/evidence and preserve Staff/Lead cost restrictions',async()=>{
  const f=fixture(),a=await f.bought('Compact'),r=await f.recipe('Compact recipe',[{ingredientId:a.id,quantity:'1',unit:'each'}]);
- const items=await view(f.service,admin,'items'),recipes=await view(f.service,admin,'recipes');assert.ok(items.items.find(i=>i.id===a.id).cost);assert.equal(recipes.recipes.find(x=>x.id===r.id).revision.lines,undefined);assert.ok(items.items.every(i=>!('audit' in i)&&!('importRecords' in i)&&!('measurements' in i)&&!('references' in i.cost)));
+ await f.run('updateIngredient',{ingredientId:a.id,name:'Compact',description:'Searchable detail',category:'',tags:[],active:true});
+ const items=await view(f.service,admin,'items'),recipes=await view(f.service,admin,'recipes');assert.equal(require('../review/public/table-model').select(items.items,{query:'Searchable detail'}).length,1);assert.ok(items.items.find(i=>i.id===a.id).cost);assert.equal(recipes.recipes.find(x=>x.id===r.id).revision.lines,undefined);assert.ok(items.items.every(i=>!('audit' in i)&&!('importRecords' in i)&&!('measurements' in i)&&!('references' in i.cost)));
  for(const actor of [staff,lead]){const items=await view(f.service,actor,'items'),recipes=await view(f.service,actor,'recipes'),item=await view(f.service,actor,'item',a.id),recipe=await view(f.service,actor,'recipe',r.id);assert.ok(items.items.every(i=>!i.cost&&!i.purchase&&!i.vendors));assert.ok(recipes.recipes.every(i=>!i.cost));assert.equal(item.packages,undefined);assert.equal(recipe.recipe.cost,undefined);await assert.rejects(itemHistory(f.service,actor,a.id),e=>e.code==='forbidden');}
 });
 

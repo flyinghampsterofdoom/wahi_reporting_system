@@ -78,7 +78,7 @@ const money=v=>WahiCurrency.decimal(v),rate=v=>WahiCurrency.rate(v);
 const costMoney=(c,key='completeCost')=>c.currencyDisplay?.[key]??money(c[key]);
 function costBlock(c){return `<h3>${c.completeCost===null?'Cost incomplete':esc(c.currency)+' '+esc(costMoney(c,'completeCost'))}</h3><p>Ingredients: ${esc(costMoney(c,'materialSubtotal'))} · Labor: ${esc(costMoney(c,'laborSubtotal'))} · Known subtotal: ${esc(costMoney(c,'knownSubtotal'))}</p>${c.blockers.map(b=>`<p class="warning">${esc(statusText(b.reason))} — ${esc(b.path.map(ingredientName).join(' → '))}</p>`).join('')}`;}
 async function catalogPage(id){
- if(id==='new'){itemEditor();return;}
+ if(id==='new'){await itemEditor();return;}
  if(!id){await itemsTable();return;}
  const i=await api('views/item?id='+id);
  catalog={ingredients:i.references,recipes:i.recipe?[i.recipe]:[],menuItems:i.menuItems,inventoryItems:[],assignments:[],drafts:[]};
