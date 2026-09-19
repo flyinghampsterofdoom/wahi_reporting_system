@@ -1,8 +1,8 @@
 'use strict';
 const inventoryManagement=['inventory.configure','inventory.count','inventory.history','inventory.correct'];
 const CAPABILITIES = Object.freeze({
-  ADMIN:['administration.access','integrations.manage',...inventoryManagement,'internal_cost.read','internal_cost.write','users.manage','domain.write','history.backdate','labor_rates.manage'],
-  MANAGER:[...inventoryManagement,'internal_cost.read','internal_cost.write','domain.write','history.backdate'], LEAD:['inventory.count'], STAFF:['inventory.count']
+  ADMIN:['labor.read','labor.refresh','labor.configure','administration.access','integrations.manage',...inventoryManagement,'internal_cost.read','internal_cost.write','users.manage','domain.write','history.backdate','labor_rates.manage'],
+  MANAGER:['labor.read','labor.refresh',...inventoryManagement,'internal_cost.read','internal_cost.write','domain.write','history.backdate'], LEAD:['inventory.count'], STAFF:['inventory.count']
 });
 function authorize(actor,capability) {
   if(!actor || typeof actor.id!=='string' || !actor.id.trim() || !Object.hasOwn(CAPABILITIES,actor.role)) {const e=new Error('Authenticated principal required');e.code='unauthenticated';throw e;}
