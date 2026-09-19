@@ -32,4 +32,4 @@ function newRecipePage(){
  form('new-recipe',async d=>{const r=await domain('createRecipe',d);location.hash='recipes/'+r.id;});
 }
 
-api('me').then(user=>loggedIn(user)).catch(()=>showLogin());
+window.addEventListener('DOMContentLoaded',()=>{api('me').then(user=>loggedIn(user)).catch(()=>showLogin());},{once:true});
