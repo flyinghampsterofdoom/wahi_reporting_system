@@ -53,10 +53,10 @@ class ManagementReports{
   const now=this.clock();for(const report of await this.definitions(c))for(const occurrence of due(report,now)){
    await c.query('BEGIN');try{await this.enqueue(c,report,occurrence.key,occurrence.at);await c.query('COMMIT');}catch(e){await c.query('ROLLBACK');throw e;}
   }
-  const pending=(await c.query("SELECT * FROM wahi_v2.management_occurrences WHERE state='pending' AND next_attempt_at<=$1 ORDER BY created_at LIMIT 10",[new Date(now)])).rows;
+  const pending=(await c.query("SELECT * FROM wahi_v2.management_occurrences WHERE state='pending' AND next_attempt_at<=$1 ORDER BY created_at LIMIT 10",[new Date(this.clock())])).rows;
   for(const o of pending){if(this.stopping)break;await this.generate(c,o);}
   await c.query("UPDATE wahi_v2.management_deliveries d SET state='failed',failure_reason='generation_failed' FROM wahi_v2.management_occurrences o WHERE d.occurrence_id=o.id AND d.state='pending' AND o.state='failed'");
-  const deliveries=(await c.query("SELECT d.*,o.payload,o.report_id,o.kind,o.created_at FROM wahi_v2.management_deliveries d JOIN wahi_v2.management_occurrences o ON o.id=d.occurrence_id WHERE d.state='pending' AND o.state='ready' AND d.next_attempt_at<=$1 ORDER BY d.next_attempt_at LIMIT 20",[new Date(now)])).rows;
+  const deliveries=(await c.query("SELECT d.*,o.payload,o.report_id,o.kind,o.created_at FROM wahi_v2.management_deliveries d JOIN wahi_v2.management_occurrences o ON o.id=d.occurrence_id WHERE d.state='pending' AND o.state='ready' AND d.next_attempt_at<=$1 ORDER BY d.next_attempt_at LIMIT 20",[new Date(this.clock())])).rows;
   for(const d of deliveries){if(this.stopping)break;await this.deliver(c,d);await this.pause(600);}
   return {checked:true};
  },false);}
