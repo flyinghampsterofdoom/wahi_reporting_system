@@ -1,4 +1,4 @@
 'use strict';
-const quote=value=>'"'+String(value??'').replace(/^([=+@-])/ ,"'$1").replaceAll('"','""')+'"';
+const quote=value=>'"'+String(value??'').replace(/^(\s*[=+@-])/ ,"'$1").replaceAll('"','""')+'"';
 function csv(report){const header=['period_start','period_end','item_name','toast_item_id','quantity_sold','weighted_average_recipe_cogs','total_recipe_cogs','historical_quantity','current_fallback_quantity','alternate_basis_quantity','unresolved_quantity','status','net_sales','recipe_cogs_percent','missing_sync_dates','mapping_state'];const rows=report.rows.map(r=>[report.period.start,report.period.end,r.name,r.id,r.quantity,r.average,r.total,r.coverage.historical.quantity,r.coverage.current.quantity,r.coverage.alternate.quantity,r.coverage.unresolved.quantity,r.status,r.netSales,r.percent,report.missingDays,r.mappingState]);return '\uFEFF'+[header,...rows].map(row=>row.map(quote).join(',')).join('\r\n')+'\r\n';}
 module.exports={csv};
