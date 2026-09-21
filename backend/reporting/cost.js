@@ -22,8 +22,8 @@ function costResolver(state,target,now,stats){
   cache.set(boundary,answer);return answer;
  }};
 }
-function empty(){return {quantity:E.of('0'),total:E.of('0'),netSales:E.of('0'),netSalesKnown:true,historical:E.of('0'),current:E.of('0'),alternate:E.of('0'),unresolved:E.of('0'),modifiers:0,buckets:[]};}
+function empty(){return {quantity:E.of('0'),total:E.of('0'),netSales:E.of('0'),netSalesKnown:true,historical:E.of('0'),current:E.of('0'),alternate:E.of('0'),unresolved:E.of('0'),mappingUnresolved:E.of('0'),mappingUnresolvedSales:E.of('0'),modifiers:0,buckets:[]};}
 function addFact(out,f,evidence){const q=E.of(f.quantity);out.quantity=out.quantity.add(q);out.total=out.total.add(q.mul(evidence.cost));out[evidence.level]=out[evidence.level].add(q);if(f.netSales===null)out.netSalesKnown=false;else out.netSales=out.netSales.add(f.netSales);out.modifiers+=f.modifiers.length?1:0;const cost=pack(evidence.cost),key=JSON.stringify([evidence.level,cost,evidence.blockers,evidence.references]);let bucket=out.buckets.find(b=>b.key===key);if(!bucket){bucket={key,level:evidence.level,unitCost:cost,quantity:E.of('0'),blockers:evidence.blockers,historicalBlockers:evidence.historicalBlockers||[],basis:evidence.basis||null,references:evidence.references};out.buckets.push(bucket);}bucket.quantity=bucket.quantity.add(q);}
-function encode(out){return {...out,...Object.fromEntries(['quantity','total','netSales','historical','current','alternate','unresolved'].map(k=>[k,pack(out[k])])),buckets:out.buckets.map(({key,...b})=>({...b,quantity:pack(b.quantity)}))};}
-function decode(row){return {...row,...Object.fromEntries(['quantity','total','netSales','historical','current','alternate','unresolved'].map(k=>[k,unpack(row[k])]))};}
+function encode(out){return {...out,...Object.fromEntries(['quantity','total','netSales','historical','current','alternate','unresolved','mappingUnresolved','mappingUnresolvedSales'].map(k=>[k,pack(out[k]||E.of('0'))])),buckets:out.buckets.map(({key,...b})=>({...b,quantity:pack(b.quantity)}))};}
+function decode(row){return {...row,...Object.fromEntries(['quantity','total','netSales','historical','current','alternate','unresolved','mappingUnresolved','mappingUnresolvedSales'].map(k=>[k,row[k]?unpack(row[k]):E.of('0')]))};}
 module.exports={pack,unpack,costResolver,empty,addFact,encode,decode};

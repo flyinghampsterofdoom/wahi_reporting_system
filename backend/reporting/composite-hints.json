@@ -1,0 +1,354 @@
+{
+  "observedAt": "2026-09-21",
+  "parents": {
+    "5a5ade1e-0f50-48dc-be14-e338f1213dd0": {
+      "name": "Island Sliders",
+      "context": "Regular / FOOD (GH)",
+      "groups": [
+        "6b41d388-a7bb-483c-927d-65dac1218f57"
+      ]
+    },
+    "b9bb0deb-d340-4291-ab42-20067bc09a2e": {
+      "name": "Mahi Mahi Fish Tacos",
+      "context": "",
+      "groups": [
+        "17ec7844-e896-4f31-828c-d2d357735329"
+      ]
+    },
+    "718d09d0-3c68-48c4-adf3-c5274038b87b": {
+      "name": "Wahi Wings 6",
+      "context": "",
+      "groups": [
+        "508faf53-8a5c-4a73-bbbb-23290d58cebb"
+      ]
+    },
+    "f500b41b-4ea3-4de7-99ae-48b6d28bf978": {
+      "name": "HH Wahi Wings",
+      "context": "",
+      "groups": [
+        "2374d65a-87a0-4a15-a73d-0fed2eba95fb"
+      ]
+    },
+    "c4c1741f-482f-4c02-842c-c3e24482071a": {
+      "name": "Fish and Chips",
+      "context": "",
+      "groups": [
+        "4a2584f2-a905-416e-a86d-951f23b8c806"
+      ]
+    },
+    "52f12294-dd9c-490c-b15d-2ad32d99b1db": {
+      "name": "Spicy Hei Hei Tacos",
+      "context": "",
+      "groups": [
+        "631666c8-9b49-41b5-83a9-3b291417bcf1"
+      ]
+    },
+    "50a68129-2a4b-441d-94b1-939579af2ccb": {
+      "name": "Soda",
+      "context": "",
+      "groups": [
+        "228f89a5-2841-4022-a9dc-9a68153706da"
+      ]
+    },
+    "fd56ae27-7a4b-4688-89c0-2ae357678303": {
+      "name": "Soda Refill",
+      "context": "",
+      "groups": [
+        "228f89a5-2841-4022-a9dc-9a68153706da"
+      ]
+    },
+    "eeb73068-0cf3-46a6-a467-5ff83b7fb69f": {
+      "name": "Wahi Wings 12",
+      "context": "",
+      "groups": [
+        "6869ba02-0566-4556-9eed-b43f1cfe739a"
+      ]
+    },
+    "ceed720e-d486-4def-a7eb-5671e491abcb": {
+      "name": "Dole Whip",
+      "context": "",
+      "groups": [
+        "f5fd6a98-0187-4b82-8e62-ae6edb5163b8"
+      ]
+    },
+    "a89b10e8-589e-461b-85bb-48a27dc9e78e": {
+      "name": "Wahi Wings 18",
+      "context": "",
+      "groups": [
+        "ddc19ca6-8b5b-4923-bee4-741bef421855"
+      ]
+    },
+    "58733dce-385a-4dd2-bf9b-02d15b41c501": {
+      "name": "Island Sliders",
+      "context": "Employee Menu",
+      "groups": [
+        "be6b26e0-bdbc-4aac-b23b-b8d74e8d8b3d"
+      ]
+    },
+    "1341b3dd-6923-4b01-ba89-ce1653994461": {
+      "name": "Wahi Wings 6",
+      "context": "",
+      "groups": [
+        "194a3813-38eb-4185-a30b-afc62ea9da97"
+      ]
+    }
+  },
+  "groups": {
+    "228f89a5-2841-4022-a9dc-9a68153706da": {
+      "name": "Soda Flavors",
+      "options": {
+        "d1bcc4b5-565f-422a-adc2-fdaf9a4d476e": {
+          "name": "Barq's Root Beer",
+          "suggestedKey": "d1bcc4b5-565f-422a-adc2-fdaf9a4d476e"
+        },
+        "4d611492-cffd-453c-82ce-4447be1f76b6": {
+          "name": "Sprite",
+          "suggestedKey": "4d611492-cffd-453c-82ce-4447be1f76b6"
+        },
+        "fb44840d-15ff-4986-8974-5336c02de7e8": {
+          "name": "Diet Coke",
+          "suggestedKey": "fb44840d-15ff-4986-8974-5336c02de7e8"
+        },
+        "614ef76b-9643-4101-a63c-dd1455ff5c92": {
+          "name": "Coke",
+          "suggestedKey": "614ef76b-9643-4101-a63c-dd1455ff5c92"
+        },
+        "95591b4e-c6dc-4902-a90b-9db374c0d1f3": {
+          "name": "Mr. Pibb",
+          "suggestedKey": "95591b4e-c6dc-4902-a90b-9db374c0d1f3"
+        },
+        "6e5ff14e-0c4a-49ae-9af9-f4edf28363be": {
+          "name": "Lemonade",
+          "suggestedKey": "6e5ff14e-0c4a-49ae-9af9-f4edf28363be"
+        },
+        "998a112f-798e-4c89-99ab-b297a866ea29": {
+          "name": "Ginger Ale",
+          "suggestedKey": "998a112f-798e-4c89-99ab-b297a866ea29"
+        },
+        "6cb56e6c-9bb7-4b6f-8122-d97c17c66aec": {
+          "name": "Soda Water",
+          "suggestedKey": "6cb56e6c-9bb7-4b6f-8122-d97c17c66aec"
+        }
+      }
+    },
+    "508faf53-8a5c-4a73-bbbb-23290d58cebb": {
+      "name": "Wahi Wings Modifier",
+      "options": {
+        "68d8cca9-dd91-4ff1-ba84-e68921cb27f3": {
+          "name": "Dry Rub",
+          "suggestedKey": "68d8cca9-dd91-4ff1-ba84-e68921cb27f3"
+        },
+        "c86ec10f-c7e7-4f96-ba13-758ac81feb9b": {
+          "name": "BBQ",
+          "suggestedKey": "c86ec10f-c7e7-4f96-ba13-758ac81feb9b"
+        },
+        "9782aebb-1bb0-4336-a5b8-a0a4126456cb": {
+          "name": "Thai Honey",
+          "suggestedKey": "9782aebb-1bb0-4336-a5b8-a0a4126456cb"
+        },
+        "5b95ef13-4e0f-48c3-be58-808a9bbe2410": {
+          "name": "Pineapple Habenero",
+          "suggestedKey": "5b95ef13-4e0f-48c3-be58-808a9bbe2410"
+        },
+        "7ebff6ae-00ba-491d-93a3-3959ebca9172": {
+          "name": "Thai Buffalo",
+          "suggestedKey": "7ebff6ae-00ba-491d-93a3-3959ebca9172"
+        }
+      }
+    },
+    "6869ba02-0566-4556-9eed-b43f1cfe739a": {
+      "name": "Wahi Wings Modifier",
+      "options": {
+        "027d51c7-ee3e-4189-91c8-b56c60cdd86f": {
+          "name": "Dry Rub",
+          "suggestedKey": "027d51c7-ee3e-4189-91c8-b56c60cdd86f"
+        },
+        "434ef9a8-816e-42e4-8d10-faa7f156d540": {
+          "name": "BBQ",
+          "suggestedKey": "434ef9a8-816e-42e4-8d10-faa7f156d540"
+        },
+        "b2829ada-b025-44e9-88ba-945b279190b6": {
+          "name": "Thai Honey",
+          "suggestedKey": "b2829ada-b025-44e9-88ba-945b279190b6"
+        },
+        "c0d93c11-da0d-4a0e-bdd1-258d7c942c45": {
+          "name": "Pineapple Habenero",
+          "suggestedKey": "c0d93c11-da0d-4a0e-bdd1-258d7c942c45"
+        },
+        "52974cef-8621-45b1-8c0b-2ce9ba27d3f7": {
+          "name": "Thai Buffalo",
+          "suggestedKey": "52974cef-8621-45b1-8c0b-2ce9ba27d3f7"
+        }
+      }
+    },
+    "ddc19ca6-8b5b-4923-bee4-741bef421855": {
+      "name": "Wahi Wings Modifier",
+      "options": {
+        "0e03b740-eb96-46ef-975e-38eb8ce2a1bc": {
+          "name": "Dry Rub",
+          "suggestedKey": "0e03b740-eb96-46ef-975e-38eb8ce2a1bc"
+        },
+        "d9303687-b831-4b37-b490-b89bf7faa7f1": {
+          "name": "BBQ",
+          "suggestedKey": "d9303687-b831-4b37-b490-b89bf7faa7f1"
+        },
+        "c27200a4-cabe-4f25-a3ab-cb048fbf8d29": {
+          "name": "Thai Honey",
+          "suggestedKey": "c27200a4-cabe-4f25-a3ab-cb048fbf8d29"
+        },
+        "674f8862-5481-4622-98c0-56df998bc373": {
+          "name": "Pineapple Habenero",
+          "suggestedKey": "674f8862-5481-4622-98c0-56df998bc373"
+        },
+        "32218cca-d943-4b81-9ec4-789b9816e2d5": {
+          "name": "Thai Buffalo",
+          "suggestedKey": "32218cca-d943-4b81-9ec4-789b9816e2d5"
+        }
+      }
+    },
+    "6b41d388-a7bb-483c-927d-65dac1218f57": {
+      "name": "Island Slider Modifiers",
+      "options": {
+        "0de58b1d-ec71-4597-ae38-9f28013e8669": {
+          "name": "Kalua Pork",
+          "suggestedKey": "pork"
+        },
+        "c0d649fd-dad9-48f6-b55c-7510e507a166": {
+          "name": "Spam & Egg",
+          "suggestedKey": "spam"
+        },
+        "45cb0ef8-6251-48d2-b994-5490015ab42b": {
+          "name": "Burger",
+          "suggestedKey": "burger"
+        }
+      }
+    },
+    "4a2584f2-a905-416e-a86d-951f23b8c806": {
+      "name": "Size",
+      "options": {
+        "d32c5168-7c9f-4020-8a95-1421d535d5dc": {
+          "name": "3 Pieces",
+          "suggestedKey": "d32c5168-7c9f-4020-8a95-1421d535d5dc"
+        },
+        "b41bf06f-2a32-4d25-97d6-89a37b9bb583": {
+          "name": "4 Pieces",
+          "suggestedKey": "b41bf06f-2a32-4d25-97d6-89a37b9bb583"
+        }
+      }
+    },
+    "17ec7844-e896-4f31-828c-d2d357735329": {
+      "name": "Size",
+      "options": {
+        "ad581cda-e651-47c7-904e-9f0fbb16ed99": {
+          "name": "2 Tacos",
+          "suggestedKey": "ad581cda-e651-47c7-904e-9f0fbb16ed99"
+        },
+        "4cfcd0c4-f6af-4539-9c11-8394c653c3fd": {
+          "name": "3 Tacos",
+          "suggestedKey": "4cfcd0c4-f6af-4539-9c11-8394c653c3fd"
+        }
+      }
+    },
+    "f5fd6a98-0187-4b82-8e62-ae6edb5163b8": {
+      "name": "Dole Whip Modifiers",
+      "options": {
+        "176f6d5e-97ad-45be-ae2f-2ecbe92a8306": {
+          "name": "Standard",
+          "suggestedKey": "176f6d5e-97ad-45be-ae2f-2ecbe92a8306"
+        },
+        "8185e072-7f9e-4105-9188-c625b90a97f9": {
+          "name": "Pineapple Float",
+          "suggestedKey": "8185e072-7f9e-4105-9188-c625b90a97f9"
+        },
+        "e585e011-35ed-4d8c-baa5-0c73bd1eb287": {
+          "name": "Rum Float",
+          "suggestedKey": "e585e011-35ed-4d8c-baa5-0c73bd1eb287"
+        }
+      }
+    },
+    "2374d65a-87a0-4a15-a73d-0fed2eba95fb": {
+      "name": "Wahi Wings Modifier",
+      "options": {
+        "5dd1fdee-8297-412d-afd6-c9cab3a01900": {
+          "name": "Dry Rub",
+          "suggestedKey": "5dd1fdee-8297-412d-afd6-c9cab3a01900"
+        },
+        "e62c8015-75bf-4ca5-94b3-f33db14267d4": {
+          "name": "BBQ",
+          "suggestedKey": "e62c8015-75bf-4ca5-94b3-f33db14267d4"
+        },
+        "b0bdee66-806a-4469-8d3f-ba557c0dc492": {
+          "name": "Thai Honey",
+          "suggestedKey": "b0bdee66-806a-4469-8d3f-ba557c0dc492"
+        },
+        "16cd2eee-f612-427e-8a2e-7acaac3bb055": {
+          "name": " Buffalo",
+          "suggestedKey": "16cd2eee-f612-427e-8a2e-7acaac3bb055"
+        },
+        "11345d9a-f28e-43e9-8d81-89a1a241b734": {
+          "name": "Pineapple Habanero",
+          "suggestedKey": "11345d9a-f28e-43e9-8d81-89a1a241b734"
+        },
+        "85d25e7e-bf97-4fce-ac17-c2dbaaaced4a": {
+          "name": "Honey Ginger",
+          "suggestedKey": "85d25e7e-bf97-4fce-ac17-c2dbaaaced4a"
+        }
+      }
+    },
+    "631666c8-9b49-41b5-83a9-3b291417bcf1": {
+      "name": "Size",
+      "options": {
+        "dd409bc8-580e-4b05-955d-26148b7ec6b5": {
+          "name": "2 Tacos",
+          "suggestedKey": "dd409bc8-580e-4b05-955d-26148b7ec6b5"
+        },
+        "2cc5cb6a-397a-438b-8ff7-4275e210083c": {
+          "name": "3 Tacos",
+          "suggestedKey": "2cc5cb6a-397a-438b-8ff7-4275e210083c"
+        }
+      }
+    },
+    "be6b26e0-bdbc-4aac-b23b-b8d74e8d8b3d": {
+      "name": "Island Slider Modifiers",
+      "options": {
+        "5a391c77-7714-4a6c-b72c-34b50ae9a7d8": {
+          "name": "Pork",
+          "suggestedKey": "pork"
+        },
+        "b4727c06-b911-4eb9-8383-e070bac2751c": {
+          "name": "Burger",
+          "suggestedKey": "burger"
+        },
+        "e21ed0cb-abdd-4a72-80ba-bc24f765ced6": {
+          "name": "Spam",
+          "suggestedKey": "spam"
+        }
+      }
+    },
+    "194a3813-38eb-4185-a30b-afc62ea9da97": {
+      "name": "Wahi Wings Modifier",
+      "options": {
+        "82debf82-bf08-4070-85cd-3a6fb7fdfc6e": {
+          "name": "Dry Rub",
+          "suggestedKey": "82debf82-bf08-4070-85cd-3a6fb7fdfc6e"
+        },
+        "dd55d23f-e041-4374-b1af-71e581617bac": {
+          "name": "BBQ",
+          "suggestedKey": "dd55d23f-e041-4374-b1af-71e581617bac"
+        },
+        "7a024a22-5565-4198-a297-8e52ac545f76": {
+          "name": "Thai Honey",
+          "suggestedKey": "7a024a22-5565-4198-a297-8e52ac545f76"
+        },
+        "9521c653-1e8e-4c2d-8c6a-1518399688db": {
+          "name": "Pineapple Habenero",
+          "suggestedKey": "9521c653-1e8e-4c2d-8c6a-1518399688db"
+        },
+        "3c3825d8-d3a7-4416-86c3-4733d3f2b9e7": {
+          "name": "Thai Buffalo",
+          "suggestedKey": "3c3825d8-d3a7-4416-86c3-4733d3f2b9e7"
+        }
+      }
+    }
+  }
+}
