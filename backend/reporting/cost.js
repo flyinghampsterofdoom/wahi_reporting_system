@@ -4,7 +4,16 @@ const pack=x=>({n:x.n.toString(),d:x.d.toString()}),unpack=x=>new E(BigInt(x.n),
 function costResolver(state,target,now,stats){
  const boundaries=[...new Set(Object.values(state).filter(Array.isArray).flatMap(rows=>rows.map(r=>r.effectiveAt).filter(t=>t&&t<=now)))].sort(),cache=new Map();
  const future=Object.values(state).filter(Array.isArray).flatMap(rows=>rows.map(r=>r.effectiveAt).filter(t=>t&&t>now)).sort()[0]||null;
- function resolve(at){const basis=latest(state.bases.filter(b=>b.ingredientId===target.outputIngredientId),at,now);return {basis,result:costIngredient(state,{ingredientId:target.outputIngredientId,quantity:target.quantity,unit:target.unit,at,knownAt:now,currency:'USD'})};}
+ function resolve(at){
+  const basis=latest(state.bases.filter(b=>b.ingredientId===target.outputIngredientId),at,now);
+  let quantity=target.quantity,unit=target.unit;
+  if(target.mode==='execution'){
+   const revision=latest(state.recipeRevisions.filter(r=>r.recipeId===target.recipeId),at,now);
+   if(!revision?.outputQuantity||!revision?.outputUnit)return {basis,result:{completeCost:null,references:[],blockers:[{reason:revision?'missing_yield':'missing_recipe_revision',ingredientId:target.outputIngredientId,recipeId:target.recipeId}]}};
+   quantity=revision.outputQuantity;unit=revision.outputUnit;
+  }
+  return {basis,result:costIngredient(state,{ingredientId:target.outputIngredientId,quantity,unit,at,knownAt:now,currency:'USD'})};
+ }
  let current;
  return {dependencies:state.ingredients.map(i=>i.id),validUntil:future,at(saleAt){const boundary=boundaries.filter(t=>t<=saleAt).at(-1)||'0001-01-01T00:00:00.000Z';if(cache.has(boundary))return cache.get(boundary);stats.historicalResolutions++;const historical=resolve(saleAt);let answer;
   const blocks=historical.result.blockers.map(b=>({reason:b.reason,ingredientId:b.ingredientId,recipeId:b.recipeId||null}));
