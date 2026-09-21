@@ -11,3 +11,7 @@ header{padding:12px 24px;gap:16px}header .brand{margin-right:auto}#nav-toggle{pa
 .leadership-preview { white-space: pre-wrap; font: inherit; line-height: 1.7; padding: 1rem; background: #f3f6f4; border-radius: .5rem; }
 .report-form fieldset label { display: flex; align-items: flex-start; gap: .6rem; font-weight: 400; margin: .6rem 0; }
 .report-form fieldset input[type="checkbox"] { width: auto; flex: 0 0 auto; margin: .25rem 0 0; }
+.cogs-yellow { background: #fff4c4; color: #624600; }
+.cogs-red { background: #fce5e5; color: #7b2020; }
+#cogs-table tfoot { font-weight: 700; border-top: 2px solid #345b50; }
+#cogs-table details { min-width: 9rem; max-width: 24rem; }

@@ -1,0 +1,13 @@
+'use strict';
+const {definitions,snake}=require('../repository/schema'),{emptyState}=require('../domain/state'),{enableResolutionCache}=require('../domain/resolution-context');
+const collections=['ingredients','recipes','purchaseOptions','bases','yields','measurements','recipeRevisions','prices','labor','laborRates'];
+// Only the requested output's transitive historical dependency closure; no
+// inventory, audits, import workbooks, supplier contacts or unrelated recipes.
+async function readCostState(c,root){
+ const arrays=collections.map(name=>{const condition=name==='ingredients'?'r.id IN (SELECT id FROM scope)':name==='recipes'?'r.output_ingredient_id IN (SELECT id FROM scope)':name==='recipeRevisions'?'r.recipe_id IN (SELECT id FROM wahi_v2.recipes WHERE output_ingredient_id IN (SELECT id FROM scope))':name==='prices'?'r.purchase_option_id IN (SELECT id FROM wahi_v2.purchase_options WHERE ingredient_id IN (SELECT id FROM scope))':name==='laborRates'?'TRUE':'r.ingredient_id IN (SELECT id FROM scope)';
+ const values=Object.entries(definitions[name]).filter(([k])=>!['provenance','note','actorId','description','tags'].includes(k)).flatMap(([k,t])=>[`'${k}'`,`r.${snake(k)}${t.startsWith('NUMERIC')?'::text':''}`]);return `'${name}',COALESCE((SELECT json_agg(json_build_object(${values.join(',')})) FROM wahi_v2.${snake(name)} r WHERE ${condition}),'[]'::json)`;});
+ arrays.push(`'lines',COALESCE((SELECT json_agg(json_build_object('id',l.id,'recipeRevisionId',l.recipe_revision_id,'ingredientId',l.ingredient_id,'quantity',l.quantity::text,'unit',l.unit)) FROM wahi_v2.recipe_lines l JOIN wahi_v2.recipe_revisions r ON r.id=l.recipe_revision_id JOIN wahi_v2.recipes rec ON rec.id=r.recipe_id WHERE rec.output_ingredient_id IN (SELECT id FROM scope)),'[]'::json)`);
+ const raw=(await c.query(`WITH RECURSIVE edges AS (SELECT rec.output_ingredient_id parent,l.ingredient_id child FROM wahi_v2.recipes rec JOIN wahi_v2.recipe_revisions r ON r.recipe_id=rec.id JOIN wahi_v2.recipe_lines l ON l.recipe_revision_id=r.id UNION SELECT ingredient_id,source_ingredient_id FROM wahi_v2.yields),scope(id) AS (SELECT $1::uuid UNION SELECT child FROM edges JOIN scope ON parent=scope.id) SELECT json_build_object(${arrays.join(',')}) state`,[root])).rows[0].state;
+ const state=Object.assign(emptyState(),raw);for(const name of collections)for(const row of state[name])for(const [k,t]of Object.entries(definitions[name]))if(t.startsWith('TIMESTAMPTZ')&&row[k])row[k]=new Date(row[k]).toISOString();for(const r of state.recipeRevisions)r.lines=raw.lines.filter(l=>l.recipeRevisionId===r.id).map(({recipeRevisionId,...l})=>l);delete state.lines;return enableResolutionCache(state);
+}
+module.exports={readCostState};

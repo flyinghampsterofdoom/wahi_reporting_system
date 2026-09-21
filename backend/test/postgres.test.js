@@ -25,7 +25,7 @@ after(async()=>{
 test('PostgreSQL migration is explicit, transactional, idempotent and isolated',async()=>{
   await pool.query('CREATE TABLE public.legacy_sentinel (value TEXT); INSERT INTO public.legacy_sentinel VALUES (\'untouched\')');
   await assert.rejects(checkSchema(pool));
-  assert.deepEqual(await migrate(pool),['001_domain.sql','002_validation_guards.sql','003_inventory_foundation.sql','004_recipe_categories.sql','005_import_evidence.sql','006_integrations.sql','007_hosted_sessions.sql','008_credential_revocation.sql','009_named_users.sql','010_labor.sql','011_standing_labor_targets.sql','012_labor_classification_revisions.sql','013_current_job_mappings.sql','014_account_email.sql','015_management_reports.sql']);assert.deepEqual(await migrate(pool),[]);await checkSchema(pool);
+  assert.deepEqual(await migrate(pool),['001_domain.sql','002_validation_guards.sql','003_inventory_foundation.sql','004_recipe_categories.sql','005_import_evidence.sql','006_integrations.sql','007_hosted_sessions.sql','008_credential_revocation.sql','009_named_users.sql','010_labor.sql','011_standing_labor_targets.sql','012_labor_classification_revisions.sql','013_current_job_mappings.sql','014_account_email.sql','015_management_reports.sql','016_true_cogs.sql']);assert.deepEqual(await migrate(pool),[]);await checkSchema(pool);
   assert.equal((await pool.query('SELECT value FROM public.legacy_sentinel')).rows[0].value,'untouched');
   assert.equal((await pool.query('SELECT count(*)::int AS n FROM wahi_v2.ingredients')).rows[0].n,0);
   const migrations=(await pool.query('SELECT * FROM wahi_v2.schema_migrations')).rows;
