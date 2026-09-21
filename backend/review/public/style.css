@@ -37,3 +37,10 @@ header{padding:12px 24px;gap:16px}header .brand{margin-right:auto}#nav-toggle{pa
 #mapping-dialog fieldset { margin:.6rem 0; min-width:0; border:1px solid #e3e8ec; }
 #mapping-dialog .variant-choice { border-top:1px solid #e3e8ec; padding:.4rem 0; }
 @media(max-width:900px) { #mapping-dialog { width:94vw; } #mapping-dialog table { display:block; overflow:auto; } }
+#mapping-table thead th { min-width:0; }
+#mapping-table .mapping-actions { min-width:300px; max-width:360px; gap:.3rem; }
+#mapping-table .mapping-actions button { min-height:32px; padding:5px 8px; font-size:13px; }
+#mapping-table details { margin:4px 0; }
+#mapping-table summary { padding:2px 0; }
+#mapping-table th[scope=row] { min-width:160px; max-width:220px; }
+#mapping-table td:nth-child(2), #mapping-table td:nth-child(3) { white-space:nowrap; }
