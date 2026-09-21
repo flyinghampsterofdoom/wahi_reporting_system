@@ -1,0 +1,5 @@
+'use strict';
+// Menu display labels are assistance only; never an identity or a saved policy.
+async function refresh(cogs,c){if(!cogs.client?.request)return;try{const menu=await cogs.client.request('/menus/v2/menus'),rows=[];for(const [key,kind]of [['modifierGroupReferences','group'],['modifierOptionReferences','option']])for(const x of Object.values(menu[key]||{}))if(/^[a-f\d-]{36}$/i.test(x.guid)&&typeof x.name==='string')rows.push({id:x.guid,name:x.name.slice(0,200),kind});if(rows.length)await c.query('INSERT INTO wahi_v2.cogs_choice_labels(id,name,kind) SELECT DISTINCT ON (id) id,name,kind FROM jsonb_to_recordset($1::jsonb) x(id uuid,name text,kind text) ON CONFLICT(id) DO UPDATE SET name=EXCLUDED.name,observed_at=CURRENT_TIMESTAMP',[JSON.stringify(rows)]);}catch{/* Optional menu labels must not block saved sales or cost interpretation. */}}
+async function read(c){return new Map((await c.query('SELECT id,name FROM wahi_v2.cogs_choice_labels')).rows.map(r=>[r.id,r.name]));}
+module.exports={refresh,read};

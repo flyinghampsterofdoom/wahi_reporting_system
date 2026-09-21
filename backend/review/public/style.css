@@ -25,3 +25,15 @@ header{padding:12px 24px;gap:16px}header .brand{margin-right:auto}#nav-toggle{pa
 [data-mapping-badge] { font-weight:700; }
 #mapping-settings-form fieldset label{display:flex;align-items:center;gap:.6rem;margin:.75rem 0}
 #mapping-settings-form input[type=checkbox]{width:auto;min-height:0;margin:0}
+/* One light boundary per complete sold-item record; details remain in its cells. */
+#mapping-table tbody > tr + tr > th, #mapping-table tbody > tr + tr > td { border-top:1px solid #dce3e8; }
+#mapping-dialog { width:min(820px,92vw); max-height:88vh; overflow:auto; border:1px solid #dce3e8; border-radius:8px; padding:1rem; color:inherit; background:var(--surface,#fff); }
+#mapping-dialog::backdrop { background:rgb(20 35 45 / .3); }
+#mapping-dialog .panel { border:0; margin:0; padding:.5rem 0; }
+#mapping-dialog label { display:block; margin:.5rem 0; }
+#mapping-dialog select, #mapping-dialog input:not([type=checkbox]) { max-width:100%; }
+#mapping-dialog .mapping-close { float:right; }
+#mapping-dialog h2 { clear:both; }
+#mapping-dialog fieldset { margin:.6rem 0; min-width:0; border:1px solid #e3e8ec; }
+#mapping-dialog .variant-choice { border-top:1px solid #e3e8ec; padding:.4rem 0; }
+@media(max-width:900px) { #mapping-dialog { width:94vw; } #mapping-dialog table { display:block; overflow:auto; } }
