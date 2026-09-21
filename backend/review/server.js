@@ -7,9 +7,9 @@ const {verify}=require('./auth');
 function error(code,message){return Object.assign(new Error(message),{code});}
 async function body(req){let s='';for await(const c of req){s+=c;if(Buffer.byteLength(s)>128000)throw error('invalid_request','Request too large');}try{return JSON.parse(s);}catch{throw error('invalid_request','Invalid JSON');}}
 function potentialHealth(req,runtime){return runtime.hosted&&req.method==='GET'&&req.url==='/healthz';}
-function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore,accounts,labor,email,accountEmail}){
+function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore,accounts,labor,email,accountEmail,reports}){
   const sessions=new Map(),attempts=new Map();
-  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','email-ui.js'];
+  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','email-ui.js','leadership-summary.js','deep-links.js','reports-ui.js'];
   const assets=Promise.all(assetNames.map(async name=>{const content=await fs.readFile(path.join(__dirname,'public',name));return {name,content,url:'/'+name.replace(/(\.[^.]+)$/,'.'+crypto.createHash('sha256').update(content).digest('hex').slice(0,16)+'$1')};}));
   const tokenHash=s=>crypto.createHash('sha256').update(s).digest('hex');
   const server=http.createServer(async(req,res)=>{
@@ -85,6 +85,10 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       }
       if(p.startsWith('/api/admin')){
         authorize(actor,'administration.access');
+        if(p==='/api/admin/reports'&&req.method==='GET'){if(!reports)throw error('not_found');send(200,await reports.read(actor));return;}
+        if(p==='/api/admin/reports/preview'&&req.method==='GET'){if(!reports)throw error('not_found');send(200,await reports.preview(actor,u.searchParams.get('id')));return;}
+        if(p==='/api/admin/reports/save'&&req.method==='POST'){if(!reports)throw error('not_found');send(200,await reports.save(actor,await body(req)));return;}
+        if(p==='/api/admin/reports/send'&&req.method==='POST'){if(!reports)throw error('not_found');send(200,await reports.sendNow(actor,await body(req)));return;}
         if(p.startsWith('/api/admin/users')){
           authorize(actor,'users.manage');if(!accounts)throw error('not_found','Not available');
           if(p==='/api/admin/users'&&req.method==='GET'){send(200,await accounts.list(actor));return;}
@@ -93,7 +97,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
           if(req.method==='POST'&&['create','update','revoke','issue-setup'].includes(p.slice('/api/admin/users/'.length))){const action=p.slice('/api/admin/users/'.length);send(200,action==='create'?(accountEmail?await accountEmail.create(actor,await body(req)):await accounts.create(actor,await body(req))):await accounts.mutate(actor,action,await body(req)));return;}
           throw error('not_found','Page not found');
         }
-        if(p==='/api/admin'&&req.method==='GET'){send(200,{environment:runtime.environment,deployment:runtime.hosted?'Hosted Wahi':'Local owner review',capabilities:['Users & Access','Integrations','System Settings'],operationalSync:false});return;}
+        if(p==='/api/admin'&&req.method==='GET'){send(200,{environment:runtime.environment,deployment:runtime.hosted?'Hosted Wahi':'Local owner review',capabilities:['Users & Access','Integrations','Scheduled Reports','System Settings'],operationalSync:false});return;}
         if(p==='/api/admin/integrations/resend'&&['GET','POST'].includes(req.method)){authorize(actor,'integrations.manage');if(!email)throw error('not_found');send(200,req.method==='GET'?await email.read(actor):await email.save(actor,await body(req)));return;}
         if(p==='/api/admin/integrations/resend/test'&&req.method==='POST'){authorize(actor,'integrations.manage');if(!email)throw error('not_found');send(200,await email.test(actor,await body(req)));return;}
         if(p==='/api/admin/integrations/toast'&&['GET','POST'].includes(req.method)){
