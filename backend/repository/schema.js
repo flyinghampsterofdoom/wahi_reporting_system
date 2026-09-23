@@ -5,6 +5,8 @@ const revision={id:'UUID PRIMARY KEY',effectiveAt:'TIMESTAMPTZ',recordedAt:'TIME
 const ref=(table,required=true)=>`UUID ${required?'NOT NULL ':''}REFERENCES wahi_v2.${table}(id) ON DELETE RESTRICT`;
 const quantity='NUMERIC CHECK (% > 0)', money='NUMERIC CHECK (% >= 0)';
 const definitions={
+  wasteEvents:{id:'UUID PRIMARY KEY',requestId:'UUID NOT NULL',actorId:'TEXT NOT NULL',recordedAt:'TIMESTAMPTZ NOT NULL',scope:'TEXT NOT NULL',locationId:'TEXT',department:'TEXT NOT NULL',ingredientId:ref('ingredients'),recipeId:ref('recipes',false),kind:'TEXT NOT NULL',quantity:'TEXT NOT NULL',unit:'TEXT NOT NULL',reason:'TEXT NOT NULL',note:'TEXT NOT NULL',baseUnit:'TEXT NOT NULL',baseQuantity:'NUMERIC',snapshot:'JSONB NOT NULL'},
+  wasteCommonSets:{id:'UUID PRIMARY KEY',scope:'TEXT NOT NULL',week:'TIMESTAMPTZ NOT NULL',snapshot:'JSONB NOT NULL',recordedAt:'TIMESTAMPTZ NOT NULL'},
   importRecords:{id:'UUID PRIMARY KEY',sourceFile:'TEXT NOT NULL',sourceHash:'TEXT NOT NULL',sheet:'TEXT NOT NULL',sourceRow:'INTEGER NOT NULL',logicalType:'TEXT NOT NULL',sourceValues:'JSONB NOT NULL',classification:'TEXT NOT NULL',issues:'JSONB NOT NULL',entityIds:'JSONB NOT NULL',importedAt:'TIMESTAMPTZ NOT NULL'},
   recipeCategories:{...identity,name:'TEXT NOT NULL',sortOrder:'INTEGER NOT NULL',active:'BOOLEAN NOT NULL'},
   recipeCategoryAssignments:{...revision,recipeId:ref('recipes'),categoryId:ref('recipe_categories',false)},

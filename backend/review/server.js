@@ -8,8 +8,9 @@ function error(code,message){return Object.assign(new Error(message),{code});}
 async function body(req){let s='';for await(const c of req){s+=c;if(Buffer.byteLength(s)>128000)throw error('invalid_request','Request too large');}try{return JSON.parse(s);}catch{throw error('invalid_request','Invalid JSON');}}
 function potentialHealth(req,runtime){return runtime.hosted&&req.method==='GET'&&req.url==='/healthz';}
 function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore,accounts,labor,email,accountEmail,reports,cogs}){
+  const waste=new (require('../waste/service').WasteService)(service.repository,{context:runtime});
   const sessions=new Map(),attempts=new Map();
-  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','quantity.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','email-ui.js','leadership-summary.js','deep-links.js','reports-ui.js','cogs-ui.js','cogs-model.js','mapping-ui.js','composite-ui.js','variant-ui.js'];
+  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','quantity.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','email-ui.js','leadership-summary.js','deep-links.js','reports-ui.js','cogs-ui.js','cogs-model.js','mapping-ui.js','composite-ui.js','variant-ui.js','waste-ui.js'];
   const assets=Promise.all(assetNames.map(async name=>{const content=await fs.readFile(path.join(__dirname,'public',name));return {name,content,url:'/'+name.replace(/(\.[^.]+)$/,'.'+crypto.createHash('sha256').update(content).digest('hex').slice(0,16)+'$1')};}));
   const mappingUiVersion=assets.then(entries=>crypto.createHash('sha256').update(entries.filter(a=>['mapping-ui.js','composite-ui.js','variant-ui.js','cogs-ui.js','quantity.js','app.js'].includes(a.name)).map(a=>a.url).join('|')).digest('hex').slice(0,16));
   const tokenHash=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -72,6 +73,12 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       if(p==='/api/account/resend-verification'&&req.method==='POST'){if(!accountEmail)throw error('not_found');send(200,await accountEmail.send(actor,'verification',await body(req),true));return;}
       if(p==='/api/account/change-password'&&req.method==='POST'){if(!accountEmail)throw error('not_found');send(200,await accountEmail.changePassword(actor,await body(req)));return;}
       if(p==='/api/logout'&&req.method==='POST'){if(sessionStore)await sessionStore.delete(tokenHash(cookie));else sessions.delete(tokenHash(cookie));res.setHeader('Set-Cookie',`${cookieName}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${cookieFlags}`);send(200,{ok:true});return;}
+      if(p==='/api/waste/catalog'&&req.method==='GET'){send(200,await waste.catalog(actor));return;}
+      if(p==='/api/waste/events'&&req.method==='POST'){send(200,await waste.log(actor,await body(req),{sessionId:tokenHash('waste:'+cookie)}));return;}
+      if(p==='/api/waste/history'&&req.method==='GET'){send(200,await waste.history(actor,Object.fromEntries(u.searchParams)));return;}
+      // The generic operational account has an explicit server-side allowlist.
+      // No preview flag or client-provided role is consulted for authorization.
+      if(actor.role==='BOH')throw error('forbidden','Operational account only');
       if(p==='/api/catalog'&&req.method==='GET'){
         authorize(actor);const s=await service.repository.read(),now=new Date().toISOString();
         send(200,{ingredients:s.ingredients.map(i=>({...ingredientView(i),itemKind:(()=>{const b=latest(s.bases.filter(b=>b.ingredientId===i.id),now,now);return b?.kind==='source'?'Source-yield Item':b?.kind==='labor_only'?'Labor Item':b?.kind==='recipe'||s.recipes.some(r=>r.outputIngredientId===i.id)?'Prepared Item':'Purchased Item';})()})),recipes:s.recipes.map(r=>recipeView(r,latest(s.recipeRevisions.filter(v=>v.recipeId===r.id),now,now))),menuItems:s.menuItems.map(m=>service.menuFromState(actor,s,m.id,{at:now,knownAt:now})),inventoryItems:s.inventoryItems.map(i=>({ingredientId:i.ingredientId,baseUnit:i.baseUnit})),drafts:s.countSessions.filter(c=>c.actorId===actor.id&&c.status==='draft').map(c=>({id:c.id,locationName:c.snapshot.location.name,observedAt:c.observedAt})),...(can(actor,'inventory.configure')?{assignments:s.inventoryAssignments.map(a=>({id:a.id,ingredientId:a.ingredientId,locationId:a.locationId,countUnit:a.countUnit,sortOrder:a.sortOrder,active:a.active,version:a.version}))}:{})});return;

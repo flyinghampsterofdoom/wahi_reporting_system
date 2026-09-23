@@ -8,7 +8,7 @@ const fingerprint=u=>digest(JSON.stringify([u.salt,u.hash]));
 const normalizeUsername=s=>s.trim().toLowerCase();
 const username=z.string().transform(normalizeUsername).pipe(z.string().regex(/^[a-z0-9][a-z0-9._-]{2,63}$/));
 const email=z.union([z.string().trim().max(254).email().transform(s=>s.toLowerCase()),z.literal(''),z.null()]).transform(s=>s||null);
-const profile={name:z.string().trim().min(1).max(160),username,email:email.default(null),role:z.enum(['STAFF','LEAD','MANAGER','ADMIN']),status:z.enum(['active','disabled'])};
+const profile={name:z.string().trim().min(1).max(160),username,email:email.default(null),role:z.enum(['STAFF','LEAD','MANAGER','ADMIN','BOH']),status:z.enum(['active','disabled'])};
 const createSchema=z.object(profile).strict(),updateSchema=z.object({id:z.string().min(1),expectedVersion:z.number().int().positive(),...profile}).strict();
 const actionSchema=z.object({id:z.string().min(1),expectedVersion:z.number().int().positive()}).strict();
 const setupSchema=z.object({token:z.string().regex(/^[A-Za-z0-9_-]{43}$/),password:z.string().min(12).max(128)}).strict();

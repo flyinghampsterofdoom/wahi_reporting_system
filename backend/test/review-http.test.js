@@ -4,7 +4,7 @@ const {createReviewServer}=require('../review/server'),{createUser}=require('../
 const {DomainService}=require('../service'),{MemoryRepository}=require('../repository/memory');
 const {seed}=require('../review/seed');
 let server,base,service;const password='Synthetic-test-password-only';
-before(async()=>{service=new DomainService(new MemoryRepository());await seed(service);const users=await Promise.all(['ADMIN','MANAGER','LEAD','STAFF'].map(role=>createUser(role.toLowerCase(),role,password)));server=createReviewServer({service,users});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));base='http://127.0.0.1:'+server.address().port;});
+before(async()=>{service=new DomainService(new MemoryRepository());await seed(service);const users=await Promise.all(['ADMIN','MANAGER','LEAD','STAFF','BOH'].map(role=>createUser(role.toLowerCase(),role,password)));server=createReviewServer({service,users});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));base='http://127.0.0.1:'+server.address().port;});
 after(async()=>{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));});
 async function request(path,{auth,body,headers={}}={}){const r=await fetch(base+'/api/'+path,{method:body===undefined?'GET':'POST',headers:{Origin:base,'Content-Type':'application/json',...(auth?{Cookie:auth.cookie,'X-CSRF-Token':auth.csrf}:{}),...headers},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:r.status,body:await r.json(),headers:r.headers};}
 async function login(role){const r=await request('login',{body:{username:role.toLowerCase(),password}});assert.equal(r.status,200);assert.match(r.headers.get('set-cookie'),/HttpOnly; SameSite=Strict/);const auth={cookie:r.headers.get('set-cookie').split(';')[0]};const me=await request('me',{auth});auth.csrf=me.body.csrf;return auth;}
@@ -81,4 +81,15 @@ test('review HTTP: item form saves associated records; new detail endpoint enfor
  const result=await request('item?id='+saved.body.id,{auth:admin});assert.equal(result.body.cost.completeCost,'42.000000000000');assert.equal(result.body.packages[0].ingredientId,saved.body.id);
  for(const role of ['STAFF','LEAD']){const auth=await login(role),detail=await request('item?id='+saved.body.id,{auth});assert.equal(detail.status,200);const tableView=await request('management',{auth});assert.equal(tableView.status,200);assert.ok(tableView.body.items.every(i=>!Object.hasOwn(i,'cost')&&!Object.hasOwn(i,'purchase')));assert.ok(tableView.body.recipes.every(r=>!Object.hasOwn(r,'cost')));for(const key of ['cost','packages','basis','labor'])assert.equal(detail.body[key],undefined);assert.equal((await request('item/save',{auth,body:payload})).status,403);}
  const forged=await request('item/save',{auth:admin,body:{...payload,actor:{role:'ADMIN'}}});assert.equal(forged.status,400);
+});
+test('waste HTTP: BOH allowlist, CSRF, no costs, durable duplicate requests, Admin role unchanged by preview',async()=>{
+ const {randomUUID}=require('node:crypto');const auth=await login('BOH');
+ const c=await request('waste/catalog',{auth});assert.equal(c.status,200);assert.equal(c.body.common.length,4);
+ const serialized=JSON.stringify(c.body);for(const key of ['cost','price','supplier','purchaseOption','provenance'])assert.ok(!serialized.includes(key),key);
+ const i=c.body.items[0],payload={requestId:randomUUID(),ingredientId:i.id,quantity:'0.5',unit:i.units[0],reason:'Other',note:'HTTP fixture'};
+ assert.equal((await request('waste/events',{auth,body:payload,headers:{'X-CSRF-Token':'bad'}})).status,403);
+ const results=await Promise.all([request('waste/events',{auth,body:payload}),request('waste/events',{auth,body:payload})]);assert.equal(results[0].status,200);assert.equal(results[0].body.id,results[1].body.id);assert.equal(results[0].body.cost,undefined);
+ for(const path of ['waste/history','internal','catalog','views/references','admin','admin/users','audit?id='+results[0].body.id,'reporting/cogs','cost?id='+i.id])assert.equal((await request(path,{auth,headers:{'X-Role':'ADMIN','X-BOH-View':'false'}})).status,403,path);
+ for(const path of ['domain/command','inventory/command','admin/users/create'])assert.equal((await request(path,{auth,body:{role:'ADMIN',preview:false}})).status,403);
+ const owner=await login('ADMIN');assert.equal((await request('me',{auth:owner,headers:{'X-BOH-View':'true'}})).body.role,'ADMIN');assert.equal((await request('waste/history',{auth:owner})).status,200);assert.equal((await request('internal',{auth:owner,headers:{'X-BOH-View':'true'}})).status,200);
 });

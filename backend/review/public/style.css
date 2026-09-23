@@ -44,3 +44,32 @@ header{padding:12px 24px;gap:16px}header .brand{margin-right:auto}#nav-toggle{pa
 #mapping-table summary { padding:2px 0; }
 #mapping-table th[scope=row] { min-width:160px; max-width:220px; }
 #mapping-table td:nth-child(2), #mapping-table td:nth-child(3) { white-space:nowrap; }
+
+/* Shared BOH operational surface, including Admin's presentation preview. */
+#workspace.operational {display:block;}
+#workspace.operational #nav,#workspace.operational #area-nav,#workspace.operational #drawer-scrim {display:none;}
+.waste-entry {max-width:760px;margin:0 auto;}
+.waste-entry h1 {font-size:clamp(28px,4vw,42px);text-align:center;margin:16px 0 24px;}
+.waste-entry button,.waste-entry input,.waste-entry select {min-height:64px;font-size:22px;}
+.waste-common,.waste-reasons {display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.waste-common button {min-height:120px;font-size:26px;white-space:normal;}
+.waste-wide {width:100%;margin-top:20px;}
+.waste-quantity {display:grid;grid-template-columns:76px 1fr 76px;align-items:end;gap:12px;}
+.waste-quantity input {width:100%;text-align:center;font-size:36px;}
+.waste-entry fieldset {border:0;padding:0;margin:18px 0 0;}
+.waste-entry legend {font-size:20px;margin-bottom:10px;}
+.waste-reasons button[aria-pressed=true] {background:var(--ink,#173e3a);color:white;outline:3px solid #98b8a7;}
+.waste-results {display:grid;gap:12px;margin-top:20px;}
+.waste-results button {text-align:left;}
+#waste-error {color:#9b2929;}
+@media(max-width:540px){.waste-common button {font-size:21px;min-height:104px;}.waste-entry button {font-size:19px;}.waste-quantity {grid-template-columns:64px 1fr 64px;}#operational-view {font-size:13px;padding:10px;}}
+.operational-header {position:sticky;top:0;z-index:10;}
+.waste-entry-heading {display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.waste-entry-heading h1 {flex:1;margin:0;}
+#waste-form {display:grid;grid-template-columns:1.3fr 1fr;column-gap:18px;align-items:end;}
+#waste-form fieldset,#waste-note-label,#waste-error,#waste-submit {grid-column:1/-1;}
+#waste-form .waste-reasons {grid-template-columns:repeat(3,1fr);}
+#waste-error:empty {display:none;}
+.waste-quantity-label {margin-bottom:0;}
+#waste-form>label {margin-bottom:0;}
+@media(max-width:620px){#waste-form{grid-template-columns:1fr;}#waste-form .waste-reasons{grid-template-columns:1fr 1fr;}header.operational-header{flex-wrap:wrap;}header.operational-header #account{font-size:13px;}.waste-entry-heading h1{font-size:26px;}}

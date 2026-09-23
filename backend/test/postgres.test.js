@@ -25,7 +25,7 @@ after(async()=>{
 test('PostgreSQL migration is explicit, transactional, idempotent and isolated',async()=>{
   await pool.query('CREATE TABLE public.legacy_sentinel (value TEXT); INSERT INTO public.legacy_sentinel VALUES (\'untouched\')');
   await assert.rejects(checkSchema(pool));
-  assert.deepEqual(await migrate(pool),['001_domain.sql','002_validation_guards.sql','003_inventory_foundation.sql','004_recipe_categories.sql','005_import_evidence.sql','006_integrations.sql','007_hosted_sessions.sql','008_credential_revocation.sql','009_named_users.sql','010_labor.sql','011_standing_labor_targets.sql','012_labor_classification_revisions.sql','013_current_job_mappings.sql','014_account_email.sql','015_management_reports.sql','016_true_cogs.sql','017_cogs_mapping_workflow.sql','018_cogs_mapping_settings.sql','019_cogs_composites.sql','020_cogs_variants.sql']);assert.deepEqual(await migrate(pool),[]);await checkSchema(pool);
+  assert.deepEqual(await migrate(pool),['001_domain.sql','002_validation_guards.sql','003_inventory_foundation.sql','004_recipe_categories.sql','005_import_evidence.sql','006_integrations.sql','007_hosted_sessions.sql','008_credential_revocation.sql','009_named_users.sql','010_labor.sql','011_standing_labor_targets.sql','012_labor_classification_revisions.sql','013_current_job_mappings.sql','014_account_email.sql','015_management_reports.sql','016_true_cogs.sql','017_cogs_mapping_workflow.sql','018_cogs_mapping_settings.sql','019_cogs_composites.sql','020_cogs_variants.sql','022_waste_log.sql']);assert.deepEqual(await migrate(pool),[]);await checkSchema(pool);
   assert.equal((await pool.query('SELECT value FROM public.legacy_sentinel')).rows[0].value,'untouched');
   assert.equal((await pool.query('SELECT count(*)::int AS n FROM wahi_v2.ingredients')).rows[0].n,0);
   const migrations=(await pool.query('SELECT * FROM wahi_v2.schema_migrations')).rows;
@@ -353,3 +353,15 @@ test('unchanged activation preserves existing sessions and adopts pre-fix sessio
 });
 test('recipe resolution: scoped item read returns transitive dependent selectors in one query, no histories',async()=>{const f=fixture(new PostgresRepository(pool)),missing=await f.run('createIngredient',{name:'Scoped unresolved dependency'}),first=await f.recipe('Scoped dependent first',[{ingredientId:missing.id,quantity:'1',unit:'each'}]),second=await f.recipe('Scoped dependent second',[{ingredientId:first.output,quantity:'1',unit:'each'}]);let queries=0;const repo=new PostgresRepository({query:async(...a)=>{queries++;return pool.query(...a);}}),s=await repo.readCurrent({at:'2028-01-01T00:00:00.000Z',itemId:missing.id});assert.equal(queries,1);assert.deepEqual(new Set(s.dependentRecipes.map(r=>r.id)),new Set([first.id,second.id]));assert.equal(s.ingredients.length,1);assert.equal(s.audit.length,0);assert.equal(s.recipeRevisions.length,0);});
 test('recipe creation: PostgreSQL concurrent duplicate saves serialize without duplicate output identities',async()=>{const f=fixture(new PostgresRepository(pool)),p=await f.bought('Create PG input'),{createRecipe}=require('../review/recipe-workflow'),d={name:'Concurrent new recipe PG',recipe:{outputQuantity:'1',outputUnit:'each',lines:[{ingredientId:p.id,quantity:'1',unit:'each'}],steps:[]}},r=await Promise.all([createRecipe(f.service,admin,d),createRecipe(f.service,admin,d)]);assert.equal(r.filter(x=>x.duplicate).length,1);const s=await f.repository.read();assert.equal(s.recipes.filter(x=>x.name===d.name).length,1);assert.equal(s.ingredients.filter(x=>x.name===d.name).length,1);});
+
+test('PostgreSQL waste: exact entry survives reopening, retry, archive; database prevents historical mutation',async()=>{
+ const {WasteService}=require('../waste/service'),{randomUUID}=require('node:crypto');
+ const f=fixture(new PostgresRepository(pool)),item=await f.bought('PG Waste','2'),actor={id:'pg-boh',role:'BOH'},waste=new WasteService(f.repository);
+ const input={requestId:randomUUID(),ingredientId:item.id,quantity:'0.5000',unit:'each',reason:'Quality'};
+ const [a,b]=await Promise.all([waste.log(actor,input),waste.log(actor,input)]);assert.equal(a.id,b.id);
+ const reopened=new WasteService(new PostgresRepository(pool));assert.equal((await reopened.log(actor,input)).quantity,'0.5000');
+ await f.run('setArchived',{collection:'ingredients',entityId:item.id,archived:true});assert.equal((await reopened.history(admin,{ingredientId:item.id})).events[0].name,'PG Waste');
+ for(const sql of ['DELETE FROM wahi_v2.waste_events WHERE id=$1',"UPDATE wahi_v2.waste_events SET reason='Other' WHERE id=$1"])await assert.rejects(pool.query(sql,[a.id]),/append-only/i);
+ assert.equal((await pool.query("SELECT count(*)::int n FROM wahi_v2.audit WHERE entity_type='wasteEvents' AND entity_id=$1",[a.id])).rows[0].n,1);
+ const c=await waste.catalog(actor);assert.deepEqual(await reopened.catalog(actor),c);
+});

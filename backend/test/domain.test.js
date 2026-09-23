@@ -219,7 +219,7 @@ test('permissions allow internal cost only to Admin/Manager while menu price rem
   }
   await assert.rejects(f.run('setLaborRate',{department:'BOH',amount:'20',currency:'USD'},manager),e=>e.code==='forbidden');
   authorize(admin,'users.manage');assert.throws(()=>authorize(manager,'users.manage'));assert.throws(()=>authorize(null));
-  assert.deepEqual(Object.keys(CAPABILITIES),['ADMIN','MANAGER','LEAD','STAFF']);
+  assert.deepEqual(Object.keys(CAPABILITIES),['ADMIN','MANAGER','BOH','LEAD','STAFF']);
 });
 
 test('historical recipe, measurement and purchase selection revisions independently reproduce costs',async()=>{
