@@ -365,3 +365,5 @@ test('PostgreSQL waste: exact entry survives reopening, retry, archive; database
  assert.equal((await pool.query("SELECT count(*)::int n FROM wahi_v2.audit WHERE entity_type='wasteEvents' AND entity_id=$1",[a.id])).rows[0].n,1);
  const c=await waste.catalog(actor);assert.deepEqual(await reopened.catalog(actor),c);
 });
+
+test('PostgreSQL waste: Drink category entry restriction preserves historical reporting and follows effective assignments',async()=>{await require('./waste-drink-scenario').scenario(fixture(new PostgresRepository(pool)));});

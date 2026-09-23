@@ -12,6 +12,7 @@ function renderOperationalControl(){
 }
 const wasteUnit=u=>u==='batch'?'batch':u.startsWith('op:')?u.slice(3).replaceAll('_',' '):unitLabel(u);
 async function wastePage(){
+ // Search and common buttons use the server-filtered BOH eligibility catalog.
  wasteCatalog=await api('waste/catalog');wasteLanding();
 }
 function wasteLanding(){

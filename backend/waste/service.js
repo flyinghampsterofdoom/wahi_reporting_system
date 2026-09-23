@@ -12,8 +12,17 @@ const fail=code=>{throw Object.assign(new Error(code),{code});};
 const rational=n=>({numerator:n.n.toString(),denominator:n.d.toString()});
 const folded=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 function weekStart(now){const d=new Date(now);d.setUTCHours(0,0,0,0);d.setUTCDate(d.getUTCDate()-(d.getUTCDay()+6)%7);return d.toISOString();}
+// BOH entry policy only. Recipe category IDs/assignments are authoritative;
+// purchased/output items also retain their existing explicit category field.
+// Resolve the exact registered category label, never item names/tags/keywords.
+function drinkIngredientIds(s,now){
+ const categories=new Set(s.recipeCategories.filter(c=>c.name==='Drink').map(c=>c.id));
+ const ids=new Set(s.ingredients.filter(i=>i.category==='Drink').map(i=>i.id));
+ for(const r of s.recipes){const assignment=latest(s.recipeCategoryAssignments.filter(a=>a.recipeId===r.id),now,now);if(categories.has(assignment?.categoryId))ids.add(r.outputIngredientId);}
+ return ids;
+}
 // Output ingredients remain the single identity; a recipe is additional provenance.
-function entities(s,now){return s.ingredients.filter(i=>i.active).flatMap(i=>{
+function entities(s,now){const excluded=drinkIngredientIds(s,now);return s.ingredients.filter(i=>i.active&&!excluded.has(i.id)).flatMap(i=>{
  const basis=latest(s.bases.filter(b=>b.ingredientId===i.id),now,now),recipe=s.recipes.find(r=>r.outputIngredientId===i.id);
  if(basis?.kind==='labor_only'||recipe?.active===false)return [];
  const revision=recipe&&latest(s.recipeRevisions.filter(r=>r.recipeId===recipe.id),now,now);
@@ -41,9 +50,10 @@ class WasteService{
   });
  }
  async log(actor,input,sessionContext={}){authorize(actor,'waste.log');const d=inputSchema.parse(input),scope=this.scope();return this.repository.transaction(async s=>{
+  const now=timestamp(this.clock());if(drinkIngredientIds(s,now).has(d.ingredientId))fail('boh_category_excluded');
   const previous=s.wasteEvents.find(e=>e.actorId===actor.id&&e.requestId===d.requestId);
   if(previous){if(previous.scope!==scope||['ingredientId','quantity','unit','reason','note'].some(k=>previous[k]!==d[k]))fail('revision_conflict');return eventView(previous);}
-  const now=timestamp(this.clock()),item=entities(s,now).find(i=>i.id===d.ingredientId);if(!item)fail('inactive_reference');if(!item.units.includes(d.unit))fail('invalid_request');
+  const item=entities(s,now).find(i=>i.id===d.ingredientId);if(!item)fail('inactive_reference');if(!item.units.includes(d.unit))fail('invalid_request');
   const q=d.unit==='batch'?E.of(d.quantity).mul(E.of(item.revision.outputQuantity)):E.of(d.quantity),fromUnit=d.unit==='batch'?item.revision.outputUnit:d.unit;
   const conversion=resolveConversion(s,{ingredientId:item.id,quantity:'1',fromUnit,toUnit:item.baseUnit,at:now,knownAt:now});
   const normalized=conversion.status==='resolved'?q.mul(conversion.amount):null;

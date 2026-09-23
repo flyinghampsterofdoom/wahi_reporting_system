@@ -44,3 +44,5 @@ test('waste: unresolved conversions and costs do not stop operational entry',asy
  const f=fixture(),i=await f.bought('Ginger','2','1','g');await f.service.inventory.execute(admin,'configureItem',{ingredientId:i.id,baseUnit:'g'});await f.run('addMeasurement',{ingredientId:i.id,fromQuantity:'1',fromUnit:'op:scoop',toQuantity:'1',toUnit:'cup_us'});
  const w=new WasteService(f.repository);await w.log(boh,entry(i.id,{unit:'op:scoop'}));const e=(await f.repository.read()).wasteEvents[0];assert.equal(e.baseQuantity,null);assert.equal(e.snapshot.cost.amount,null);
 });
+
+test('waste: Drink category excludes both identities, cached/common frequency and Admin preview without hiding history',async()=>{await require('./waste-drink-scenario').scenario(fixture());});
