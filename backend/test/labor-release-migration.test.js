@@ -37,7 +37,7 @@ test('Labor Pace release: production migration graph upgrades only 023 without a
   let service=new LaborService(pool,{}, {clock:()=>now}),view=await service.overview(admin);
   assert.equal(view.metrics.foh.display.target,'80.0');assert.equal(view.metrics.boh.display.target,'140.0');
   for(const area of ['foh','boh','overall'])assert.equal(view.metrics[area].pace.display.percentage,null);
-  const daily={foh:'80',boh:'140',foh_daily:['10','10','12','12','12','12','12'],boh_daily:['20','20','20','20','20','20','20']};
+  const daily={foh_daily:['10','10','12','12','12','12','12'],boh_daily:['20','20','20','20','20','20','20']};
   await service.configure(admin,'target',{...daily,expectedId:id});
   service=new LaborService(pool,{}, {clock:()=>now});view=await service.overview(admin);
   assert.equal(view.metrics.foh.pace.display.allotted,'32.0');assert.equal(view.metrics.boh.pace.display.allotted,'60.0');assert.equal(view.metrics.overall.pace.display.allotted,'92.0');
