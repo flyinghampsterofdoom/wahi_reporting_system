@@ -27,4 +27,22 @@ function metric(used,target){const t=target===null?null:amount(target),delta=t?u
 function aggregate(entries,jobs,mappings,target,now){const totals={FOH:Exact.of('0'),BOH:Exact.of('0'),Excluded:Exact.of('0'),Unassigned:Exact.of('0')},detail=new Map();const current=new Map(mappings.map(m=>[m.job_guid,m]));let total=Exact.of('0'),provisional=Exact.of('0'),unresolved=0;for(const e of entries){if(e.deleted)continue;const m=current.get(e.job_guid);const area=m?.area||'Unassigned',key=(e.job_guid||'unknown')+':'+area;let hours;try{hours=worked(e,now);}catch{unresolved++;continue;}total=total.add(hours.hours);totals[area]=totals[area].add(hours.hours);if(hours.provisional)provisional=provisional.add(hours.hours);const row=detail.get(key)||{jobGuid:e.job_guid,name:jobs.find(j=>j.guid===e.job_guid)?.name||'Unknown Toast job',area,hours:Exact.of('0'),entries:0};row.hours=row.hours.add(hours.hours);row.entries++;detail.set(key,row);}
  const overall=totals.FOH.add(totals.BOH),overallTarget=target?amount(target.foh).add(amount(target.boh)).decimal():null;
  return {reconciliation:{total:total.decimal(),buckets:Object.fromEntries(Object.entries(totals).map(([k,v])=>[k,v.decimal()])),balanced:totals.FOH.add(totals.BOH).add(totals.Excluded).add(totals.Unassigned).eq(total),unresolvedEntries:unresolved},foh:metric(totals.FOH,target?.foh??null),boh:metric(totals.BOH,target?.boh??null),overall:metric(overall,overallTarget),unclassified:totals.Unassigned.decimal(1),excluded:totals.Excluded.decimal(1),provisional:provisional.decimal(1),unresolvedEntries:unresolved,unassignedJobs:[...new Set([...detail.values()].filter(d=>d.area==='Unassigned').map(d=>d.jobGuid))].length,detail:[...detail.values()].map(r=>({...r,hours:r.hours.decimal(1)}))};}
-module.exports={periodFor,date,addDays,businessDate,weekFor,weekEnd,amount,worked,metric,aggregate,fail};
+// Pace is additive metadata: historical weekly metrics retain their contract.
+function addLaborPace(metrics,target,today){
+ const {validate}=require('../review/public/labor-allotments');
+ const count=new Date(today+'T12:00:00Z').getUTCDay()+1;
+ const allotted={};
+ for(const area of ['foh','boh']){
+  const validation=validate(target?.[area],target?.[area+'_daily']);
+  allotted[area]=validation.valid?target[area+'_daily'].slice(0,count).reduce((sum,x)=>sum.add(x),Exact.of('0')):null;
+  metrics[area].pace=paceMetric(metrics[area].used,allotted[area],validation.status);
+ }
+ metrics.overall.pace=paceMetric(Exact.of(metrics.foh.used).add(metrics.boh.used),allotted.foh!==null&&allotted.boh!==null?allotted.foh.add(allotted.boh):null,'invalid');
+ return metrics;
+}
+function paceMetric(used,allotted,status){
+ if(allotted===null)return {status,display:{percentage:null,allotted:null,variance:null,label:null}};
+ const actual=Exact.of(used),delta=actual.sub(allotted);
+ return {status:allotted.positive()?'valid':'zero',allotted:allotted.decimal(),percentage:allotted.positive()?actual.div(allotted).mul('100').decimal():null,variance:delta.decimal(),display:{percentage:allotted.positive()?actual.div(allotted).mul('100').decimal(1):null,allotted:allotted.decimal(1),variance:delta.abs().decimal(1),label:delta.eq('0')?'on pace':delta.positive()?'over pace':'under pace'}};
+}
+module.exports={addLaborPace,periodFor,date,addDays,businessDate,weekFor,weekEnd,amount,worked,metric,aggregate,fail};

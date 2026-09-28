@@ -10,7 +10,7 @@ function potentialHealth(req,runtime){return runtime.hosted&&req.method==='GET'&
 function createReviewServer({service,users,integrations,runtime={hosted:false,environment:'local-review'},sessionStore,accounts,labor,email,accountEmail,reports,cogs}){
   const waste=new (require('../waste/service').WasteService)(service.repository,{context:runtime});
   const sessions=new Map(),attempts=new Map();
-  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','quantity.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','email-ui.js','leadership-summary.js','deep-links.js','reports-ui.js','cogs-ui.js','cogs-model.js','mapping-ui.js','composite-ui.js','variant-ui.js','waste-ui.js'];
+  const assetNames=['app.js','style.css','management-ui.js','table-model.js','currency.js','quantity.js','shell-model.js','shell.js','users-ui.js','labor-ui.js','labor-allotments.js','email-ui.js','leadership-summary.js','deep-links.js','reports-ui.js','cogs-ui.js','cogs-model.js','mapping-ui.js','composite-ui.js','variant-ui.js','waste-ui.js'];
   const assets=Promise.all(assetNames.map(async name=>{const content=await fs.readFile(path.join(__dirname,'public',name));return {name,content,url:'/'+name.replace(/(\.[^.]+)$/,'.'+crypto.createHash('sha256').update(content).digest('hex').slice(0,16)+'$1')};}));
   const mappingUiVersion=assets.then(entries=>crypto.createHash('sha256').update(entries.filter(a=>['mapping-ui.js','composite-ui.js','variant-ui.js','cogs-ui.js','quantity.js','app.js'].includes(a.name)).map(a=>a.url).join('|')).digest('hex').slice(0,16));
   const tokenHash=s=>crypto.createHash('sha256').update(s).digest('hex');
