@@ -1,0 +1,1 @@
+Native media build check passed: Node 22.22.0, darwin/arm64, Sharp 0.35.5

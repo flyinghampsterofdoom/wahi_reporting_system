@@ -1,0 +1,11 @@
+{
+  "status": "Prepared and tested in disposable production clone; not applied to production",
+  "method": "Existing Admin Users & Access creation plus one-time secure credential setup",
+  "requiresDeploymentAuthorization": true,
+  "accounts": [
+    {"name": "Well One", "username": "well.one", "role": "RECIPE_ONLY", "status": "active", "email": null},
+    {"name": "Well Two", "username": "well.two", "role": "RECIPE_ONLY", "status": "active", "email": null}
+  ],
+  "passwords": "Not generated for production; each station uses the existing individual setup process",
+  "initialCatalog": "Empty is valid; no recipe publication required"
+}

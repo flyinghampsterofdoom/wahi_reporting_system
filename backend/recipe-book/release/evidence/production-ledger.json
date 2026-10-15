@@ -1,0 +1,432 @@
+{
+  "capturedAt": "2026-10-15T14:42:44.463Z",
+  "transaction": "REPEATABLE READ READ ONLY",
+  "identity": {
+    "database": "wahi_reporting_db",
+    "version": "PostgreSQL 18.3 (Debian 18.3-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "bytes": "137647807",
+    "read_only": "on"
+  },
+  "migrations": [
+    {
+      "name": "001_domain.sql",
+      "checksum": "25a2034167354329fb126d05dacc25a407e25877c0907fe166054e594d8895a9",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "002_validation_guards.sql",
+      "checksum": "7221f74eaa69ad3807358a41733200aed1b79555d89bffc28c424bd3c522ab31",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "003_inventory_foundation.sql",
+      "checksum": "e34a577b203d6f362ddbfe8dc7c2faaa94cb9535ed0481fcff494e03eb86ded3",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "004_recipe_categories.sql",
+      "checksum": "d6affc2831b8064a147eb086fd1425678e403aed01c8b0638660642cd5208889",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "005_import_evidence.sql",
+      "checksum": "205cde527dc3257d66bd56bc7692ca3f8b93597aefe5e0597e2bc096e8acb019",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "006_integrations.sql",
+      "checksum": "d9c917814d2b3d518a611ac0c073d793f7e441ccff18a55ff35aaa4a7ea914a5",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "007_hosted_sessions.sql",
+      "checksum": "aa28c4f2c6bf394dd9dd88d1e5f6e3bd3c84e5de8b15af665d230a57dc3988b5",
+      "applied_at": "2026-09-18T22:54:24.635Z"
+    },
+    {
+      "name": "008_credential_revocation.sql",
+      "checksum": "8f406a8211468b43ef2df422077fa889c519bd37e264dc0ec198a70ad7978a5a",
+      "applied_at": "2026-09-19T00:57:29.973Z"
+    },
+    {
+      "name": "009_named_users.sql",
+      "checksum": "086f417c99da37abcc3833799dcba662d912a0301261f8190501592cb80a36c4",
+      "applied_at": "2026-09-19T01:33:53.203Z"
+    },
+    {
+      "name": "010_labor.sql",
+      "checksum": "f3c6569d0f8e8b7a9a0b8cac60d2729884379e9ae3cb7b241b05ccbfa186ec48",
+      "applied_at": "2026-09-19T02:18:13.151Z"
+    },
+    {
+      "name": "011_standing_labor_targets.sql",
+      "checksum": "51639ae332f2db2d85d18353df63725d8fad5e9c93d34a6660ad0e8fb7e6b96f",
+      "applied_at": "2026-09-19T02:38:35.064Z"
+    },
+    {
+      "name": "012_labor_classification_revisions.sql",
+      "checksum": "b6ba40d61745d29e357d141f925079d1031396517848c8a4c8a882ad5c9d8127",
+      "applied_at": "2026-09-19T16:07:47.516Z"
+    },
+    {
+      "name": "013_current_job_mappings.sql",
+      "checksum": "3ef62dbf34999045c5023d6015a8950ba82855ab24c9bff8f34e1e6b840c4042",
+      "applied_at": "2026-09-19T16:21:29.340Z"
+    },
+    {
+      "name": "014_account_email.sql",
+      "checksum": "ee472ef7fe8a1570ecd9c5fdd6b33df956de5a226085957115c48d4651421adc",
+      "applied_at": "2026-09-21T14:46:03.596Z"
+    },
+    {
+      "name": "015_management_reports.sql",
+      "checksum": "b87b29214a69f591184bfff3582101fc692b51e5d654198618569586938acdd1",
+      "applied_at": "2026-09-21T15:37:45.866Z"
+    },
+    {
+      "name": "016_true_cogs.sql",
+      "checksum": "7fa2738f7baf75e9f73f56f4645c7d5c3942a64db0562cd5b3b19f009fb7cffb",
+      "applied_at": "2026-09-21T16:48:01.336Z"
+    },
+    {
+      "name": "017_cogs_mapping_workflow.sql",
+      "checksum": "205039415dcaa3e3f916c7f6de861022583e248caa5ef7b7b5c3e8e040bbdcd3",
+      "applied_at": "2026-09-21T18:12:03.192Z"
+    },
+    {
+      "name": "018_cogs_mapping_settings.sql",
+      "checksum": "85befe41f897f3a9ba4c5e40df1b2e44515c145f68174d827e085bc380c1c34d",
+      "applied_at": "2026-09-21T18:54:08.761Z"
+    },
+    {
+      "name": "019_cogs_composites.sql",
+      "checksum": "a6fa53ab572fd95eae78ad08aa9702c9fd3aae91757f476ff6f41c44e1e3365e",
+      "applied_at": "2026-09-21T20:00:37.604Z"
+    },
+    {
+      "name": "020_cogs_variants.sql",
+      "checksum": "d34e223b91543276fa6223cc0c8d3b7ecb7ab17cee03b03ac8def8e52618b599",
+      "applied_at": "2026-09-21T21:07:00.558Z"
+    },
+    {
+      "name": "022_waste_log.sql",
+      "checksum": "e713155d284d5713bb80f7b440d12fd4683e04ad65c5ca0bdf188520e89994e7",
+      "applied_at": "2026-09-23T16:50:41.737Z"
+    },
+    {
+      "name": "023_labor_daily_allotments.sql",
+      "checksum": "23badd804cb21b4af30e7cac82cc465b42bcd20d612fe6311726ece5b2b2b165",
+      "applied_at": "2026-09-28T20:21:01.576Z"
+    }
+  ],
+  "integrity": {
+    "audit": {
+      "rows": 2568,
+      "digest": "bf7b21a0fe2a4e74ee68902310b1f963"
+    },
+    "auth_credentials": {
+      "rows": 42,
+      "digest": "978996fe5a68d16d6e60f0a6a5cd6fd9"
+    },
+    "auth_security_events": {
+      "rows": 3,
+      "digest": "b8cd6fe9b4541618ced1b8801fe8439c"
+    },
+    "bases": {
+      "rows": 472,
+      "digest": "451fc2dc39ea3359893e05657a97e01d"
+    },
+    "cogs_candidates": {
+      "rows": 233,
+      "digest": "cac93cca03c3b39047dda88184b5fd47"
+    },
+    "cogs_choice_labels": {
+      "rows": 1237,
+      "digest": "5b3db72cfe7d5685aea2560230e55ba5"
+    },
+    "cogs_composite_audit": {
+      "rows": 1,
+      "digest": "13184411ce573ed8e32cb084494c4203"
+    },
+    "cogs_composites": {
+      "rows": 1,
+      "digest": "3e60b4d6d85ddc8064bde45094e59d10"
+    },
+    "cogs_eligible_categories": {
+      "rows": 2,
+      "digest": "83472ededbe3b4babdc4726f18b5970e"
+    },
+    "cogs_knowledge": {
+      "rows": 4215,
+      "digest": "d64e2597fdae063c6deb4886098d4c79"
+    },
+    "cogs_knowledge_history": {
+      "rows": 12208,
+      "digest": "b871eb4b2b15ca09740956d892fa09e5"
+    },
+    "cogs_mapping_audit": {
+      "rows": 96,
+      "digest": "cdb05409a839239a6b64c3771340eedd"
+    },
+    "cogs_mapping_settings": {
+      "rows": 1,
+      "digest": "dfe94250590cd048cb3e29927a92d2a9"
+    },
+    "cogs_mappings": {
+      "rows": 95,
+      "digest": "a5f7b22d00543c11754280074a849e09"
+    },
+    "cogs_settings_audit": {
+      "rows": 2,
+      "digest": "db2cc0ce7d7820fc502339a213831ef8"
+    },
+    "cogs_variant_audit": {
+      "rows": 3,
+      "digest": "3bdf5083c9b623fdab8bce253277f58a"
+    },
+    "cogs_variants": {
+      "rows": 3,
+      "digest": "c72fd90490447937ad5d8a872fcdc151"
+    },
+    "count_sessions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "email_deliveries": {
+      "rows": 17,
+      "digest": "e3bd654b9845f9a46f30bd7b13e168b8"
+    },
+    "email_rate_limits": {
+      "rows": 2,
+      "digest": "d5a08e8432f6db4cb05ab252e7c8825f"
+    },
+    "email_verification_tokens": {
+      "rows": 5,
+      "digest": "3fa3e716f72649d5b1223c1220941e9e"
+    },
+    "import_records": {
+      "rows": 1835,
+      "digest": "43c93271fee660fef13e8d8638bd6d02"
+    },
+    "ingredients": {
+      "rows": 449,
+      "digest": "d1571790a3629237a8c8827664b40741"
+    },
+    "integration_audit": {
+      "rows": 7,
+      "digest": "398fa42ab4948b6b9d4eef64a0facabc"
+    },
+    "integration_settings": {
+      "rows": 2,
+      "digest": "13e13deb2a06fb31ac43e7bfa244fa6f"
+    },
+    "inventory_assignments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "inventory_items": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "inventory_locations": {
+      "rows": 6,
+      "digest": "d2ecf52e69d20ddf0cb750528ead6535"
+    },
+    "inventory_observations": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "labor": {
+      "rows": 1,
+      "digest": "08714c502e3e884caa46bd721fb09bbf"
+    },
+    "labor_audit": {
+      "rows": 28,
+      "digest": "0db3a61cae28457752672ce816adf566"
+    },
+    "labor_classifications": {
+      "rows": 19,
+      "digest": "8bc9a0bd55cac98a0bee80cfb998b517"
+    },
+    "labor_employees": {
+      "rows": 142,
+      "digest": "d93a5b53ac22dd8bd22f7c92193e40cb"
+    },
+    "labor_entries": {
+      "rows": 133,
+      "digest": "60a6de64e5df7bc964a4fe1de1bb3081"
+    },
+    "labor_job_mappings": {
+      "rows": 19,
+      "digest": "21775f014b9d73eea8f2187df3904eb5"
+    },
+    "labor_jobs": {
+      "rows": 19,
+      "digest": "91826e35876d2d7ba1c936bb5cd6890d"
+    },
+    "labor_rates": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "labor_settings": {
+      "rows": 1,
+      "digest": "8bc7b37a56f326b1b3d43d1edfeea920"
+    },
+    "labor_standing_targets": {
+      "rows": 4,
+      "digest": "832d56e847bf9d6ca0d167e7413d0934"
+    },
+    "labor_sync_days": {
+      "rows": 23,
+      "digest": "8e4b3406e226cdb1072fb37282b3c2da"
+    },
+    "labor_sync_state": {
+      "rows": 1,
+      "digest": "2cdd9c79957e97975f0ac7f593729300"
+    },
+    "labor_targets": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "labor_week_rules": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "login_limits": {
+      "rows": 50,
+      "digest": "235b79aba87df5f301c9faf9fa356d98"
+    },
+    "management_deliveries": {
+      "rows": 7,
+      "digest": "7cc322fdcf66da48246c56b1750867a3"
+    },
+    "management_occurrences": {
+      "rows": 5,
+      "digest": "e613e842a982c6b68ca8a38f59477b0f"
+    },
+    "management_report_audit": {
+      "rows": 8,
+      "digest": "dda153d631e0380241b73d0ef2a4202d"
+    },
+    "management_report_recipients": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "management_reports": {
+      "rows": 2,
+      "digest": "c75d039445631870394636944170e08a"
+    },
+    "measurements": {
+      "rows": 47,
+      "digest": "f59a9a6555a46e122c0ea2af12d4b7af"
+    },
+    "menu_items": {
+      "rows": 119,
+      "digest": "e6067ad96ad7a2903965b827c0cd0120"
+    },
+    "menu_mappings": {
+      "rows": 119,
+      "digest": "ae84ecf2c886041daae3b522dd3c426e"
+    },
+    "prices": {
+      "rows": 232,
+      "digest": "de07f8667bb95cc739fc51743ecc476b"
+    },
+    "purchase_options": {
+      "rows": 228,
+      "digest": "eddd049ce118a6fc7c9023f89a71eae9"
+    },
+    "recipe_categories": {
+      "rows": 5,
+      "digest": "bdbf81f73a468fb1c8706a3045f5bf45"
+    },
+    "recipe_category_assignments": {
+      "rows": 187,
+      "digest": "ac3eb3b217b76ff585d8054e237326e5"
+    },
+    "recipe_lines": {
+      "rows": 1013,
+      "digest": "21121208d007e94e7ca199b0a2b22f92"
+    },
+    "recipe_revisions": {
+      "rows": 186,
+      "digest": "e873143f883de52449bde38af423e2e9"
+    },
+    "recipe_steps": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "recipes": {
+      "rows": 186,
+      "digest": "e88e24ec8c7fca24193ae14d2f57307e"
+    },
+    "sales_fact_versions": {
+      "rows": 16653,
+      "digest": "511ee57c392d502f7684970a6fd2467d"
+    },
+    "sales_facts": {
+      "rows": 11250,
+      "digest": "7a94721aa44f0683c32dd6ea0fd8da33"
+    },
+    "sales_item_days": {
+      "rows": 4206,
+      "digest": "a4ab6af770fffc9fc909f7ba79797864"
+    },
+    "sales_items": {
+      "rows": 233,
+      "digest": "1bebaf21f788ac490006507423528173"
+    },
+    "sales_sync_days": {
+      "rows": 60,
+      "digest": "e59abd1be7b7e3e4ae83a7a759015552"
+    },
+    "sales_sync_state": {
+      "rows": 1,
+      "digest": "ef80bd59c2087df35af85e95ef9c405b"
+    },
+    "schema_migrations": {
+      "rows": 22,
+      "digest": "78ec7f37d0b0a5f86a3537ebdddff151"
+    },
+    "selling_prices": {
+      "rows": 237,
+      "digest": "da6164698a32eb74727d9495cbd5976f"
+    },
+    "suppliers": {
+      "rows": 12,
+      "digest": "2f1860ef608d2a195e25add2503b1aad"
+    },
+    "user_directory_state": {
+      "rows": 1,
+      "digest": "628a943857cccd9f398fadc44e394b67"
+    },
+    "user_security_audit": {
+      "rows": 305,
+      "digest": "ecd603ca53e6d116b8afb468998246e5"
+    },
+    "user_setup_tokens": {
+      "rows": 48,
+      "digest": "ead0b3eeab3787874ed21e43359d6544"
+    },
+    "users": {
+      "rows": 42,
+      "digest": "c094bfd806b45ca56b4edaab9f35c908"
+    },
+    "waste_common_sets": {
+      "rows": 2,
+      "digest": "a1eb8e02e3931fbbc93a063eaaf6bfd2"
+    },
+    "waste_events": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "web_sessions": {
+      "rows": 11,
+      "digest": "8a368327d82ae1e58549b9c64ac2b623"
+    },
+    "yields": {
+      "rows": 57,
+      "digest": "0ea0f06b8862efd6accae78f338aa9d9"
+    }
+  }
+}

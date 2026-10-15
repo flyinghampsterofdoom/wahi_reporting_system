@@ -1,0 +1,16 @@
+{
+  "backend-tests.txt": "e71fefebb50f71701e5694791a45b92539f7cf07a45332ee228f2940259b8118",
+  "builder-regression/builder-browser-results.json": "5a75700240f42ac7991569e3617528bf7c866f6636c31c07407307c442bb77e8",
+  "builder-regression.txt": "14e547e159ace488617c30f342a7fad78ac26d7dafa493043c6729c36ee77f4e",
+  "integrity.json": "ae78c2266116bb60a5beec20d87efbb16ba4967b9e1b7a0dff90de76114de5fd",
+  "operational/collapsed-cards.png": "8b9b20381f768d2de8431d5e9f48bebe0fc3078240e3cf3dc2198a72f27720b6",
+  "operational/full-preview-desktop.png": "38d2c41a97c7d0606990b962b34d947345386deec2b98d9f94458144f7c16dc3",
+  "operational/full-preview-tablet.png": "26e439cde29b46b7005cec2631925a0ddcf7838e5c944e8b8669fab36e90800e",
+  "operational/results.json": "de3ce293607e90e00291b4dfe26318fe3a2fc9b9b113d274d7980974c216c320",
+  "operational/well.one.png": "a3e9259293d71645bb36e904bc9f5392b60b4e8c865d47710cad8a4362885458",
+  "operational/well.two.png": "c22ab7a74d4d43445484d0ce480914d7d492aaa575b96e85d27a8ce5d2e4404d",
+  "operational-browser.txt": "52487fcae93cca49a94ab520304ca980c8e2cdd9f80d1437ec44f2790a68f0d3",
+  "service-regression/browser-results.json": "8300d99417b9a9243e518d0ae3830e1cfb9f24837a2eb958efaf741274ac1abe",
+  "service-regression.txt": "6a9a4016e1ec9b361bf9e265dbec645ef626234b4f594bb7bd33c2b467900b66",
+  "verification.json": "c75f10493523e79f96d4955ee0eb6183b4ca74cab04e3b53679f9239f0f4c724"
+}

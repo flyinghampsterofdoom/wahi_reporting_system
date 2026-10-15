@@ -1,0 +1,95 @@
+WAHI-RECIPE-01 — PRODUCTION READINESS REPORT
+Status: READY FOR DEPLOYMENT — production actions remain unexecuted pending authorization.
+
+1. Release candidate
+Branch: codex/wahi-recipe-release. Exact SHA: the commit containing this report, supplied in the
+completion response; pin that full SHA when deploying. Its single parent is the verified live commit
+0d23a5f963cb18bf165797ce200709f0b14237ee. Approved implementation 738be1f is preserved locally.
+The isolated release worktree is wahi-recipe-release-candidate/Wahi_reporting_system.
+
+2. Integration and confidentiality
+Live Render deployment dep-datdjho93c1s73a6l5h0 remains 0d23a5f, an ancestor of the approved feature.
+No newer production-only code or textual merge conflict existed. All previously deployed role
+capabilities are retained; costing, inventory, waste/BOH, labor, reporting, repository and integrations
+source are unchanged. Recipe-only auth/navigation additions are tested on the integrated candidate.
+No experimental account deletion, Toast-history/statistics migrations or unrelated branch was imported.
+
+One security conflict was resolved: this GitHub repository is PUBLIC, while prior local acceptance
+commits contain confidential recipe projections/screenshots. The candidate replays approved code onto
+the live base with a clean, single-commit history. Real fixtures move to ignored local test data; real
+source screenshots are excluded. Private foundation/review histories and every original file remain
+preserved locally. Only the release branch is safe to publish under the proposed procedure.
+
+3. Migrations and data preservation
+Production has 22 applied files: 001–020,022,023. Every checksum matches the candidate. Upgrade adds
+031_recipe_book_foundation.sql then 032_recipe_builder.sql; final manifest has 24 files. No applied
+migration was edited/renumbered and no namespace collision exists. Reserved 021 and 024–030 remain
+excluded. Rehearsal restored a fresh read-only production backup into disposable PostgreSQL 18,
+applied only 031/032, verified idempotence, and retained every original table/record and all 42 account
+records. All 186 costing results were compared before/after; 449 ingredients and 119 menu items remain
+intact. Paired database/media restore and compatibility recovery mode passed. Production SQL was
+limited to read-only inspection/backup; no production migration or data update occurred.
+
+4. Media architecture, configuration and cost
+Use the existing 1 GB Render disk mounted /var/data, with private root /var/data/recipe-book-media.
+Mounted-volume verification refuses ephemeral fallback. Hosted runtime now supplies the production
+adapter using the accepted decoder/object format, with file/directory flushes before DB references.
+Originals, optimized WebP, integrity manifests and immutable historical associations persist across
+adapter/service restarts. Authenticated API delivery, private permissions and original non-exposure
+remain enforced. No external provider, new disk or subscription is required; incremental fixed cost
+$0 within the existing allocation. Existing plan/network rates continue. A 512 MiB media cap plus
+128 MiB disk reserve prevents unapproved storage growth. Paired backup/restore and checksum/reference
+verification were exercised. Provider snapshots supplement the operator checkpoint procedure.
+Default configuration works without replacing existing secrets; optional root is restricted to the
+stated path. npm postinstall tests native Sharp on the actual build host BEFORE migration, using the
+existing Render build command. Native smoke passed locally on the production Node version 22.22.0;
+Linux execution occurs in the gated Render build after deployment is authorized, not during this work.
+
+5. Well accounts
+Neither production well identity exists. Both profiles are prepared in release/station-plan.json and
+passed the existing secure one-time setup/password process in a disposable production clone. They
+land directly in the Recipe Book, remain Recipe-Only, deny other functions, restore sessions correctly,
+and support independent device sessions/logout. Production accounts/passwords were NOT provisioned.
+After authorization, create them through existing Admin Users & Access; do not inject fixture hashes
+or setup credentials into production environment/bootstrap data.
+
+6. Actual candidate verification
+Full backend regression on Node 22.22.0: 641/641 PASS, zero failures/skips/cancellations/todos.
+Recipe Builder browser acceptance using the persistent adapter: 21/21 PASS.
+Recipe Book browser acceptance using the persistent adapter: 24/24 PASS.
+Production-clone migration, browser/security, lifecycle and restoration rehearsal: 12/12 PASS.
+No uncaught browser errors. The candidate was retested AFTER clean-history assembly; previous branch
+results were not substituted. Rehearsal used PostgreSQL 18.6 against the actual production PostgreSQL
+18.3 capture; the full ordinary suite also exercises its existing PostgreSQL 16 disposable tests.
+Native build smoke: PASS. Existing BOH restriction tests pass, with no unrelated repair introduced.
+Evidence and reference digests: release/evidence/; sensitive backups/fixtures remain private/ignored.
+
+Required-result matrix: backend PASS; Book browser PASS; Builder browser PASS; both-well security PASS;
+empty launch PASS; image upload/delivery PASS (JPEG/PNG/WebP); drafts/publication/history PASS; costing
+isolation PASS; existing BOH no regression; migration rehearsal PASS; backup/restoration PASS.
+
+7. Deployment and rollback
+Exact proposed steps are in release/PROCEDURE.txt. After authorization: revalidate live SHA/ledger,
+take and verify a private paired checkpoint, push only this clean release SHA/branch, and deploy that
+specific SHA to the existing Render service with autoDeploy=no. Existing build/pre-deploy/start commands
+perform native validation, transactional 031/032 migration and runtime mount/schema checks. Smoke-test
+normal existing functions and the empty Book/Builder, then provision the wells through existing Admin
+controls. No production-branch merge or additional infrastructure is required.
+For a feature rollback, set WAHI_RECIPE_BOOK_READ_ONLY=true with Save only and redeploy the SAME SHA.
+This tested compatibility mode preserves schema/history/media and existing backend capabilities while
+freezing Recipe Book writes. Never redeploy bare 0d23a5f against 031/032 or perform destructive downgrade
+SQL. Full restore/cutover requires a verified paired checkpoint and reconciliation of post-backup data.
+
+8. Blockers and authorization boundary
+No known technical/security blocker remains for this candidate. An EMPTY launch is explicitly valid:
+zero publications, photos, preparation instructions and management drafts were verified on both wells
+in the production clone. Completing pilot cocktails, importing the source catalog into service drafts,
+authoring content and further visual refinement are NOT release prerequisites. Management can populate
+after launch; individual publication validation remains in force.
+
+No production push, deployment, migration, configuration change, account provisioning, paid resource,
+or unrelated integration was performed. Read-only Render/DB/SSH inspections and a private backup were
+used as evidence. Original workspaces and confidential histories are preserved. Deployment authorization
+and its fresh drift/backup preflight are operational gates, not unresolved engineering blockers.
+
+READY FOR DEPLOYMENT

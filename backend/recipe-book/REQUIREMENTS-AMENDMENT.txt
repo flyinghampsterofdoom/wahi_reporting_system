@@ -1,0 +1,40 @@
+WAHI RECIPE BOOK PHASES 3–4 REQUIREMENTS AMENDMENT
+
+Preparation ownership
+The 186 ingredient-only source recipes are valid and expected. No historical reconstruction,
+automatic instruction generation or costing-schema instruction write is required or permitted.
+The Builder retrieves the existing ingredients by source recipe identity/title, saves a service
+draft, and lets management author preparation, garnish and glassware. Source preparation is
+optional for retrieval/draft creation; completed service instructions are required at publication.
+readiness.js now distinguishes source-data problems from service-authoring tasks accordingly.
+
+Core image workflow and phase ownership
+Phase 3 owns the three-column published Recipe Book, correct service instructions and images,
+large aspect-preserving photograph display, efficient selection updates, missing-photo placeholder,
+and authorization-checked delivery of published images. Images are addressed by immutable media
+ID attached to the selected published version; the display component must remain independent of
+how management supplies the image. Use a narrowly scoped disposable local image fixture adapter
+for acceptance if production storage/upload is unavailable. No production provider is approved.
+
+Phase 4 owns management upload, preview before save, replacement, removal and recipe association,
+plus the visual Builder, instruction entry, existing-ingredient retrieval, drag-and-drop and live
+recipe/image preview. JPEG, PNG and WebP must be accepted with server-side MIME/actual-format/decode,
+byte-size, dimension and decoded-pixel validation. Generate appropriately sized derivatives, keep
+originals private, and retain all objects referenced by historical published versions. Missing
+photos cause a visible Builder warning but do not block publication. Provider configuration,
+costs and retention still require approval before production infrastructure is introduced.
+
+Foundation verification
+Added disposable PostgreSQL tests demonstrate that an ingredient-only source can populate a draft,
+management-entered preparation can be saved/published in service data, and every non–Recipe Book
+table remains unchanged. A second test uses approved disposable media metadata to verify correct
+recipe/publication association, draft replacement/removal, retained historical photo IDs and foreign
+key protection against deleting referenced media. These are foundation tests, not an upload/decode,
+image-delivery, placeholder or visual-Builder acceptance claim.
+
+Implementation boundary
+This amendment updates authorized Phase 1–2 contracts, classification and regression coverage.
+It does not deploy, provision accounts, select storage, or implement Phase 3/4 interfaces. Those
+implementations remain pending separate authorization under the existing execution boundary.
+Current raw verification results are in the worktree's ignored .recipe-private/amendment-focused.txt
+and .recipe-private/amendment-regression.txt; verification.json records the final suite counts.

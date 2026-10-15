@@ -1,0 +1,132 @@
+HISTORICAL PHASE 5 ASSESSMENT — superseded by RELEASE.txt and release/PROCEDURE.txt.
+Owner has approved an empty launch. Pilot completion is not a release blocker.
+Production media now uses the existing persistent disk adapter.
+
+WAHI-RECIPE-01 — PHASE 5 PRODUCTION READINESS ASSESSMENT
+
+Recommendation: ready for controlled local management acceptance; NOT ready for production release.
+This is a requirements/runbook assessment, not authorization to deploy, migrate, provision accounts,
+configure infrastructure, purchase services, or integrate excluded development histories.
+
+1. Private photograph storage — release blocker
+The current PrivateLocalRecipeMedia adapter deliberately rejects hosted use. Hosted startup in
+backend/deploy/runtime.js does not construct any recipeMedia adapter. Setting a local media-root
+environment variable is not a production upload solution. An approved persistent private-storage
+adapter and its hosted runtime wiring must be implemented, reviewed and tested before release.
+Owner must choose the storage location/provider, durable volume or object-store architecture,
+budget, regional requirements and operational ownership. Nothing was purchased or configured here.
+
+The adapter must preserve store(bytes,mimeType)/display(meta) semantics, immutable random object
+keys and recipe/media IDs. Upload validation currently lives in the local adapter: its equivalent
+must be retained or extracted into shared server-side validation before another adapter is accepted.
+Maintain <=8 MiB decoded size, JPEG/PNG/WebP actual-format matching, complete decode, <=24M pixels,
+single-frame restriction, EXIF orientation normalization, metadata-stripped display WebP inside
+1400x1600 without cropping/enlargement, and content integrity verification. Original uploads remain
+private and are never returned by static/public routes. Use restricted service credentials, encrypted
+transport/at-rest protection, private ACLs and key/credential rotation with controlled access.
+
+Protect delivery through the existing authenticated API: both wells may access only approved images
+of active current publications; managers may access draft/history images according to current role
+checks. Preserve same-origin/CSRF on uploads, no-store/nosniff delivery and role revalidation. Public
+URLs, public buckets, shared API/image browser caches or weaker signed-URL policies are not acceptable
+shortcuts. Historical publication IDs retain their exact photo references. Replace/remove changes
+references rather than overwriting objects. No automated media deletion/GC is implemented. Any future
+retention/GC policy requires reference audits and approval; never delete a published reference.
+
+2. Backup and restoration — release blocker
+Owner must define recovery-point/recovery-time objectives, retention, storage/access controls,
+encryption/key escrow, restore ownership, monitoring and a periodic restore-rehearsal schedule.
+Back up service entries/drafts/immutable versions/events/media, the complete migration ledger, source
+identity dependencies and account/authorization configuration, together with every referenced
+original, derivative and media manifest/integrity record. Back up the broader production database
+using its existing operational policy; this feature is not permission to replace other domains.
+
+Use a consistent DB snapshot and a media snapshot covering all objects referenced by that snapshot.
+With immutable append-only media, taking the DB snapshot before copying all referenced media can
+preserve consistency; prove reference coverage, do not assume it. Do not omit old publication photos
+or only save visible thumbnails. Verify snapshot/object checksums and missing-reference reports;
+restrict originals and credentials in backups. Restore to an isolated environment first, with email,
+Toast calls and scheduled jobs disabled and production account/session credentials invalidated or
+isolated. Verify schema checksums, immutable history, source links, photo bytes, current publication,
+draft isolation, both station roles and protected domains before any authorized recovery cutover.
+
+Local evidence: recipe-acceptance.test.js exercises the review tool's private pg_dump/media checkpoint,
+restores into a second disposable database, validates schema/history/drafts, verifies original SHA256
+and derivative bytes, and checks publication/photo access with both fixture wells. This proves the
+local format/procedure, not a production provider's encryption, durability or restore SLA.
+
+3. Database migration — release blocker pending approval/preflight
+Phase 5 adds NO migration. Recipe Book history has 031_recipe_book_foundation.sql and
+032_recipe_builder.sql. Every earlier approved migration filename/checksum is unchanged. Reserved
+021 and 024–030 remain excluded. Production's last reviewed baseline was 0d23a5f during earlier
+recovery; no production database or deployment state was accessed or reverified during Phase 5.
+
+Before release, obtain an authorized read-only migration-ledger/deployment reconciliation against the
+exact release commit, inspect independent history numbering and constraints, take a verified backup,
+and rehearse fresh/upgrade graphs on an isolated production-like clone. Inspect users role constraints,
+station-name protection and excluded soft-deletion behavior explicitly. Do not copy original dirty
+migrations, fill gaps, renumber deployed files or import unrelated histories. If 032 is independently
+allocated elsewhere, stop for owner resolution; use a later additive reconciliation after review.
+
+Run the explicitly approved migration job only after preflight and backup/rollback decisions. Startup
+only checks the exact manifest; it must not silently apply schema changes or provision station users.
+Verify the installed ledger/checksums and unchanged costing/inventory/waste/labor data after migration.
+Retain migration scripts in every rollback-compatible build; never drop service history or attempt a
+destructive SQL downgrade. Review DDL locks and maintenance timing using a production-like clone.
+
+4. Station accounts and devices — separate authorization required
+No existing or production station account was created, changed or provisioned. Automated tests use
+only ephemeral fixture identities in disposable databases. Before production, owner must explicitly
+authorize well.one and well.two, assign friendly Well One/Well Two labels and RECIPE_ONLY access,
+complete secure password/setup handling and device custody/session policies through existing named
+account controls. Do not promote them to Staff/Manager or share management credentials. No production
+fixture password, account hash, session or test database dump may be reused.
+
+Verify independent device sessions, direct Book landing and restoration, recipe-only navigation,
+server default-deny for Builder/admin/costing/inventory/labor/waste/Toast APIs and draft images,
+logout/account switch, access revocation and offline expiration. Maximum offline retention remains
+12h capped by the existing authenticated 8h session. Management previews/drafts/staged photos must
+never enter the account-scoped published cache. Revocations clear content when reconnected; already
+cached permitted content can persist only until the existing bounded lease expires. Confirm the
+owner accepts those offline/device tradeoffs before deployment.
+
+5. Production configuration and build — release blocker
+Use a separately approved exact release commit/artifact and existing HTTPS origin, WAHI_ENVIRONMENT,
+WAHI_PUBLIC_ORIGIN, WAHI_DATABASE_URL, WAHI_AUTH_USERS_JSON and integration-key configuration controls.
+Do not print or copy secret values. The existing hosted runtime validates its allowed database target;
+do not weaken that guard to make acceptance fixtures work. Fixtures never load hosted configuration.
+Add approved media credentials/runtime wiring without conflating them with costing or Toast settings.
+
+Build with the package engines requirement (Node >=22), pinned lockfile/Sharp native dependencies and
+the target host's OS/architecture; run production-like build/startup/media smoke tests. Local evidence
+uses Node 25.8.1, PostgreSQL 16 and Chrome; hosted-platform compatibility was not asserted here. Confirm
+filesystem/object durability, size limits, service permissions, CSP/security headers, server time and
+no debug/development banners. Configure operational metrics for upload failures, missing objects,
+storage capacity, authorized delivery errors, source conflicts and backup/restore failures without
+logging private originals, passwords or session tokens. Exercise staging before owner release approval.
+
+6. Rollback and recovery — compatibility build required
+Database history and media references are retained; roll back application behavior using a reviewed
+build compatible with the installed 031/032 manifest, station authorization and published document
+contract. Bare pre-Recipe-Book builds will fail the strict migration ledger check after new migrations.
+Phase 5 additionally widens service quantity precision to 24 fractional digits to retain observed
+19-digit source decimals exactly. A63767d's 12-digit draft validator can reject newly imported documents;
+therefore it is not an unconditional rollback target after such documents are saved. Prepare and test
+a compatibility build that retains the expanded validator and schema while withdrawing new UI behavior
+if required. No feature-disable/rollback mechanism was added or executed under this work order.
+
+For content mistakes, Admin recovery copies an old immutable version into draft. Preview and explicitly
+republish to change the current reference; recovery does not alter menu classification or automatically
+publish. Restore historical photos by their retained original media IDs, not overwriting image objects.
+Archive/restore is service-only and does not alter costing. If media is unavailable, preserve DB/history
+and show the placeholder; restore approved media from a verified backup. Approval revocation remains
+possible without mutating media identity/content. Any full database recovery/cutover requires separate
+owner authorization and protected-domain reconciliation.
+
+7. Content and operational acceptance — outstanding
+The five genuine source imports are verified, but actual preparation, garnish and glassware remain
+unsupplied; actual photographs are also unavailable. Missing photographs alone do not block publication.
+Management must author and approve the service content using acceptance/WORKFLOW.txt, then complete
+all five cocktail checks at both wells. Automated completed-recipe station/recovery checks use clearly
+separate synthetic controls and do not constitute real house-content sign-off. Do not deploy or claim
+production readiness until these content and infrastructure gates are resolved and explicitly accepted.

@@ -1,0 +1,30 @@
+{
+  "verifiedAt": "2026-10-15T15:19:36.839Z",
+  "liveCommit": "0d23a5f963cb18bf165797ce200709f0b14237ee",
+  "liveDeployment": "dep-datdjho93c1s73a6l5h0",
+  "disk": {
+    "node": "v24.21.0",
+    "platform": "linux",
+    "architecture": "x64",
+    "uid": 1000,
+    "gid": 1000,
+    "mounted": true,
+    "mountDevice": 66325,
+    "rootDevice": 4194465,
+    "availableBytes": 1001664512,
+    "totalBytes": 1020702720,
+    "privateRecipeRootExists": false,
+    "realPath": "/var/data",
+    "writableByRuntimeUser": true
+  },
+  "runtimeInspection": {
+    "configuredNodeVersion": "22.22.0",
+    "shellNode": "v24.21.0",
+    "applicationProcesses": [
+      {
+        "pid": "52",
+        "nodeVersion": "v22.22.0"
+      }
+    ]
+  }
+}

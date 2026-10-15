@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs/promises'),path=require('node:path');
+const {PrivateLocalRecipeMedia}=require('./media');
+// Same decoder/private object format as the accepted adapter, on an explicitly mounted volume.
+// The hosted runtime never sets requireMount=false; that option is only for disposable tests.
+class PersistentRecipeMedia extends PrivateLocalRecipeMedia {
+ constructor(root,{mountPath='/var/data',requireMount=true,maxBytes=512*1024*1024,reserveBytes=128*1024*1024}={}){super(root);this.fixtureOnly=false;this.mountPath=path.resolve(mountPath);this.requireMount=requireMount;this.maxBytes=maxBytes;this.reserveBytes=reserveBytes;this.tail=Promise.resolve();}
+ async init(){const mount=await fs.realpath(this.mountPath);if(!this.requireMount){const from=this.root.startsWith(this.mountPath+path.sep)?this.mountPath:this.root.startsWith(mount+path.sep)?mount:null;if(!from)throw Error('Private media must be inside the persistent mount');this.root=path.resolve(mount,path.relative(from,this.root));this.mountPath=mount;}if(mount!==this.mountPath||!this.root.startsWith(mount+path.sep))throw Error('Private media must be inside the persistent mount');if(this.requireMount){const [volume,parent]=await Promise.all([fs.stat(mount),fs.stat(path.dirname(mount))]);if(volume.dev===parent.dev)throw Error('Persistent media mount is unavailable; refusing ephemeral storage');}await fs.mkdir(this.root,{recursive:true,mode:0o700});if(await fs.realpath(this.root)!==this.root)throw Error('Private media root cannot be a symlink');await fs.chmod(this.root,0o700);return this;}
+ async usedBytes(dir=this.root){let total=0;for(const entry of await fs.readdir(dir,{withFileTypes:true})){const filename=path.join(dir,entry.name);if(entry.isSymbolicLink())throw Error('Private media cannot contain symlinks');if(entry.isDirectory())total+=await this.usedBytes(filename);else if(entry.isFile())total+=(await fs.stat(filename)).size;else throw Error('Invalid private media object');}return total;}
+ async beforeStore(originalBytes,displayBytes){const required=originalBytes+displayBytes+4096,stat=await fs.statfs(this.root);if(await this.usedBytes()+required>this.maxBytes||stat.bavail*stat.bsize-required<this.reserveBytes)throw Object.assign(Error('Private media capacity reached'),{code:'media_capacity'});}
+ async store(bytes,mimeType){const previous=this.tail;let release;this.tail=new Promise(resolve=>{release=resolve;});await previous;try{await this.init();return await super.store(bytes,mimeType);}finally{release();}}
+ async display(meta){if(!/^[0-9a-f-]{36}$/.test(meta.object_key))throw Error('Invalid production media key');return super.display(meta);}
+}
+async function hostedMedia(env=process.env){const root=path.resolve(env.WAHI_RECIPE_MEDIA_ROOT||'/var/data/recipe-book-media');if(root!=='/var/data/recipe-book-media')throw Error('Hosted Recipe Book media must use /var/data/recipe-book-media');return new PersistentRecipeMedia(root).init();}
+module.exports={PersistentRecipeMedia,hostedMedia};

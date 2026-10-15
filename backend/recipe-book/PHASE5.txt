@@ -1,0 +1,151 @@
+WAHI-RECIPE-01 — PHASE 5 LOCAL ACCEPTANCE AND REFINEMENT REPORT
+
+Approved foundation: a63767d34ce885fd8fe5dbed1d7ab8fdfdc6058f.
+Branch: codex/wahi-recipe-foundations. The completion response supplies the exact local commit
+containing this report, code and evidence. Work was performed only in the approved isolated
+worktree at /Users/justinrawlinson/.codex/worktrees/wahi-recipe-baseline-review/Wahi_reporting_system.
+
+Status: local implementation and automated verification complete. Real house-content acceptance
+is pending management entry/sign-off. Recommendation: continue controlled local acceptance;
+NOT ready for production release. See PRODUCTION-READINESS.txt for the specific release gates.
+
+1. Component collapsing
+Every ingredient, preparation, garnish, glassware, notes and recipe editing card now has an
+accessible title toggle with aria-expanded/aria-controls. Nested cards use the same control.
+Collapse/Expand all controls are provided. Drag handles, Move up/down and removal controls stay
+outside the folded fields. Keyboard focus follows reordered blocks, and folding survives reorder.
+Titles update on the toggle as they are edited. Archived entries can still be folded for review.
+
+Editing folds and nested editing-group folds are transient UI state keyed by component ID. They
+do not alter service documents, dirty state, version, current publication, source or costing.
+Bartender expansion is an explicit, separately labeled checkbox on recipe components. This
+replaces the former implicit coupling between the nested editor accordion and service expansion.
+A collapsed editor therefore cannot accidentally hide service content in a later publication.
+
+2. Complete bartender preview
+Builder has a Full-size bartender preview action. It opens an accessible modal with the actual
+Recipe Book markup, controls, alphabetical search/menu filtering, selection/rendering and image
+path. recipeBookMarkup/recipeBookControls are shared with the Book; recipePaintList/recipeSelect
+and WahiRecipeRenderer.render are reused. There is no second service renderer or copied preview
+layout. It uses the existing 20/45/35 columns, protected-image behavior, aspect ratio and placeholder.
+
+The selected management draft replaces its own catalog row in this private preview; other rows
+are current publications. Unsaved local photos work before upload/save. Refresh updates published
+catalog rows while keeping the explicit draft preview. Opening/closing does not save or publish,
+change menu classification, or write draft/images to offline storage. Preview state has no offline
+lease, and photo object URLs are revoked on close. Escape/Close restore focus to the Builder action.
+Station identities have no Builder/management-preview route or access to its draft/media APIs.
+
+3. Genuine source acceptance and one discovered import defect
+Selections: Mai Tai, Navy Grog, Zombie, Pain Killer and Saturn. The committed acceptance/source-data.json
+contains their existing source/revision identities and exact ingredient information, including
+12 recipes with dependent house mixes and 51 ingredient identities. It is a narrow projection from
+the preserved local import capture, cross-checked against the approved saved 186-recipe inventory.
+Names, IDs, revisions, line IDs, quantities, units and notes were verified for all included recipes.
+Source hashes/time and an extraction utility are included; extraction reproduced the JSON exactly.
+No production database/network access was used to obtain or verify this projection in Phase 5.
+
+Real-source verification found an existing Phase 4 import defect: the service validator allowed
+only 12 fractional digits, while observed source quantities have up to 19. Navy Grog/Zombie's
+0.0062500000000000003 bitters quantity was rejected. The service-only contract/schema now allow
+24 bounded fractional digits, keeping the integer bound and exact decimal string unchanged.
+There is no automatic rounding, unit conversion or modification of the underlying costing values.
+A regression test checks exact preservation and rejection beyond the new bound. The original
+'1 Dash' note remains available; management must approve its visible service measurement.
+
+The source recipes have no preparation instructions. No actual house preparation, garnish,
+glassware or photographs were supplied for these five acceptance recipes. None were invented,
+reconstructed or inferred from ingredient names. A visible Builder content-status message identifies
+missing management entry. Empty preparation blocks can be saved, and incomplete publication is
+rejected. Missing photos retain the warning/placeholder and are optional for publication.
+
+Five real-source drafts are prepared Off Menu in a controlled disposable environment. Every real
+source import/preview was tested in the Builder, but all five remain unpublished and private.
+Real completed house-content acceptance: 0/5 pending, not a passed station-content acceptance.
+Both wells correctly receive an empty catalog while only those drafts exist and are denied access
+to the drafts/management APIs. A separately named SYNTHETIC operational control with synthetic
+instructions/photo verifies completed-publication mechanics at both wells. It has no source link
+or photograph association to any of the five real cocktail identities.
+
+4. Management workflow and preservation
+acceptance/WORKFLOW.txt records exact source/revision IDs, selection rationale, missing fields,
+management entry, photo association, explicit publication/classification, both-well checks and
+historical recovery/sign-off steps. Start with:
+  node backend/recipe-book/acceptance/review.cjs
+The tool makes a fresh local private-socket cluster, verifies the disposable target before seeding,
+loads the source projection and creates five drafts. Its logins are ephemeral fixture identities.
+It never reads a production database URL or hosted configuration and does not provision existing
+or production accounts. The terminal prints its local URL and fixture login information.
+
+Ctrl-C exports a private database.dump, full media tree and drafts.json under a unique ignored
+.recipe-private/phase5/owner-review directory before closing/removing the disposable cluster.
+If checkpointing fails, the environment is retained. This prevents routine review shutdown from
+silently discarding management-entered work. The dump is the restore authority; drafts.json is a
+later convenience export. Re-running the script starts a new clean acceptance session, not an
+implicit import/overwrite of an earlier checkpoint. Restoring a checkpoint is a reviewed local
+operation against a disposable destination; never reuse its synthetic credentials in production.
+
+5. Verification
+Full backend regression: 638 passed; 0 failures, skips, cancellations or todos. Approved Phase 4
+had 635 passing tests. Three new tests verify the five exact source imports and incomplete-content
+boundaries, precision preservation/bounds, and database+private-media checkpoint/restoration.
+The restore exercise uses pg_dump/pg_restore with a second disposable DB, retains immutable event/
+publication history and draft state, verifies original image SHA256 and display bytes, checks schema
+checksums, and verifies the restored publication/photo through both fixture well identities.
+
+Relevant browser acceptance: 56 passed; 0 failures or uncaught exceptions:
+- 21 existing Builder checks: source import, editing, nested components, keyboard/drag ordering,
+  common items, draft persistence, upload/replacement/history/removal, publication/menu isolation,
+  concurrent edits, Admin/Manager/station boundaries and desktop/tablet layouts.
+- 24 existing bartender checks: sorting/search/filters, three-column layout, formatting, protected
+  photo/placeholder/rapid switching, touch targets, empty catalog, independent well sessions,
+  published-only offline storage/expiry/logout/account switching/revocation and refresh.
+- 11 Phase 5 operational checks: five actual source snapshots and missing-content entry; real-source
+  full preview; both-well draft denial; all six/nested editor folds without document changes;
+  keyboard and drag ordering while folded; exact shared rendering/full layout and unsaved photo
+  without offline persistence; completed synthetic control at both wells; publication/classification/
+  historical recovery with retained photos; protected-domain equality.
+
+Desktop and tablet evidence: phase5-evidence/operational/. Real-source screenshots display actual
+imported ingredients and missing-photo placeholders. Screenshots labeled SYNTHETIC are separate
+mechanical controls, not house recipes/photos. Machine-readable results distinguish these scopes.
+All technical suites pass; missing management content is an explicit operational acceptance gate,
+not a hidden skip, source migration error, fabricated content or technical test failure.
+
+6. Regression/integrity comparison
+Costing, inventory, waste, labor, repository, auth/accounts, hosted runtime, core service, Recipe Book
+persistence/media logic and all migration source files are unchanged from the approved Phase 4
+commit. Domain snapshots are equal before/after service operations. Existing BOH Drink restriction
+regressions pass unchanged in the approved baseline. The separately preserved original dirty-workspace
+BOH issue remains documented in the earlier baseline recovery/Phase 4 reports and is unchanged;
+no unrelated BOH repair or branch integration occurred.
+
+All 310 original tracked/untracked application files still match the recovery manifest. Original
+HEAD remains 1bb3d280721be2bef3baf3f4f4ed9ee701bbef84 and its Git status is unchanged. The pre-existing
+Phase 1–2 report edit in this isolated worktree is byte-for-byte preserved and excluded from the
+Phase 5 commit (diff SHA256 cff5710f3c675fe2cca762b123f69540569c74ae439ceaf201b26ae9c2412462).
+No migrations were added/changed; 031/032 checksums and reserved/excluded namespaces are preserved.
+
+7. Release recommendation and limits
+Ready for local owner review of refinements and management content entry. Do not release to production.
+Outstanding: actual content/sign-off for five cocktails and their completed checks at both wells;
+approved hosted private media adapter/runtime integration; backup/restore operational policy and
+production-like rehearsal; fresh authorized deployment/migration-ledger reconciliation; migration
+and account-provisioning approvals; target-platform configuration/build smoke tests; a tested rollback
+compatibility build retaining 031/032 and the widened quantity contract. See PRODUCTION-READINESS.txt.
+
+No production deployment, DB access/changes/migrations, existing/production account provisioning,
+paid service, external infrastructure configuration, push, merge or unrelated branch integration.
+All account and DB writes were ephemeral local fixtures; completed synthetic controls were kept
+separate from real source drafts. Production account creation and real service publication remain
+unperformed under this authorization.
+
+Reproduction (isolated worktree, Node >=22, local PostgreSQL 16 tools, existing private test fixtures):
+  npm --prefix backend ci
+  npm --prefix backend test
+  WAHI_RECIPE_EVIDENCE=.recipe-private/phase5/builder-regression node backend/recipe-book/test-support/builder-browser.cjs
+  WAHI_RECIPE_EVIDENCE=.recipe-private/phase5/service-regression node backend/recipe-book/test-support/browser.cjs
+  node backend/recipe-book/test-support/operational-browser.cjs
+Browser scripts use local Chrome/Playwright and disposable profiles. WAHI_BROWSER_MODULE_ROOT selects
+its module directory, WAHI_BROWSER_CHANNEL selects Chrome, and WAHI_TEST_PG_BIN selects PG binaries.
+No production infrastructure, provider or production credentials are required for these tests.

@@ -1,0 +1,155 @@
+WAHI RECIPE BOOK PHASE 3 IMPLEMENTATION AND REVIEW REPORT
+
+Result
+Phase 3 is complete locally on codex/wahi-recipe-foundations, based on approved commit
+29dc6baa0a6976dbd5510e8e4523f9b7f865872a. This report, code and evidence are included in the
+local Phase 3 commit identified in the final delivery. Phase 4 has not been implemented.
+
+1. Bartender interface
+The existing Recipe Book primary navigation now opens the complete service view. Desktop and
+tablet layouts have persistent 20/45/35 columns: alphabetical drink list/search/menu filters,
+service instructions, and the selected photograph. The navigation list and recipe detail scroll
+independently; the layout fits the viewport without a second page scrollbar. Search filters the
+complete authorized published index locally and case-insensitively with no page reload. On Menu
+is the default; Off Menu and All preserve access to discontinued published recipes. Selection
+remains highlighted and is retained across refresh when the recipe remains available.
+
+The shared renderer displays title, structured quantity-first ingredients, preparation, garnish,
+glassware and notes. It keeps bold unindented section headings, one whole-item left margin for
+all wrapped subordinate lines, and bold quantities/units with regular ingredient names. Nested
+house components expand/collapse without changing source references or formatting. Touch controls
+are at least 44 CSS pixels high. Below tablet width a compact two-column/stacked-photo adaptation
+remains usable; desktop and both tablet orientations retain the specified three columns.
+
+2. Published photograph delivery
+GET /api/recipe-book/media/{mediaId}?versionId={publicationId} is an authenticated read endpoint.
+The server checks current active database identity/role, the media/publication association and
+approval. Recipe-only/staff reads require the selected, non-archived current publication. Edit-
+capable management may retrieve historical published images for recovery. Draft, foreign,
+unapproved and archived/historical station requests are denied. Metadata keys and filesystem
+paths are never returned. Responses are JPEG/PNG/WebP with no-store and nosniff protection.
+
+Published index rows expose photoAvailable, allowing refresh to remove a revoked photo from the
+client cache. The image component uses the immutable photo ID and publication ID. It clears the
+previous image immediately on selection, decodes the new image asynchronously, and rejects stale
+responses after rapid selection changes. Aspect ratio is preserved with object-fit: contain.
+Absent, unavailable and not-yet-cached offline photographs have explicit placeholders.
+
+LocalRecipeMedia is a narrow disposable fixture adapter, not an upload feature or production
+provider. It serves prevalidated optimized derivatives through display(metadata), checks original/
+derivative hashes, limits delivery size, and rejects paths outside its private fixture root. It
+is explicitly rejected by hosted runtime. The test fixture prepares real PNG originals and WebP
+derivatives using the bundled Sharp runtime, preserving aspect ratio at at most 900×1200 pixels.
+Originals and manifests are private to a freshly created temporary directory. No external storage
+provider, paid service, production image or management upload endpoint was introduced.
+
+Phase 4 can create new immutable media IDs and use a privately configured adapter implementing
+the same display(metadata) interface. Its upload mechanism need not change the bartender image
+component, publication references, permission gate or offline image format. Historical published
+photo associations remain retained by existing immutable versions and database foreign keys.
+
+3. Station and account behavior
+Well One and Well Two use the existing named-user authentication/session system. Recipe-only
+accounts land directly in Recipe Book, including session restoration and stale administrative
+hashes. Their navigation contains Recipe Book only. The server's default-deny station gate adds
+only the exact protected image route to previously permitted session/contract/published/logout
+operations. Direct administrative, draft, source, history and unrelated operational APIs remain
+denied even with forged role/preview headers. Device/browser-profile sessions remain independent;
+logging out one does not terminate the other. No production station accounts were provisioned.
+
+4. Offline/cache behavior
+A same-origin service worker retains only the public static HTML/JS/CSS application shell. It
+never intercepts/caches authenticated APIs or photographs. It refreshes shell assets on successful
+navigation, commits a new shell only after its assets are cached, and removes obsolete shell
+asset entries. Shell/network failures can fall back to the complete previous shell.
+
+Published service data and approved image blobs live separately in IndexedDB, with a last-account
+pointer and scope containing environment, stable account ID and authorization generation. Stored
+identity is restricted to navigation metadata; CSRF/session/password credentials, drafts, costs,
+audits and import originals are excluded. Only one active account snapshot is retained. Login,
+account switching and logout clear old service data; cross-tab notifications close old views.
+Asynchronous writes carry an epoch guard so late responses cannot repopulate a cleared cache.
+Images are restricted to current authorized publication references and bounded to a 64 MiB
+working cache. Previously loaded authorized images remain usable offline; images never loaded
+have an explicit offline placeholder rather than a fabricated presentation.
+
+Retention has a hard 12-hour maximum and is capped by authenticated session expiry. Existing
+sessions last eight hours, so current leases do not extend authentication to twelve hours. Cache
+loads reject expired leases and clock rollback, and active-view timers close the book at expiry.
+The view displays Offline and the last successful content-refresh timestamp. Offline logout
+clears local data immediately, blocks automatic restoration, and completes server logout when
+connectivity returns; pending logout cannot race a new sign-in to revoke its session.
+
+Reconnection rechecks authentication/capabilities, fetches the complete current publication index,
+replaces changed instructions/image associations, removes archived entries and revoked photos,
+and updates menu filters. Manual Refresh and an active-view 30-second refresh provide online
+invalidation. A reconnect arriving during another refresh queues a follow-up rather than being
+lost. HTTP authorization failures clear retained data and require login; they never fall back to
+cached content. Server revocation cannot be observed while disconnected; access remains bounded
+by the previously issued authenticated lease until reconnection or expiry.
+
+5. Recipe/source and costing boundaries
+The 186 existing ingredient-only recipes remain valid Builder starting points. Phase 3 does not
+import/publish them automatically, invent preparation, or write to costing recipe_steps. All
+browser recipe/instruction/photo examples are explicitly labeled disposable synthetic fixtures.
+Management instruction entry and visual editing remain Phase 4 work.
+
+No core costing, measurement, inventory, Toast, labor, generic repository or BOH service logic
+changed. No migrations were added or modified. The approved BOH restriction and its regression
+tests pass unchanged. The original dirty-workspace BOH defect remains preserved separately; it
+was not repaired or incorporated. Browser tests compare the entire domain state before/after
+service browsing and controlled service publication changes. Existing foundation tests also
+compare every non–Recipe Book base table across service mutations and fixed-time costing output.
+
+6. Verification evidence
+Final backend command: node --test backend/test/*.test.js.
+625 passed; zero failed, skipped, cancelled or todo. Approved Phase 1–2/amendment baseline: 620.
+Five new automated tests cover full-index search/filter/sort, offline validity boundaries, fixture
+integrity/path protection, media authorization/history/archive/approval, and hosted fixture denial.
+Existing startup/routing VM tests were adapted for the new offline-aware bootstrap; their original
+role, safe-return-destination and deferred-startup assertions remain intact.
+
+Browser command: node backend/recipe-book/test-support/browser.cjs.
+24 acceptance groups passed; zero uncaught JavaScript errors across the tested pages. Chrome via
+Playwright uses disposable profiles and private PostgreSQL fixtures. Desktop 1440×1000, portrait
+768×1024, landscape 1024×768 and a touch-enabled tablet context were verified. Covered search,
+sorting, all menu filters, selection/highlight, shared/wrapped formatting, nested expansion,
+independent scrolling, 20/45/35 geometry, no page overflow, correct image/aspect ratio, missing
+photos, rapid switching, cache contents, offline reload, publication/archive/image refresh,
+photo approval revocation, both wells, account switching/logout, expiry on reload and in-session,
+account revocation on reconnect, empty catalog and costing isolation. This is Chrome responsive/
+touch emulation; no claim of physical iPad/Safari certification is made.
+
+Evidence in phase3-evidence/:
+- backend-tests.txt and browser-tests.txt: raw final passing results.
+- browser-results.json and verification.json: individual checks and summary.
+- desktop.png, tablet-portrait.png, tablet-landscape.png, tablet-touch.png.
+- offline.png and empty.png.
+All screenshots/data are synthetic, not authoritative house recipes or production data.
+
+Development findings resolved: isolated VM mocks lacked the new bootstrap dependency; a browser
+assertion initially expected refresh to change a valid selection; visual review found excess page
+height; shell refresh held unconsumed responses until all fetches finished and stalled installation.
+Mocks/assertions were corrected, layout was constrained to the viewport, and responses are now
+consumed into the shell cache as they arrive. Final suites have no remaining failure or skip.
+
+7. Phase 4 dependencies and release boundary
+Still required: visual drag-and-drop Builder, management-authored preparation/garnish/glassware,
+existing-recipe import UI, reusable common items, live recipe/image preview, JPEG/PNG/WebP upload,
+server type/size/decode/pixel validation, replacement/removal, optimized derivatives and secure
+original retention. An approved production private-object-storage configuration, costs and
+retention policy are required before a real provider is connected. Current hosted builds do not
+silently use fixture storage; a missing storage adapter yields the unavailable-image placeholder.
+The existing publication/media API is ready for the later upload implementation.
+
+No production database access, writes, schema migration, deployment, station provisioning, paid
+service or external provider configuration occurred during Phase 3. No branch push/merge or
+unrelated feature integration occurred. All database writes used disposable private-socket test
+clusters, which were stopped and removed. The original workspace's 310 tracked/untracked files
+and status remain unchanged. A pre-existing edit to the Phase 1–2 report in this isolated worktree
+was checkpointed and left byte-for-byte unchanged, outside the Phase 3 commit.
+
+Reproduction needs Node 22+, PostgreSQL 16 binaries, the existing private ignored workbook fixtures,
+and Playwright/Sharp with a local Chrome installation for browser tests. WAHI_BROWSER_MODULE_ROOT
+can select an alternative test-only dependency directory; WAHI_BROWSER_CHANNEL selects the browser.
+No new production dependency was added. Phase 4 remains unauthorized and unimplemented.

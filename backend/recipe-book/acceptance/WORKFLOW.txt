@@ -1,0 +1,99 @@
+RELEASE NOTE: real source data is private at backend/test/fixtures/recipe-book-acceptance.json.
+It is not shipped in the public release tree/history. Local captures remain in preserved worktrees.
+The production launch requires no completed content; this optional pilot workflow is not a release gate.
+
+WAHI-RECIPE-01 — FIVE-COCKTAIL OPERATIONAL ACCEPTANCE
+
+Purpose: Local management acceptance using genuine existing identities/ingredient snapshots.
+These are not completed or approved house service recipes. No house instructions or photos were
+available. Do not use generic templates or synthetic test photographs as substitutes for approval.
+
+Prepared selections (source ID / source revision ID):
+Mai Tai
+  f534520b-78de-48b8-aa4c-73156528857b / b983ba23-86ac-4e66-a1cc-e772fb813ca9
+  Classic sour with two rums, house syrups, and each-unit ingredient rows.
+Navy Grog
+  b0d8a987-843c-4823-a014-b61b4100c061 / c894c69c-e195-4fac-a78b-807c08015244
+  Three-rum drink with exact high-precision bitters and house syrup.
+Zombie
+  ddb2cc63-d0c0-4bce-a305-15d43d325c79 / 2c450aa0-4010-48a2-a174-30efdfa44dee
+  Nested mixes, drop units, and high-precision bitters.
+Pain Killer
+  9fdd3600-c174-4613-a3b5-a4d97b7e12a0 / dba119c8-642d-43f7-a280-edbe5c6398b9
+  Juice and cream ingredients in a different composition.
+Saturn
+  2d82053a-19cd-44e7-a751-95c84e922ae1 / 7da92c3a-dfb6-4ad3-ac7b-a1a8bdfd6eaa
+  Gin-based drink with several house mixes.
+
+Evidence lineage
+source-data.json is a narrow projection from the preserved local import capture. Its selected
+IDs/revisions and every ingredient line (including dependency recipes) were checked against the
+approved, previously captured source inventory. The original workbook hash, capture hashes and
+inventory time are recorded in source-data.json. It contains 5 selections, 12 recipes including
+house mixes, and 51 ingredient identities. No source prices, inventory, labor, Toast data, users,
+service instructions or photographs were copied into that projection. This is a point-in-time
+acceptance fixture, not a claim that production has been checked again in Phase 5.
+
+prepare.cjs can reproduce the projection from the two existing captures without database access:
+  node backend/recipe-book/acceptance/prepare.cjs <captured-import-result.json> <captured-inventory.json> <output.json>
+Do not replace the committed fixture automatically with new source data. Review identity/revision
+and ingredient changes explicitly. The extraction rejects identity/ingredient mismatches and
+unexpected instructions instead of choosing or inventing content.
+
+Controlled local workflow
+1. From the isolated worktree, install dependencies and ensure local PostgreSQL 16 tools exist.
+   Start: node backend/recipe-book/acceptance/review.cjs
+   It creates an ephemeral private-socket database, applies the committed migration manifest,
+   loads only the verified source projection, and prepares five private Off Menu service drafts.
+   It never uses WAHI_DATABASE_URL, hosted configuration, or a production service. Its fixture
+   identities are disposable test records, not provisioning of existing or production accounts.
+2. Open the printed local URL. Use fixture.manager for management entry or fixture.owner for
+   Admin recovery checks. The terminal prints the synthetic fixture password. Keep the process
+   open while reviewing. Only local fixtures use these identities/passwords.
+3. Select each saved draft by cocktail title. Confirm source IDs/revisions and ingredient names,
+   quantities, units, notes and nested mixes against the captured source. Quantities are retained
+   exactly; notably Navy Grog/Zombie bitters retain 0.0062500000000000003 fl_oz_us and the original
+   '1 Dash' note. Management must approve the visible service measurement; no automatic rounding
+   or change to costing has occurred.
+4. Obtain the actual house preparation from management. Add a Preparation block and instructions
+   through the Builder. Add separately approved garnish and glassware details. Ingredient rows
+   that happen to mention mint/lime do not automatically establish service garnish policy.
+   The content-status message identifies missing fields. Empty instructions remain valid draft
+   content but do not pass publication. Do not publish placeholder instructions.
+5. Upload the real corresponding cocktail photograph if available. Preview before saving, verify
+   association and orientation, and review it in Full-size bartender preview. If unavailable,
+   leave photoId empty and record 'photo pending'; the placeholder/warning is expected and does
+   not block publication. Never attach synthetic test images to these real cocktails.
+6. Save Draft. Confirm both wells still see only the previous publication (or no entry). Open
+   Full-size bartender preview: it uses the actual service layout/renderer and displays this
+   unsaved/saved draft privately. It neither publishes nor stores private draft data offline.
+7. After management validates the authored content, explicitly Publish. Confirm On Menu/Off Menu
+   stays unchanged. Classify separately as management decides. Record publication ID/version,
+   reviewer, review time, ingredient discrepancies, real photo availability and source revision.
+8. Log in independently as well.one and well.two in separate browser/device profiles. Verify all
+   five completed recipes' names, ingredients, instructions, garnish, glassware and corresponding
+   photographs/placeholders. Confirm direct Recipe Book landing, recipe-only navigation, search,
+   menu filters and denial of Builder/admin/draft APIs. Record desktop and tablet results.
+9. Edit a draft; verify wells retain the current immutable publication. Replace/remove a photo
+   and verify the published photo stays intact until another publication. As Admin, restore an
+   earlier publication into draft; confirm current publication/menu status do not change. Preview
+   the recovered historical photo, then explicitly publish if desired. Test service archive and
+   restore separately. Do not mutate costing recipes, inventory mappings or Toast records.
+10. Exit with Ctrl-C. The review tool exports a private database.dump, media directory (including
+    originals/derivatives/manifests), and human-readable drafts.json under the printed unique
+    .recipe-private/phase5/owner-review checkpoint before removing the disposable cluster. If
+    checkpointing fails, it retains the running environment for recovery and reports the error.
+    The dump is the restore authority; drafts.json is a later convenience export. Do not close
+    the terminal forcibly before checkpoint completion. These checkpoints are local/private and
+    must not be committed or copied into production as account/migration provisioning shortcuts.
+
+Current acceptance worksheet (all five)
+Verified: real source identity, selected revision, ingredient quantities/units/notes, nested mixes,
+Builder import/edit/save/preview path, missing-image handling, and draft denial at both wells.
+Pending: management-authored preparation, garnish, glassware, actual photograph if available,
+explicit menu decision, content reviewer/sign-off and completed real-recipe checks at both wells.
+Real recipes published by automated tests: 0. Real recipes with completed house-content sign-off: 0/5.
+
+The automated station/recovery tests use a separately named SYNTHETIC operational control with
+synthetic instructions and images. That proves mechanics at both wells, not house-content
+acceptance. No synthetic control is attached to any of the five real recipe identities.

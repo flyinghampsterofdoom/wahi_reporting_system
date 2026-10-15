@@ -7,3 +7,10 @@ npm-debug.log*
 # Private workbook-derived test data; not published to the public repository.
 backend/test/fixtures/
 .DS_Store
+
+# Private Recipe Book source inventory and local verification artifacts.
+.recipe-private/
+
+# Confidential operational acceptance data must stay out of the public release history.
+backend/recipe-book/acceptance/source-data.json
+backend/recipe-book/phase5-evidence/operational/real-*.png

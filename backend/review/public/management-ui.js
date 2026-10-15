@@ -40,4 +40,4 @@ async function newRecipePage(targetId=null){
  form('new-recipe-form',async d=>{capture();if(!lines.length||lines.some(l=>!l.ingredientId||!l.quantity.trim()||!l.unit)||!d.outputQuantity.trim()||!d.outputUnit)throw new Error('Choose each component, quantity and unit, and supply the recipe yield.');const name=target?.name||d.name,normalize=s=>s.normalize('NFKC').trim().replace(/\s+/g,' ').toLocaleLowerCase('en-US'),existing=refs.recipes.find(r=>normalize(r.name)===normalize(name));if(existing){duplicate(existing);return;}const result=await api('recipe/create',{...(target?{targetId:target.id}:{}),name,description:d.description,recipeCategoryId:d.recipeCategoryId||null,recipe:{outputQuantity:d.outputQuantity,outputUnit:d.outputUnit,lines,steps:d.steps.split('\n').map(x=>x.trim()).filter(Boolean)}});if(result.duplicate){duplicate(result.duplicate);return;}notify('Recipe saved.');location.hash='recipes/'+result.recipeId;});
 }
 
-window.addEventListener('DOMContentLoaded',()=>{api('me').then(user=>loggedIn(user)).catch(()=>showLogin());},{once:true});
+window.addEventListener('DOMContentLoaded',()=>{recipeSessionStart();},{once:true});

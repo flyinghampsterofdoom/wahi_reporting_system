@@ -1,0 +1,17 @@
+{
+  "backend-tests.txt": "f0f649bab679bbbcbed0a1e0547a68f4914d379353bb3f050ccdba54eb51c2e7",
+  "bartender-refined.png": "60e5ce87eabbbf7de22096bb283e36828066cc2dc0a78c5619162c5465c5b4e6",
+  "builder-browser-results.json": "5a75700240f42ac7991569e3617528bf7c866f6636c31c07407307c442bb77e8",
+  "builder-browser-tests.txt": "14e547e159ace488617c30f342a7fad78ac26d7dafa493043c6729c36ee77f4e",
+  "builder-desktop.png": "efed2e3fab300e5b177e39ed89934acb11412324e34a0be605eb17867311f6f1",
+  "builder-tablet-landscape.png": "a37af5fb6ab67390d479ffc0202d40e7bce40a9a850ff22f280c3876b9dba8ff",
+  "builder-tablet-portrait.png": "0995124186c40aee4b0828c9c93b3825dbb9937f2feda0f906bb66c06108ebb8",
+  "integrity.json": "1c714b1c4487ed04a8a9f7310a86a969ecd62cddf10af3fe10ab171a2ea33527",
+  "service/browser-results.json": "8300d99417b9a9243e518d0ae3830e1cfb9f24837a2eb958efaf741274ac1abe",
+  "service/desktop.png": "decdffd394858691ba77050d9e1ba7d2bf0bedb9021cb0e69a5e35f781bf33fa",
+  "service/empty.png": "e70cf394a86478c951a5a97cdbc48a262cc32a7e425f0cb4a3a98764665cf8eb",
+  "service/offline.png": "e250b60d55280ec9fd4fddb513c24f03a1d3336f8db0bd79c5762f5718e027bb",
+  "service/tablet-touch.png": "81f96bbb10f78332ab0037136cb8eb9f54c4078c19a3d113c0b3df901d0dad8e",
+  "service-browser-tests.txt": "6a9a4016e1ec9b361bf9e265dbec645ef626234b4f594bb7bd33c2b467900b66",
+  "verification.json": "93b5abbddce46836a0f2b76971247d7da9b5ea1058ef76ad1c90f54637810803"
+}

@@ -1,0 +1,19 @@
+{
+  "backend-tests.txt": "31495c9fbd6c6b4d1f1aa6c6054ed00fb163aa454b9abcab383abc0e8580c9f9",
+  "builder-browser.txt": "14e547e159ace488617c30f342a7fad78ac26d7dafa493043c6729c36ee77f4e",
+  "builder-results.json": "5a75700240f42ac7991569e3617528bf7c866f6636c31c07407307c442bb77e8",
+  "final-production-preflight.json": "09792d46dacc1f23c4698be722e13b2d81911cf0fd08d649b0132791de278e57",
+  "integration-audit.json": "d872c7f9d4e7418d37063d0f3852241a0980640434e05a0bc416b46d3ff48c16",
+  "native-build.txt": "19cc98ad48e380c95c638a301b94ec7675873ca4680eeff4418276b65eff3f45",
+  "production-ledger.json": "cebf163c64a35eb11d0b36a92b45744c2da55f7d1d15cc56c61b0634bec5f531",
+  "rehearsal-results.json": "b16bfb23363e092b8989e0f481f1621eaf636ecdb6d33feb919bd24cb313d60e",
+  "rehearsal.txt": "d4eb8b0f772e42109749f787b166e31648a1bb27bc536977caa718ca9668096d",
+  "service-browser.txt": "6a9a4016e1ec9b361bf9e265dbec645ef626234b4f594bb7bd33c2b467900b66",
+  "service-results.json": "8300d99417b9a9243e518d0ae3830e1cfb9f24837a2eb958efaf741274ac1abe",
+  "verification.json": "b632ca2d3f48129182261132a0ebd7c6c5ca8b62c750abb01b085fa39123db4b",
+  "well.one-empty.png": "c05c3c7f8d8f549ec88615641de5e3c6a946ff3c5562cfe1c76bddcda988eada",
+  "well.one-published.png": "f3e4d34bc227650778a69d8e4413e259fdc598c9289a043f40ef6fb97e63342e",
+  "well.two-empty.png": "632e9567aec18686fa8e1f57571b3b06e59a5eb0b8a87533b33fa431ccd2dda4",
+  "well.two-published.png": "fa0093fb8986f2e7d5c6672d6e4fe4f749a6a5980c78b0630771502fdb490700",
+  "workspace-integrity.json": "078fc93b78fe95780738de1a40dd4839153136519624c79d791934c69e3ec2d8"
+}

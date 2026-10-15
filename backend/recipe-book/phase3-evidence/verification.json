@@ -1,0 +1,64 @@
+{
+  "baseCommit": "29dc6baa0a6976dbd5510e8e4523f9b7f865872a",
+  "phase": 3,
+  "backend": {
+    "tests": 625,
+    "pass": 625,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "browser": {
+    "passed": 24,
+    "failed": 0,
+    "uncaughtErrors": 0,
+    "browser": "Headless Google Chrome via Playwright",
+    "viewports": [
+      [
+        1440,
+        1000
+      ],
+      [
+        768,
+        1024
+      ],
+      [
+        1024,
+        768
+      ]
+    ],
+    "touchTested": true
+  },
+  "baselineBackendPassed": 620,
+  "newBackendTests": 5,
+  "newMigrations": [],
+  "originalFilesVerified": 310,
+  "preexistingReportEditPreserved": true,
+  "protectedSourceUnchanged": [
+    "backend/waste",
+    "backend/review/public/waste-ui.js",
+    "backend/labor/model.js",
+    "backend/labor/service.js",
+    "backend/domain",
+    "backend/repository",
+    "backend/service.js",
+    "backend/migrations",
+    "backend/auth.js",
+    "backend/accounts/service.js"
+  ],
+  "offline": {
+    "maxRetentionHours": 12,
+    "boundedByAuthenticatedSession": true,
+    "existingSessionHours": 8,
+    "shellOnlyInServiceWorker": true,
+    "accountScopedPublishedDataAndImagesOnly": true
+  },
+  "storageProviderConfigured": false,
+  "productionDataChanged": false,
+  "productionAccountsProvisioned": false,
+  "productionMigrated": false,
+  "deployed": false,
+  "pushed": false,
+  "phase4Implemented": false
+}

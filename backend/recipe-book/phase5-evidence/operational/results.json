@@ -1,0 +1,52 @@
+{
+  "checks": [
+    {
+      "name": "five real cocktails retain source identity, quantity, unit and nested snapshots in the Builder",
+      "passed": true
+    },
+    {
+      "name": "real-recipe full-size preview shows shared service layout and missing photograph without publication",
+      "passed": true
+    },
+    {
+      "name": "management-entry workflow saves an empty preparation block and rejects incomplete real-recipe publication",
+      "passed": true
+    },
+    {
+      "name": "both wells cannot see pending real drafts or management preview data",
+      "passed": true
+    },
+    {
+      "name": "all six editing-card types and nested cards collapse with keyboard and leave saved service data unchanged",
+      "passed": true
+    },
+    {
+      "name": "nested editor folding is independent of bartender expansion",
+      "passed": true
+    },
+    {
+      "name": "collapsed cards preserve keyboard and drag reordering and fold state",
+      "passed": true
+    },
+    {
+      "name": "full-size draft preview shares exact rendering, unsaved photo, three-column ratios and no offline draft persistence",
+      "passed": true
+    },
+    {
+      "name": "both wells render the completed synthetic control with matching instructions and retained photo",
+      "passed": true
+    },
+    {
+      "name": "publication, menu classification and historical recovery remain independent with photo retention",
+      "passed": true
+    },
+    {
+      "name": "real-source recipes stay pending and all service operations preserve costing, inventory, waste and labor domain state",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "realRecipeStatus": "Five source imports verified; house instructions, garnish, glassware and real photographs pending management entry. No real recipe published.",
+  "stationScope": "Both wells tested with completed synthetic control; real drafts remain private.",
+  "productionChanged": false
+}

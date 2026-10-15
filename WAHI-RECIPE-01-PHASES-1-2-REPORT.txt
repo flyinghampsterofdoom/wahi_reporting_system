@@ -1,0 +1,222 @@
+WAHI RECIPE BOOK PHASES 1–2 IMPLEMENTATION REPORT
+October 14, 2026 — owner review required before Phase 3
+
+RESULT
+Phase 1 and Phase 2 are complete locally against approved commit
+0d23a5f963cb18bf165797ce200709f0b14237ee. The full backend suite passes 620/620,
+compared with 603/603 on the approved baseline. No failed, skipped, cancelled or todo tests
+remain. This is a foundation release, not the completed bartender UI or visual Builder.
+
+A. PHASE 1 FINDINGS AND FINAL CONTRACTS
+Development branch: codex/wahi-recipe-foundations.
+Isolated checkout: /Users/justinrawlinson/.codex/worktrees/wahi-recipe-baseline-review/Wahi_reporting_system.
+No original dirty-tree application changes were incorporated. Final preservation verification
+checked all 310 tracked/untracked original application files against the recovery manifest;
+zero mismatches and unchanged original Git status. Shared Git administrative metadata gains
+the permitted development branch/commit; original application files are unchanged.
+
+Current content inventory was obtained using SELECT-only, repeatable-read production access.
+The exact title/ID/ingredient/instruction inventory is private and ignored by Git:
+.recipe-private/content-readiness.json in this isolated checkout. It contains:
+- 186 existing recipe identities and their stable source/current revision IDs.
+- Every current ingredient name, identity, quantity, unit, position and available line note.
+- 186 current revisions, all with ingredient lines; no missing ingredient quantities/units.
+- Zero recipes with stored preparation instructions.
+- Zero potential duplicate groups under NFKC/case/whitespace-normalized exact-title matching.
+- No recipe photographs available from the approved domain schema or checked-in image assets.
+- Per-recipe service-authoring tasks for preparation, garnish, glassware, menu classification and optional photography.
+Absent source preparation is expected; it is not a migration defect or a historical-data failure.
+No source content was copied into service entries, classified, or published. The inventory
+establishes content-readiness work, not approval of existing recipes for bartender service.
+
+Contracts are documented in backend/recipe-book/README.txt and executable contracts.js.
+The checked-in document.schema.json defines schemaVersion 1. Separate document fields retain
+ingredient identities/names, decimal quantities, units, notes and ordering. Drafts and immutable
+publications use validated structured JSONB; no ingredient line is stored as a single text field.
+This intentionally shares one document shape across persistence and rendering while retaining
+existing normalized domain ingredient/recipe identities for source references.
+
+Nested house preparations retain recipe/revision IDs, frozen ingredients/instructions, batch
+yield, editable visible title and collapsed/expanded state. Source expansion does not scale a
+batch silently. Depth, total size, duplicate IDs, malformed reference pairs and ancestor source
+cycles are validated. All source content remains editable in the local draft snapshot. Source
+changes never propagate into saved publications.
+
+Final authorization: Admin view/edit/publish/archive/restore/recover; Manager view/edit/publish;
+Lead/Staff view only; RECIPE_ONLY view only. BOH retains its prior waste-only capabilities.
+Missing photos do not block publication. Publication requires known ingredient quantities/units
+and preparation, garnish and glassware information; explicit 'No garnish' is supported. A manager
+must explicitly supply menu classification on creation. Publishing retains that classification.
+
+Offline architecture is limited to policy/lease contracts in Phase 2: maximum 12 hours, capped
+by authenticated session expiry, isolated by account/environment/authorization generation,
+clear on logout/switch, refresh publication/menu/archive changes after reconnection. Existing
+sessions last eight hours, so an individual lease does not exceed the current session. Offline
+revocation cannot be observed until reconnection; Phase 3 must show offline/last-refresh status
+and enforce lease expiry. No service worker or browser recipe persistence was introduced.
+
+Media metadata is prepared for private object storage, including content hash, object key,
+MIME type, dimensions and approval. No provider, external storage account, paid service or
+extraction service was selected/configured. Provider configuration/cost/retention approval and
+protected image delivery remain dependencies for the later photo workflow.
+
+Migration namespace: prior live 001–020,022–023 remain unchanged. Excluded 021 and 024–030
+remain reserved. New 031_recipe_book_foundation.sql is the sole new migration. Future work
+must inspect shared refs before allocating 032+, never renumber preserved/deployed files, and
+rehearse exact combined manifests. Account-deletion integration will require explicit station
+soft-deletion protections; statistics integration will require capability/route reconciliation.
+Neither excluded feature was incorporated. A bare older build cannot boot after applying 031
+because exact schema checks require a compatible manifest; no destructive downgrade is proposed.
+
+B. PHASE 2 IMPLEMENTATION
+Persistence: recipe_book_entries, recipe_book_drafts, recipe_book_versions, recipe_book_events,
+and recipe_book_media. Entry identities are independent of costing identities and titles.
+The published pointer has a composite foreign key requiring the version to belong to that entry.
+Database triggers prohibit publication/event UPDATE and DELETE. The existing global user-deletion
+restriction remains; a new station guard protects designated usernames and role assignments.
+
+Services: create, save, publish, classify, archive/restore, recover a prior version into a draft,
+management entry lookup, published reads, history, source-title search and recursive source snapshot.
+Each mutation uses current active database role checks, row locking, optimistic entry version,
+and transactionally required audit. A failed audit rolls back the entire operation. Saved drafts
+cannot change the published pointer. Publishing requires explicit confirmation of the current
+saved version. Recovery does not silently republish or unarchive. Archive changes service state
+only, leaving every domain recipe, cost basis, mapping and historical cost intact.
+
+Well foundations: existing named-user create/setup/reset/session services now support RECIPE_ONLY.
+well.one and well.two require this role and cannot be renamed. Admin retains provisioning and
+reset controls. No production station accounts were created. Only disposable tests provisioned
+synthetic stations. A server default-deny gate permits only session metadata, logout, published
+Recipe Book content and its policy contract. All unrelated APIs, administrative tools, drafts,
+sources, history and editing/publishing are denied before their handlers. Forged roles/preview
+headers cannot bypass the gate. Two named sessions remain independent when one logs out.
+
+Navigation: Recipe Book appears in the existing primary sidebar; Builder destination is limited
+to edit-capable users. Stations see Recipe Book only and always land there despite stale/forged
+URL hashes. The destination pages intentionally expose Phase 2 foundation status; complete
+bartender interaction and visual editing remain later work.
+
+Shared renderer: a browser/Node module with escaped text, standard left-aligned bold section
+headings, bold quantity/unit before regular-weight ingredient name, fixed whole-item indentation,
+unit display labels, retained decimal formatting and collapsed/expanded recipe components.
+The renderer is loaded in the application and ready for the later preview and service layout.
+
+C. VERIFICATION EVIDENCE
+Full command: node --test backend/test/*.test.js.
+Final result: 620 tests, 620 passed, 0 failed, 0 skipped, 0 cancelled, 0 todo.
+Approved baseline: 603 passed, 0 failed/skipped. Net addition: 17 focused Recipe Book tests.
+Final raw log: .recipe-private/amendment-regression.txt.
+Amendment foundation check passed 17/17; migration checks also pass in the final full suite.
+Machine-readable summary: backend/recipe-book/verification.json.
+Final integrity evidence: .recipe-private/final-integrity.json.
+
+Verified behaviors:
+- Migration applies transactionally on disposable PostgreSQL, preserves prior manifest/checksums,
+  upgrades existing rows, passes schema readiness and repeats as a no-op. Excluded migrations
+  are absent. Existing account-deletion column is absent. Station SQL guards reject elevated
+  roles, renaming and deletion.
+- Published versions/events reject SQL updates/deletes; draft edits leave publications intact.
+- Concurrent writes/publications have one winner; stale draft/preview tokens fail with conflict.
+- Publication-audit failure rolls back versions, pointer and entry revision.
+- Off Menu publication remains Off Menu. Menu-only updates retain selected publication ID.
+- Manager archive/restore is denied; Admin archive hides ordinary reads while management history
+  and recoverable versions remain. Prior versions restore into drafts without automatic publish.
+- Nested source recipes retain IDs/revision/yield. Editing visible titles and publishing cannot
+  modify source records. Later source name/formula/instruction changes leave publications frozen.
+- Unknown quantities remain draft-only; malformed/forged references, unsupported fields,
+  unapproved photos, excessive nesting, source cycles and duplicate IDs are rejected.
+- Staff/Lead/wells cannot edit. Database role recheck rejects stale elevated principals.
+- Real HTTP sessions for both named stations can read published content and contract only.
+  Tests exercise unrelated paths discovered from the server source, representative direct URL
+  navigation, all recipe write/admin operations, and forged role/preview headers. One station
+  logging out does not terminate the other. Stale administrative hash redirects to Recipe Book.
+- Costing isolation compares the complete domain repository state AND every non-Recipe Book base
+  table row before/after create, save, publish, classification, archive, restore and recovery.
+  All are equal. A fixed-time costing result is also equal, including resolved reference evidence.
+  Inventory, Toast/reporting, labor, account and mapping tables are included in the table comparison.
+- Renderer escapes HTML, preserves quantity-first bold markup, shared whole-item indentation,
+  collapsed nested component presentation and source snapshots. These are renderer/VM/HTTP tests;
+  no manual visual-browser acceptance or complete tablet/service layout is claimed in Phase 2.
+- Offline lease tests verify account/environment/generation isolation, 12-hour maximum and session
+  expiry. Full offline reconnect/cache/indicator behavior is explicitly deferred to Phase 3.
+- Syntax checks and git diff --check pass.
+
+Development failures resolved: initial new test payloads incorrectly used returned version rather
+than request expectedVersion; a costing assertion compared moving timestamps; pre-existing migration
+tests assumed 023 was the final file. Payload fixtures/fixed-time comparison and additive migration
+expectations were corrected while retaining their original preservation assertions. Final tests
+have no remaining failure or skip. These were implementation/test integration findings, separate
+from the previously documented original dirty-workspace BOH defect.
+
+Existing BOH comparison: baseline recovery recorded one failed deployed HTTP policy replay and a
+failed service catalog assertion against the ORIGINAL DIRTY capture (see the preserved recovery
+report and production-policy-replay tests). Approved 0d23a5f already contains the working policy.
+Its waste service/UI and production BOH tests are byte-for-byte unchanged here and those tests pass
+in the final full suite. No unrelated BOH repair was made. The original dirty regression is
+preserved separately and has not worsened. Labor, domain/costing/measurement, generic repository
+and core DomainService source files are also unchanged from the approved baseline.
+
+D. PHASE 3 READINESS
+Ready for owner review of the foundation. Remaining work requires separate Phase 3 authorization:
+- Three-column bartender layout, live full-index search, selection/photo updates and tablet UX.
+- Actual authenticated offline persistence, shell caching, reconnect invalidation and visible status.
+- Phase 3: protected published-image delivery, optimized display and missing-image placeholder.
+  Use a disposable local fixture workflow if needed for acceptance; no unapproved production provider.
+- Phase 4: management image upload, preview, replacement/removal and immutable asset retention.
+- Management authors preparation/garnish/glassware in the Phase 4 Builder and explicitly selects
+  menu classification. All 186 ingredient-only sources are valid starting points. No reconstruction
+  or costing-recipe instruction writes are required or permitted.
+- Content import to drafts and controlled publication; nothing is automatically published.
+- Later visual drag-and-drop Builder/common-items library/live preview UI and reviewed image/PDF
+  extraction remain their assigned later phases, not included prematurely in this foundation.
+- Production migration, deployment and permanent station provisioning each remain separately gated.
+No additional paid infrastructure was required for Phase 1–2. Local synthetic tests are reproducible
+with Node 22+, PostgreSQL 16 binaries and the existing private ignored workbook fixtures.
+
+E. RELEASE STATUS
+The implementation, amendment and report are committed locally on
+codex/wahi-recipe-foundations. The final delivery identifies that exact commit; private
+.recipe-private/release-identity.json records its full SHA after creation.
+Pushed/merged to production branch: NO. Production migration/deployment: NO.
+Production operational data changes: NO. Production station accounts: NONE.
+Production access was read-only content inventory. Database writes/migrations were limited to
+disposable synthetic local tests. No persistent development database was migrated or seeded.
+The original workspace's application files and Git status remain preserved.
+
+IMPLEMENTATION FILE INVENTORY
+
+ M .gitignore
+ M backend/accounts/service.js
+ M backend/auth.js
+ M backend/review/public/app.js
+ M backend/review/public/index.html
+ M backend/review/public/shell-model.js
+ M backend/review/public/style.css
+ M backend/review/public/users-ui.js
+ M backend/review/server.js
+ M backend/test/domain.test.js
+ M backend/test/labor-release-migration.test.js
+ M backend/test/postgres.test.js
+ M backend/test/shell.test.js
+?? WAHI-RECIPE-01-PHASES-1-2-REPORT.txt
+?? backend/migrations/031_recipe_book_foundation.sql
+?? backend/recipe-book/README.txt
+?? backend/recipe-book/contracts.js
+?? backend/recipe-book/document.schema.json
+?? backend/recipe-book/readiness.js
+?? backend/recipe-book/service.js
+?? backend/recipe-book/verification.json
+?? backend/review/public/recipe-foundation.js
+?? backend/review/public/recipe-renderer.js
+?? backend/test/recipe-book.test.js
+
+REQUIREMENTS AMENDMENT
+
+Source preparation absence is expected and is classified as a service-authoring task, not a
+migration/data-quality failure. New tests verify ingredient-only source retrieval, service-draft
+instruction authoring and publication with every non–Recipe Book table unchanged. Disposable
+media metadata tests verify draft replacement/removal and historical photo-reference retention.
+No upload decoder, delivery endpoint, placeholder UI or visual Builder is claimed by these tests.
+Phase 3 owns published image delivery/display and three-column service UI. Phase 4 owns image
+upload/preview/replacement/removal and management instruction entry in the visual Builder.
+See backend/recipe-book/REQUIREMENTS-AMENDMENT.txt for the complete amended contract.

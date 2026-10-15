@@ -1,0 +1,155 @@
+WAHI-RECIPE-01 — PHASE 4 LOCAL ACCEPTANCE REPORT
+
+Foundation: d9fea0321d7c95ca989b9385b1950c7ba2560d0e.
+Branch: codex/wahi-recipe-foundations. The completion response supplies the exact commit
+containing this report and implementation. This report is versioned with its evidence.
+Worktree: /Users/justinrawlinson/.codex/worktrees/wahi-recipe-baseline-review/Wahi_reporting_system
+Status: Implementation and local verification complete; awaiting owner acceptance.
+
+1. Management workflow
+Recipe Builder uses a searchable library, independently scrolling canvas and live bartender
+preview. Search existing recipe titles, click or drag to import stored ingredients/quantities,
+author preparation, arrange components, upload a photo, preview, save draft and explicitly
+publish. No historical preparation has been reconstructed. Missing instructions do not block
+source import; publication still validates newly authored preparation/garnish/glassware.
+
+Source snapshots retain recipe/revision/ingredient IDs, names, quantities, units, notes, yield,
+and nested recipe references. Edits are independent service data. Search covers the existing
+source catalog via SELECT-only endpoints; it does not depend on preparation being present.
+The approved inventory of 186 source recipes is not copied into testing or rewritten. Browser
+and backend acceptance use disposable, clearly synthetic sources without preparation.
+
+Canvas fields support visible titles, ingredient names/quantities/units/notes, preparation,
+garnish, glassware, service notes and yield. Add/remove lines and blocks, expand/collapse nested
+recipes, insert library blocks into a chosen nested destination, and drag between positions.
+Move up/down buttons are accessible keyboard alternatives; focus follows a reordered block.
+Library items can also be inserted by clicking. Management may save selected blocks as reusable
+common ingredients, preparation actions, garnishes, glassware or house mixes. Insertions receive
+new component/item IDs and remain independent editable snapshots. Common-item examples are
+explicitly selected templates, never inferred instructions for existing source recipes.
+
+Save Draft persists without publishing. Publish confirms intent, saves/validates the draft,
+and creates a new immutable publication with optimistic concurrency checks. Stale edits remain
+visible until the user explicitly reloads. Menu classification changes independently. Duplicate
+creates a private draft with no publication. Admin may archive/restore service entries and
+recover historical publications into a draft; Manager cannot archive or recover. No operation
+calls costing revision selection, cost basis, inventory mapping or Toast mutation.
+
+2. Formatting and presentation
+Builder and Book call the same recipe-renderer.js. Visible titles now apply to ordinary section
+headings as well as nested recipes. Headings are bold/left aligned; subordinate whole items
+retain the existing fixed 20px indent, including wrapped lines. Quantity and unit remain bold
+and first; names remain regular. Authored text is escaped. Reordering/nesting uses this renderer.
+Builder photo preview stays prominent above the service text and preserves aspect ratio.
+
+On Menu labels are hidden in an already On Menu-filtered bartender list. The Book photo panel
+padding is reduced, with object-fit:contain preserved. Well One / Well Two have friendly account
+labels; underlying roles and server restrictions are unchanged. Review banners are rendered only
+for explicit development/test environments and remain hidden on hosted builds. Connection state
+and refresh timestamp remain visible. Desktop/tablet screenshots are in phase4-evidence/.
+
+3. Photographs and access
+PrivateLocalRecipeMedia is an explicitly local-only adapter. Set WAHI_RECIPE_MEDIA_ROOT to a
+private local directory when starting backend/review/server.js against a local development DB.
+No storage is selected automatically. Hosted servers reject this adapter. A production storage
+and retention/backup configuration still needs separate review and authorization before release.
+No external provider or paid service was added. Sharp 0.35.5 is pinned in backend dependencies.
+
+Upload is management-only, same-origin and CSRF protected. JSON/base64 transport has a dedicated
+12 MiB request ceiling; ordinary JSON endpoints retain their 128000-byte limit. Decoded uploads
+must be <=8 MiB, JPEG/PNG/WebP with matching actual MIME/format, valid fully decoded content,
+<=24 million pixels and a single frame. Malformed, truncated, spoofed, oversized and animated
+images are rejected. EXIF orientation is normalized; display metadata is stripped. Display
+WebP derivatives fit inside 1400x1600 without cropping or enlargement, quality 82.
+
+Originals and derivatives use random immutable object IDs, private directory permissions 0700
+and file permissions 0600. Originals are never served by HTTP/static assets. Display delivery
+checks integrity and database authorization and uses no-store/nosniff. Staged/draft photos are
+management-only and checked against the entry/current draft. Station access is limited to the
+active current approved published image; management may retrieve historical published images.
+
+Preview-before-save uses device-local blob URLs. Save uploads to the selected entry and stores
+the returned media reference in the service draft. Replace/remove modifies draft references
+only. Publication stores its own immutable photo ID. There is no deletion/GC endpoint: historical
+originals/derivatives remain available. Migration 032 prevents media content/identity mutation
+or deletion while still allowing approval revocation. Failed DB writes after filesystem storage
+may leave unreferenced private objects; they are retained for reviewed reconciliation, never
+automatically deleted. Backup/retention operations are outside this local implementation.
+A missing photo is a visible content warning and never a publication blocker.
+
+4. Persistence and migration namespace
+New migration: 032_recipe_builder.sql, depending on the existing 031 service tables. Adds common
+items and nullable media.entry_id ownership for newly uploaded assets. Existing 031 fixture/media
+references remain compatible. No old migrations changed, renumbered or incorporated. Reserved
+021 and 024–030 remain excluded. Shared local refs and the original migration directory were
+reviewed before allocating 032; no competing 032 was present.
+
+Future integration must retain applied filenames/checksums, review excluded account-deletion,
+Toast/statistics dependencies and role policy independently, and rehearse the combined manifest
+on both fresh and upgraded disposable databases. Inspect refs before allocating 033 or later.
+If another history independently allocates 032 to different SQL, stop for owner resolution;
+never rename/rewrite an applied migration. Use a later reconciliatory migration after reviewing
+the combined namespace. No unrelated application changes were merged or cherry-picked.
+
+5. Verification evidence
+Full backend regression: 635 passed, 0 failed, 0 skipped/cancelled/todo; accepted Phase 3 had
+625 passing tests. Ten added tests cover source import without preparation, common snapshots,
+formats/actual decode/pixels/animation/size, protected delivery and large HTTP upload, historical
+retention, concurrency/validation/duplication/permissions, costing isolation, custom headings,
+and an exact Phase 3 -> Phase 4 migration upgrade preserving documents/media/ledger.
+
+Builder browser acceptance: 21 passed, 0 failed, 0 uncaught exceptions. Includes import and nested
+snapshots; visible-title and ingredient edits; management instructions; keyboard and drag ordering;
+common-item drag insertion; draft persistence; preview before save and exact shared renderer;
+publication/menu independence; stale writes; photo replacement/history/removal; Manager/Admin/
+station boundaries; desktop 1720x1100 and tablet 1024x768 / 768x1024; domain/costing equality.
+
+Existing bartender browser acceptance: 24 passed, 0 failed, 0 uncaught exceptions. Rechecks search,
+sorting, filters, three-column proportions, formatting, nested rendering, protected images,
+missing/rapid-switch/empty states, touch targets, offline shell reload, cached photos, approval
+revocation, publication-aware refresh, account switch/logout, independent wells, server revocation,
+and lease expiration. Offline policy remains maximum 12h capped by the existing 8h login session.
+Only published data and approved images enter account-isolated offline storage; Builder drafts,
+staged uploads and management common-item data are not cached. Shared shell cache excludes APIs.
+
+Raw final test logs and machine-readable checks: phase4-evidence/. All screenshots use disposable
+synthetic recipes and images; they are evidence of behavior, not authoritative house content.
+Development findings resolved: incorrect initial focus event wiring, nested-toggle test timing,
+DOM serialization in the preview assertion, fixture animation encoding, an overbroad temporary
+server edit caught by regression tests, and validation-test fixture normalization. Final test
+runs contain no failures or skips; intermediate failure screenshots are excluded from evidence.
+
+6. Existing defects and integrity
+The approved baseline's BOH Drink-category restriction tests pass unchanged. The separately
+preserved original dirty workspace's existing BOH regression remains outside this implementation.
+Reproduction/evidence is retained under:
+/Users/justinrawlinson/Developer/Wahi_baseline_recovery_20261014/production-policy-replay/test/waste-drink-scenario.js
+and production-policy-service-replay.json / production-policy-replay-tests.txt. The scenario
+assigns Drink category (including previously cached/common items) and checks catalog exclusion
+and forbidden waste entry; the original replay failed the exclusion assertion. No BOH repair
+was silently included. Auth, accounts, waste, domain, repository, core costing/service and labor
+source are byte-for-byte unchanged from d9fea03; the full suite confirms approved BOH behavior.
+
+All 310 original tracked/untracked application files match the preservation manifest, original
+HEAD is still 1bb3d280721be2bef3baf3f4f4ed9ee701bbef84, and original Git status is unchanged.
+The pre-existing Phase 1–2 report edit in this worktree is unchanged and excluded from this commit
+(diff SHA256 cff5710f3c675fe2cca762b123f69540569c74ae439ceaf201b26ae9c2412462).
+
+7. Production status and next decision
+No production database access or changes, migrations, deployment, account provisioning, external
+provider configuration, paid services, push, production merge, or unrelated branch integration.
+All tests use disposable local PostgreSQL clusters/private sockets and isolated Chrome contexts.
+Owner acceptance is required before any next phase or production-release work. Local functionality
+is ready for owner review; production storage, operational backup/retention and deployment remain
+separately controlled decisions.
+
+Reproduce from the isolated worktree with Node 22+, PostgreSQL 16 binaries and the existing
+private ignored workbook test fixtures:
+  npm --prefix backend ci
+  npm --prefix backend test
+  node backend/recipe-book/test-support/builder-browser.cjs
+  WAHI_RECIPE_EVIDENCE=.recipe-private/phase4/service node backend/recipe-book/test-support/browser.cjs
+Browser scripts require local Chrome and Playwright. WAHI_BROWSER_MODULE_ROOT selects its Node
+module directory; WAHI_BROWSER_CHANNEL selects the Chrome channel. WAHI_TEST_PG_BIN selects PG
+binaries. Tests never read a production database URL. Raw outputs/screenshots are emitted under
+.recipe-private/phase4 (Builder) and the selected WAHI_RECIPE_EVIDENCE directory (Book).

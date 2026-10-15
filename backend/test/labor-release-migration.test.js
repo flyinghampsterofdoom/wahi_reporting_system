@@ -7,7 +7,7 @@ const {LaborService}=require('../labor/service');
 
 // Production 94098f45 has 001–020 and 022. Rehearse against that schema, not
 // a freshly migrated RC schema with its new columns subsequently removed.
-test('Labor Pace release: production migration graph upgrades only 023 without account deletion or invented allotments',async()=>{
+test('Labor Pace release: production graph upgrades with 023 and additive Recipe Book tables without account deletion or invented allotments',async()=>{
  const bin=process.env.WAHI_TEST_PG_BIN||'/opt/homebrew/opt/postgresql@16/bin';
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'wahi-pace-release-'));
  let pool,started=false;
@@ -15,7 +15,7 @@ test('Labor Pace release: production migration graph upgrades only 023 without a
   execFileSync(path.join(bin,'initdb'),['-D',path.join(directory,'data'),'--auth=trust','--username=wahi_test','--no-locale','-E','UTF8'],{stdio:'pipe'});
   execFileSync(path.join(bin,'pg_ctl'),['-D',path.join(directory,'data'),'-l',path.join(directory,'pg.log'),'-o',`-F -k ${directory} -h '' -p 55448`,'-w','start'],{stdio:'pipe'});started=true;
   pool=new Pool({host:directory,port:55448,user:'wahi_test',database:'postgres',max:2});
-  const files=await migrationFiles(),baseline=files.filter(f=>f.name!=='023_labor_daily_allotments.sql');
+  const files=await migrationFiles(),baseline=files.filter(f=>f.name.slice(0,3)<'023');
   assert.deepEqual(baseline.map(f=>f.name.slice(0,3)),[...Array.from({length:20},(_,i)=>String(i+1).padStart(3,'0')),'022']);
   await pool.query('BEGIN');
   await pool.query('CREATE SCHEMA wahi_v2');
@@ -28,9 +28,9 @@ test('Labor Pace release: production migration graph upgrades only 023 without a
   await pool.query("INSERT INTO wahi_v2.labor_sync_days(business_date,synced_at) SELECT d,$1 FROM generate_series('2026-09-13'::date,'2026-09-15'::date,interval '1 day') d",[new Date(now)]);
   const targets=(await pool.query('SELECT * FROM wahi_v2.labor_standing_targets')).rows,ledger=(await pool.query('SELECT * FROM wahi_v2.schema_migrations ORDER BY name')).rows;
   await assert.rejects(checkSchema(pool),/Pending, unknown, or changed migrations/);
-  assert.deepEqual(await migrate(pool),['023_labor_daily_allotments.sql']);
+  assert.deepEqual(await migrate(pool),['023_labor_daily_allotments.sql','031_recipe_book_foundation.sql','032_recipe_builder.sql']);
   await checkSchema(pool);assert.deepEqual(await migrate(pool),[]);
-  assert.deepEqual((await pool.query("SELECT * FROM wahi_v2.schema_migrations WHERE name<>'023_labor_daily_allotments.sql' ORDER BY name")).rows,ledger);
+  assert.deepEqual((await pool.query("SELECT * FROM wahi_v2.schema_migrations WHERE name NOT IN ('023_labor_daily_allotments.sql','031_recipe_book_foundation.sql','032_recipe_builder.sql') ORDER BY name")).rows,ledger);
   const rows=(await pool.query('SELECT * FROM wahi_v2.labor_standing_targets')).rows;
   assert.deepEqual(rows.map(({foh_daily,boh_daily,...rest})=>{assert.equal(foh_daily,null);assert.equal(boh_daily,null);return rest;}),targets);
   assert.equal((await pool.query("SELECT count(*)::int n FROM information_schema.columns WHERE table_schema='wahi_v2' AND table_name='users' AND column_name='deleted_at'")).rows[0].n,0);

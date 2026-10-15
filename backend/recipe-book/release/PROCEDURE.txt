@@ -1,0 +1,131 @@
+WAHI-RECIPE-01 — PROPOSED DEPLOYMENT, ACCOUNT SETUP AND RECOVERY
+
+These are proposed operator actions. None of the push, production migration, deployment,
+configuration changes, station creation or recovery writes have been executed. Obtain the owner's
+production-deployment authorization before using the mutation steps. Launch requires ZERO completed
+recipes, published versions, photos, instructions or drafts. The source costing catalog is unchanged.
+
+Release pin and target
+Use the exact full release SHA from the completion response (also git rev-parse codex/wahi-recipe-release).
+The release branch is codex/wahi-recipe-release; its single parent is verified live commit
+0d23a5f963cb18bf165797ce200709f0b14237ee. Never push the private foundation/review branches: their
+local acceptance history contains confidential source fixtures. The release branch deliberately
+excludes those fixtures/screenshots from both its current tree and newly published Git history.
+
+Render service: srv-d6q3l46a2pns73bbs7v0 (wahi_reporting_system).
+URL: https://wahi-reporting-system.onrender.com
+Existing service branch stays codex/render-v2-deployment; autoDeploy stays no. No production-branch
+merge is needed: Render supports deploying a specific commit from the linked repository.
+Database: existing wahi_reporting_db, PostgreSQL 18, expected 22 applied migrations before release.
+Disk: existing dsk-d6q3s54r85hc73bsifdg, 1 GB, mounted /var/data; one service instance.
+
+Preflight and backup (before any production mutation)
+1. Re-read the live deploy commit, current migration names/checksums, account collisions and disk
+   mount/free space. Stop if the live commit or any applied checksum differs from the recorded
+   evidence. Do not silently integrate a newer branch. Confirm 031/032 are unapplied, well.one and
+   well.two do not conflict, and no other deploy or migration is running. Keep autoDeploy=no.
+2. Announce the normal disk-backed restart/maintenance window. Capture a private full PostgreSQL 18
+   custom-format pg_dump, including ownership/ACL metadata, using a read-only connection. Protect
+   the operator's output directory (0700) and backup files (0600). Record SHA256 and the ledger.
+   No production data is seeded/imported by this release. Never use the review fixture dumps as
+   production account/database input.
+3. If the media root exists, copy its entire immutable tree AFTER the database snapshot, including
+   originals, display.webp and record.json for every object. Objects are append-only and flushed
+   before DB metadata becomes visible, so this order preserves all references in the DB snapshot.
+   Unreferenced partial/orphan objects may be included; do not auto-delete them. If the root/table
+   is absent before initial release, record 'no Recipe Book media' rather than failing the backup.
+4. Restore the paired checkpoint into disposable PostgreSQL 18 first with --no-owner --no-acl for
+   the LOCAL clone. Validate the exact ledger, all source/account/reporting/inventory/costing records
+   and media references/checksums. The release rehearsal already passed this procedure against a
+   fresh production capture. Keep the pre-release checkpoint available during deployment.
+
+Private operator capture examples (use secure existing SSH access; redirect only to private local files):
+  ssh SERVICE_SSH 'PGOPTIONS="-c default_transaction_read_only=on" pg_dump -Fc "$WAHI_DATABASE_URL"' > database.dump
+  ssh SERVICE_SSH 'tar -C /var/data -czf - recipe-book-media' > media.tgz
+SERVICE_SSH is srv-d6q3l46a2pns73bbs7v0@ssh.oregon.render.com. Do not run the tar example when
+there is no initial media root. Never print the database URL/credentials, put them in Git, or place
+these backups under static/public assets. The examples are future read-only captures, not restore
+commands. Provider disk snapshots are supplementary; do not assume an independently timed DB/media
+snapshot is a verified pair. Capture paired checkpoints before each release and after material
+content changes; retain operator copies under existing secure backup custody. No new paid backup
+provider or recurring automation was configured in this work order.
+
+Deploy (only after authorization)
+5. Push ONLY the approved release SHA to the dedicated release branch:
+   git push origin APPROVED_RELEASE_SHA:refs/heads/codex/wahi-recipe-release
+   Verify the remote branch resolves to that exact SHA. Do not push private-review/foundation branches,
+   local checkpoint files or source fixtures. Do not merge or force-push the production branch.
+6. Retain existing credentials, database target, integration key, HTTPS origin and Node 22.22.0 settings.
+   No new secret/provider is needed. WAHI_RECIPE_MEDIA_ROOT defaults to /var/data/recipe-book-media;
+   if explicitly configured it must equal that path. WAHI_RECIPE_BOOK_READ_ONLY must be unset or false
+   for normal management entry. Keep the existing disk and single-instance topology unchanged.
+7. In Render choose Manual Deploy -> Deploy a specific commit and supply APPROVED_RELEASE_SHA.
+   Existing commands stay:
+     build: npm ci --prefix backend --omit=dev
+     pre-deploy: node backend/deploy/runtime.js --migrate
+     start: node backend/deploy/runtime.js
+   The new npm postinstall check loads Sharp and encodes/decodes a test display image on the actual
+   host. A native-build failure stops BEFORE pre-deploy SQL. Pre-deploy SQL applies only 031 then 032
+   transactionally. It does not need disk access (Render does not mount disks in pre-deploy jobs).
+   Startup checks the exact schema and the persistent mount, then opens private media at runtime.
+8. Confirm healthz, exact live SHA, 24-entry ledger with all previous checksums unchanged, original
+   record counts/digests, existing Manager/Admin/BOH workflows, protected media configuration and
+   empty Book/Builder. There is no pilot recipe completion or bulk-import gate. Keep all production
+   fixture/example recipes absent. Do not use local synthetic passwords/photos in production.
+
+Provision dedicated wells (only once production deployment/account creation is authorized)
+9. As an existing Admin, use Users & Access -> Create through the normal authenticated, CSRF-protected
+   account workflow. Profiles are in station-plan.json: Well One/well.one and Well Two/well.two, each
+   RECIPE_ONLY, active, email unset unless the owner provides one. Check collisions again; never
+   overwrite an existing user. Setup uses existing random one-time codes, hashed at rest with 24h
+   expiry, and the normal password-establishment process. Give each station independent credentials
+   through the existing secure handoff. Do not hardcode passwords or add station hashes to
+   WAHI_AUTH_USERS_JSON: the existing named-user directory is already bootstrapped.
+10. On separate device/browser profiles, verify direct Recipe Book landing/restoration and empty-state
+    operation, Recipe-Only navigation, denial of every administrative/costing/reporting/labor/waste/
+    inventory/Builder/draft API, independent logout, and published-only offline storage. Existing
+    maximum 12h cache leases remain capped by the current 8h authenticated session. All checks passed
+    using both names and the secure setup process in a disposable production clone.
+
+Feature rollback / compatibility recovery (tested; preserves existing operations and data)
+11. Do NOT deploy bare 0d23a5f on the migrated database: its strict 22-file manifest is incompatible.
+    Do NOT drop 031/032, renumber migrations, delete history or reset account records.
+12. To freeze Recipe Book management while keeping published service and existing backend operations,
+    set WAHI_RECIPE_BOOK_READ_ONLY=true in Render Environment and choose SAVE ONLY. Then manually
+    deploy the SAME approved release SHA, or use Save and deploy to restart its verified current
+    release build. Do not choose a rebuild of the old connected branch. This removes Builder/edit/
+    publish/archive capabilities from the UI and returns 503 for authorized Recipe Book POSTs;
+    station default-deny remains 403, published recipes/media stay available, and unrelated Admin,
+    costing, inventory, waste, reporting and labor capabilities remain unchanged. No DB rollback is
+    needed, and no recipe/account/media data is lost. Clear the flag with Save only and redeploy the
+    exact approved SHA after resolving the issue. This compatibility mode passed on the migrated clone.
+13. For a content mistake, recover an immutable historical version INTO DRAFT as Admin, preview its
+    retained photo and explicitly publish. Recovery itself does not change publication or menu
+    classification. Archive/restore is service-only. For missing/corrupt media, restore retained
+    objects by their original keys; never overwrite history with a different photograph.
+14. Full database/media restoration is disaster recovery, requiring explicit incident approval and
+    reconciliation of all post-backup business changes. Restore a paired checkpoint to an isolated
+    destination first and verify it with release/verify-media.cjs and checkSchema. Do not blindly
+    restore pre-release production data over newer costing/reporting/accounts. A pre-release-schema
+    reversion to exact 0d23a5f is permissible only after confirming no new production writes occurred
+    (or preserving/reconciling them), restoring the complete pre-release checkpoint, confirming the
+    original 22 checksums and account/source records, and explicitly approving the cutover. The
+    rehearsal proved both initial pre-release restore and upgraded database/media restore locally;
+    no production restore was attempted.
+
+Media policy and costs
+New adapter uses the EXISTING mounted volume; incremental fixed infrastructure/subscription cost $0.
+Normal existing compute/database/network rates still apply. No resource was purchased or resized.
+A 512 MiB media-tree cap and 128 MiB free-disk reserve bound growth; upload exhaustion returns a clear
+message, never deletes history, and never automatically expands paid capacity. The observed disk had
+978188 KiB available and ~2208 KiB used. Any later expansion/provider change needs separate cost approval.
+Directories are 0700; original/display/integrity files 0600. JPEG/PNG/WebP are actually decoded and
+validated, <=8 MiB and <=24M pixels/single frame; display images fit inside 1400x1600 without cropping.
+Originals and published associations are immutable. Private delivery is through existing authenticated
+routes only; no static file/public URL exposes originals. Mount absence fails closed for hosted storage.
+
+Provider documentation verified during preparation:
+https://render.com/docs/disks — persistence, encrypted snapshots, daily snapshots retained at least
+seven days; disk-backed services have a restart window and disks are unavailable during build/pre-deploy.
+https://render.com/docs/deploys — specific-commit deployment; keep automatic deploys disabled.
+https://render.com/docs/configure-environment-variables — Save only versus Save and deploy behavior.

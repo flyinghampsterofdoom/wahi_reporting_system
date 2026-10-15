@@ -1,0 +1,43 @@
+{
+  "baseCommit": "0d23a5f963cb18bf165797ce200709f0b14237ee",
+  "suite": "node --test backend/test/*.test.js",
+  "baseline": {
+    "tests": 603,
+    "passed": 603,
+    "failed": 0,
+    "skipped": 0
+  },
+  "implementation": {
+    "tests": 620,
+    "passed": 620,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "newTests": 17,
+  "migration": {
+    "file": "backend/migrations/031_recipe_book_foundation.sql",
+    "sha256": "82a911912e6ecb5ddc34cb1f0f7b4bcc2459d741d00fd613ee68ff9cfb7969bd"
+  },
+  "contentInventory": {
+    "recipes": 186,
+    "withPreparation": 0,
+    "withMissingQuantities": 0,
+    "withoutCurrentRevision": 0,
+    "duplicateGroups": 0
+  },
+  "productionWrites": false,
+  "productionProvisioning": false,
+  "deployed": false,
+  "pushed": false,
+  "bohPolicy": "Approved baseline implementation and production regression tests unchanged; captured original dirty-tree defect remains separate.",
+  "requirementsAmendment": {
+    "ingredientOnlySourcesValid": true,
+    "preparationAuthoredInServiceDrafts": true,
+    "historicalPhotoReferencesPreserved": true,
+    "mediaTests": "Disposable metadata fixtures only; upload/delivery/visual acceptance remain Phase 3\u20134",
+    "phase3Implemented": false,
+    "phase4Implemented": false
+  }
+}

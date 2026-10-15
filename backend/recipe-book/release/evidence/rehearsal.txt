@@ -1,0 +1,12 @@
+PASS actual production ledger matches every original candidate migration checksum
+PASS PostgreSQL 18 production-clone upgrade applies only 031 and 032 and remains idempotent
+PASS every pre-existing table/record, all 186 costing results and 42 account records survive migration exactly
+PASS secure existing account setup provisions both well identities only inside the disposable clone
+PASS zero published recipes, photos and drafts launch correctly on both independent well devices
+PASS empty Builder starts without content quotas and imports existing real ingredients without preparation
+PASS production adapter upload, authenticated delivery and replacement retain immutable publication photos
+PASS draft editing, classification and historical recovery preserve current publication and protected domains
+PASS logout on one well preserves the other well session
+PASS paired database/media backup restores original records, immutable history and photos after adapter restart
+PASS compatible recovery mode blocks new Recipe Book writes while retaining published recipes and existing account capabilities
+PASS no browser exceptions and all existing source/account records remain intact

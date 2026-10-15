@@ -1,0 +1,18 @@
+{
+  "liveCommit": "0d23a5f963cb18bf165797ce200709f0b14237ee",
+  "approvedCommit": "738be1f9fc6649775d9e38af486409053cdd498f",
+  "privatePrototype": "b137bebb11b73cca4381bf2266d68e22a0fab573",
+  "approvedFilesCompared": 232,
+  "allLegacyCapabilitiesRetained": true,
+  "confidentialPathsExcluded": [
+    "backend/recipe-book/acceptance/source-data.json",
+    "backend/recipe-book/phase5-evidence/operational/real-source-builder.png",
+    "backend/recipe-book/phase5-evidence/operational/real-full-preview.png"
+  ],
+  "historyBase": "0d23a5f963cb18bf165797ce200709f0b14237ee",
+  "unrelatedDevelopmentIntegrated": false,
+  "additionalCandidateChanges": [
+    "Native Sharp npm postinstall build gate",
+    "package.json postinstall entry and lockfile hasInstallScript metadata"
+  ]
+}

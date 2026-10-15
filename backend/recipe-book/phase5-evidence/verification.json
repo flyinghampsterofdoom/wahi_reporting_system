@@ -1,0 +1,116 @@
+{
+  "phase": 5,
+  "approvedFoundation": "a63767d34ce885fd8fe5dbed1d7ab8fdfdc6058f",
+  "recommendation": "Ready for controlled local management acceptance; NOT ready for production release",
+  "backend": {
+    "tests": 638,
+    "pass": 638,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "baselineBackendPassed": 635,
+  "newBackendTests": 3,
+  "browser": {
+    "builder": {
+      "passed": 21,
+      "failed": 0,
+      "uncaughtErrors": 0
+    },
+    "service": {
+      "passed": 24,
+      "failed": 0,
+      "uncaughtErrors": 0
+    },
+    "operational": {
+      "passed": 11,
+      "failed": 0,
+      "uncaughtErrors": 0
+    }
+  },
+  "browserPassed": 56,
+  "realRecipes": {
+    "names": [
+      "Mai Tai",
+      "Navy Grog",
+      "Zombie",
+      "Pain Killer",
+      "Saturn"
+    ],
+    "sourceImportsVerified": 5,
+    "completedHouseContentAcceptance": 0,
+    "publishedByTests": 0,
+    "pending": [
+      "Management-approved preparation",
+      "Garnish",
+      "Glassware",
+      "Actual photograph if available (optional for publication)",
+      "Both-well real completed-recipe acceptance and owner sign-off"
+    ]
+  },
+  "completedStationTestScope": "Separate synthetic control at well.one and well.two; real drafts hidden at both",
+  "sourceProjectionSha256": "a87f67f011c09dcfb6d2a586328db6cf860f8e374d7173bf1fe19f681c0593d6",
+  "sourceLineage": {
+    "scope": "Source projection only. No costing prices, operational data, service instructions or photographs copied.",
+    "workbookHash": "75b66c2ca9de5ca4f228650fe4edbe6737973141ae86712aec5d460ae56662c5",
+    "activationAt": "2026-09-18T20:40:26.000Z",
+    "importCaptureSha256": "d16566d3a9979eed0974d9ce5fd3d2cd8a415bdd74ca70709b7da4da55dfb5ed",
+    "inventoryCaptureSha256": "284c983680de41ab42c08e6bc483e1a65e80207d3bce5d98ccb24e9e2403aeaa",
+    "inventoryCapturedAt": "2026-10-15T02:29:48.396Z",
+    "idsRevisionsAndIngredientLinesVerified": true
+  },
+  "backupRestoreTested": {
+    "disposableDatabase": true,
+    "immutableHistoryAndDrafts": true,
+    "originalSha256AndDisplayBytes": true,
+    "bothWellPublications": true,
+    "productionProviderDurabilityTested": false
+  },
+  "newMigrations": [],
+  "migrationChecksumsUnchanged": true,
+  "migrations": {
+    "001_domain.sql": "25a2034167354329fb126d05dacc25a407e25877c0907fe166054e594d8895a9",
+    "002_validation_guards.sql": "7221f74eaa69ad3807358a41733200aed1b79555d89bffc28c424bd3c522ab31",
+    "003_inventory_foundation.sql": "e34a577b203d6f362ddbfe8dc7c2faaa94cb9535ed0481fcff494e03eb86ded3",
+    "004_recipe_categories.sql": "d6affc2831b8064a147eb086fd1425678e403aed01c8b0638660642cd5208889",
+    "005_import_evidence.sql": "205cde527dc3257d66bd56bc7692ca3f8b93597aefe5e0597e2bc096e8acb019",
+    "006_integrations.sql": "d9c917814d2b3d518a611ac0c073d793f7e441ccff18a55ff35aaa4a7ea914a5",
+    "007_hosted_sessions.sql": "aa28c4f2c6bf394dd9dd88d1e5f6e3bd3c84e5de8b15af665d230a57dc3988b5",
+    "008_credential_revocation.sql": "8f406a8211468b43ef2df422077fa889c519bd37e264dc0ec198a70ad7978a5a",
+    "009_named_users.sql": "086f417c99da37abcc3833799dcba662d912a0301261f8190501592cb80a36c4",
+    "010_labor.sql": "f3c6569d0f8e8b7a9a0b8cac60d2729884379e9ae3cb7b241b05ccbfa186ec48",
+    "011_standing_labor_targets.sql": "51639ae332f2db2d85d18353df63725d8fad5e9c93d34a6660ad0e8fb7e6b96f",
+    "012_labor_classification_revisions.sql": "b6ba40d61745d29e357d141f925079d1031396517848c8a4c8a882ad5c9d8127",
+    "013_current_job_mappings.sql": "3ef62dbf34999045c5023d6015a8950ba82855ab24c9bff8f34e1e6b840c4042",
+    "014_account_email.sql": "ee472ef7fe8a1570ecd9c5fdd6b33df956de5a226085957115c48d4651421adc",
+    "015_management_reports.sql": "b87b29214a69f591184bfff3582101fc692b51e5d654198618569586938acdd1",
+    "016_true_cogs.sql": "7fa2738f7baf75e9f73f56f4645c7d5c3942a64db0562cd5b3b19f009fb7cffb",
+    "017_cogs_mapping_workflow.sql": "205039415dcaa3e3f916c7f6de861022583e248caa5ef7b7b5c3e8e040bbdcd3",
+    "018_cogs_mapping_settings.sql": "85befe41f897f3a9ba4c5e40df1b2e44515c145f68174d827e085bc380c1c34d",
+    "019_cogs_composites.sql": "a6fa53ab572fd95eae78ad08aa9702c9fd3aae91757f476ff6f41c44e1e3365e",
+    "020_cogs_variants.sql": "d34e223b91543276fa6223cc0c8d3b7ecb7ab17cee03b03ac8def8e52618b599",
+    "022_waste_log.sql": "e713155d284d5713bb80f7b440d12fd4683e04ad65c5ca0bdf188520e89994e7",
+    "023_labor_daily_allotments.sql": "23badd804cb21b4af30e7cac82cc465b42bcd20d612fe6311726ece5b2b2b165",
+    "031_recipe_book_foundation.sql": "82a911912e6ecb5ddc34cb1f0f7b4bcc2459d741d00fd613ee68ff9cfb7969bd",
+    "032_recipe_builder.sql": "185199df45ca652a94b013a75344f2000170bc230b95852ff106a3e0332446a3"
+  },
+  "integrity": {
+    "originalApplicationFilesChecked": 310,
+    "originalMismatches": [],
+    "originalHead": "1bb3d280721be2bef3baf3f4f4ed9ee701bbef84",
+    "originalStatusMatchesRecovery": true,
+    "preexistingReportDiffSha256": "cff5710f3c675fe2cca762b123f69540569c74ae439ceaf201b26ae9c2412462",
+    "preexistingReportDiffPreserved": true,
+    "protectedSourceChanged": [],
+    "sourceProjectionReproducedExactly": true
+  },
+  "productionDatabaseAccess": false,
+  "productionChanged": false,
+  "productionAccountsProvisioned": false,
+  "externalInfrastructureConfigured": false,
+  "paidServices": false,
+  "deployed": false,
+  "pushed": false,
+  "unrelatedIntegration": false
+}

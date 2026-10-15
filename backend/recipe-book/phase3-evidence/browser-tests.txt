@@ -1,0 +1,24 @@
+PASS station landing, sidebar and direct administrative API denial
+PASS alphabetical list and immediate case-insensitive full-index search
+PASS On Menu / Off Menu / All retain off-menu access
+PASS correct instructions and aspect-preserving approved photograph
+PASS shared formatting and wrapped whole-item indentation
+PASS nested component expands without losing formatting
+PASS independent list scrolling keeps search controls in place
+PASS three columns retain 20/45/35 proportions on desktop and tablet
+PASS missing photograph placeholder clears previous image
+PASS rapid switching cannot render a stale photograph
+PASS cache contains only published data, approved images and sanitized account identity
+PASS offline reload restores authorized recipes, photo and last refresh timestamp
+PASS reconnection refreshes publication, photo association and archived removal
+PASS photo approval revocation removes the cached image on refresh
+PASS tablet touch controls select recipes with usable target sizes
+PASS independent station logout clears cache without terminating the other well
+PASS account switch stores only the newly authenticated account scope
+PASS expired cached lease cannot restore recipes
+PASS offline logout clears data and blocks automatic offline session restoration
+PASS reconnection observes account revocation and clears cached content
+PASS in-session authenticated lease expiry immediately closes the cached book
+PASS service browsing and publication changes leave costing/inventory/Toast domain unchanged
+PASS empty published catalog has a clear usable empty state
+PASS no uncaught browser JavaScript exceptions
