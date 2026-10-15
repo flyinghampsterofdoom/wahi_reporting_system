@@ -1,0 +1,15 @@
+PASS administrative Builder and inline preview match baseline computed styles and appearance
+PASS full-size bartender preview is dark while the underlying Builder remains light
+PASS management immersive entry/exit preserves light Builder and unsaved edits
+PASS desktop service palette, headings, selection, inputs, dropdown options and focus meet contrast targets
+PASS photograph brightness is display-only, modest and preserves aspect ratio
+PASS expanded nested recipes retain shared formatting, ivory text and gold headings
+PASS desktop and tablet portraits/landscape remain dark with identical 20/45/35 geometry
+PASS loading and missing photographs use subdued placeholders without light surfaces
+PASS search, empty results and On/Off/All filters preserve behavior and low-light palette
+PASS network/error notices and warning/error classes remain low-light and readable
+PASS offline indicator, cached instructions and cached photograph remain dark after offline reload
+PASS both well identities and regular staff receive the same theme without a permission change
+PASS empty published catalog remains fully low-light with no content requirement
+PASS recipe data, original/derivative image bytes and all costing domains remain unchanged
+PASS no uncaught browser errors

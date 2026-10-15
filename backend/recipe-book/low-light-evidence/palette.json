@@ -1,0 +1,13 @@
+{
+  "page": "#171714",
+  "surface": "#20211c",
+  "inputs": "#292b24",
+  "controls": "#30372e",
+  "text": "#e2ddce",
+  "secondaryText": "#a6ad9b",
+  "sectionHeadings": "#c1aa77",
+  "selection": "#344b3d",
+  "selectedText": "#ede8d9",
+  "controlBoundary": "#86977c",
+  "photoDisplayBrightness": 0.88
+}

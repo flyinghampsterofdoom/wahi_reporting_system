@@ -198,3 +198,36 @@ body.recipe-book-active #recipe-photo,.recipe-full-preview #recipe-photo{min-hei
 .recipe-full-preview .recipe-book{display:flex;flex-direction:column;min-height:0;flex:1}
 @media(max-width:900px){.recipe-immersive-toolbar{gap:6px;padding:6px 8px}.recipe-connection-controls{gap:6px}body.recipe-book-active #recipe-detail{padding:16px}.recipe-search-controls{padding:10px}.recipe-search-controls input,.recipe-search-controls select{min-width:0;width:100%;box-sizing:border-box}}
 .builder-card [data-drag],.builder-card [data-line-drag]{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;box-sizing:border-box}
+
+/* WAHI-RECIPE-03: presentation-only service theme; never inherits into Builder. */
+:is(body.recipe-book-active,.recipe-full-preview){
+ color-scheme:dark;
+ --paper:#171714;--ink:#e2ddce;--muted:#a6ad9b;--line:#44483b;--accent:#afc0a0;--warn:#d2b786;
+ --book-surface:#20211c;--book-input:#292b24;--book-control:#30372e;
+ --book-selected:#344b3d;--book-selected-text:#ede8d9;--book-gold:#c1aa77;
+ --book-edge:#86977c;--book-error:#dfb0a0;
+ background:var(--paper);color:var(--ink);scrollbar-color:#737f67 var(--paper);
+}
+:is(body.recipe-book-active,.recipe-full-preview) :is(main,.content-shell,.recipe-book,.recipe-columns,#recipe-detail){background:var(--paper);color:var(--ink)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(.recipe-immersive-toolbar,.recipe-navigation,#recipe-photo){background:var(--book-surface);color:var(--ink);box-shadow:none}
+:is(body.recipe-book-active,.recipe-full-preview) :is(input,select,textarea,option,optgroup){color-scheme:dark;background:var(--book-input);color:var(--ink);border-color:var(--book-edge);box-shadow:none}
+:is(body.recipe-book-active,.recipe-full-preview) input::placeholder{color:var(--muted);opacity:1}
+:is(body.recipe-book-active,.recipe-full-preview) :is(button,.button,button.secondary,.button.secondary){background:var(--book-control);color:var(--ink);box-shadow:none}
+:is(body.recipe-book-active,.recipe-full-preview) :is(button,.button):hover{background:#394334}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-list button{background:transparent;color:var(--ink)}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-list button:hover{background:#2c382e}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-list button[aria-current=true]{background:var(--book-selected);color:var(--book-selected-text);outline:1px solid var(--book-edge);outline-offset:-1px}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-list button[aria-current=true] small{color:var(--book-selected-text)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(.muted,small,#recipe-count,#recipe-connection,.recipe-photo-placeholder){color:var(--muted)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(.service-recipe h3,.recipe-component>summary,#recipe-connection.is-offline){color:var(--book-gold)}
+:is(body.recipe-book-active,.recipe-full-preview) .recipe-photo-placeholder span{color:var(--muted)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(#recipe-cache-note,.warning){background:#28251d;color:var(--warn)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(.error,#notice.error){background:#30231f;color:var(--book-error)}
+body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);box-shadow:none}
+:is(body.recipe-book-active,.recipe-full-preview) a{color:var(--accent)}
+:is(body.recipe-book-active,.recipe-full-preview) :is(input,select,textarea,button,a,summary,[tabindex]):focus-visible{outline:2px solid var(--book-gold);outline-offset:2px;box-shadow:none}
+:is(body.recipe-book-active,.recipe-full-preview) ::selection{background:var(--book-selected);color:var(--book-selected-text)}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-photo img{filter:brightness(.88);box-shadow:none}
+.recipe-full-preview{border-color:var(--book-edge);box-shadow:none}
+.recipe-full-preview::backdrop{background:rgb(8 9 6 / .78)}
+:is(body.recipe-book-active,.recipe-full-preview) #recipe-list button:focus-visible{outline:2px solid var(--book-gold);outline-offset:-2px}

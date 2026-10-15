@@ -1,0 +1,54 @@
+WAHI-RECIPE-03 — LOW-LIGHT BARTENDER INTERFACE
+Status: COMPLETE locally; ready for owner acceptance. No production deployment authorized or performed.
+Branch: codex/wahi-recipe-03
+Exact parent / production baseline: 37363514f6e5332c0a4303e8e74a733a2504a06a
+Isolated worktree: /Users/justinrawlinson/.codex/worktrees/wahi-recipe-03/Wahi_reporting_system
+The local implementation commit identifier is supplied in the completion response.
+
+Implementation
+Runtime change is exclusively a scoped CSS addition in backend/review/public/style.css. The theme applies to body.recipe-book-active and .recipe-full-preview, covering Well One, Well Two, staff/management Book entry and full-size bartender preview. No runtime JavaScript, renderer markup, backend handler, migration, auth/session policy or costing behavior changed.
+The administrative Builder and its inline preview remain light. Theme variables are inherited only within the service scope; opening/closing the full-size preview leaves the underlying Builder unchanged.
+Warm near-black page #171714; navigation/photo/toolbar #20211c; inputs #292b24; subdued controls #30372e; ivory text #e2ddce; secondary text #a6ad9b; subdued gold headings/focus #c1aa77; muted green selection #344b3d with ivory #ede8d9; control boundaries #86977c.
+All Book UI states use the scoped palette: controls/native dropdown options, loading, empty catalog/results, missing/unavailable photos, offline/cache notices, warning/error classes, expanded nested components, hover and keyboard focus. Native controls explicitly use color-scheme: dark. No new shadows, glows, saturated accent surfaces, layout, fonts, spacing or indentation were introduced. Existing keyboard focus on selected drinks is explicitly retained with a simple 2 px gold outline.
+Recipe photos use CSS filter brightness(.88), a modest 12% display-only reduction. Object-fit: contain and natural aspect ratio remain unchanged. Stored originals, derivatives, media records and served/cached image bytes were not modified. Builder photographs have filter:none.
+
+Color and contrast verification
+Computed foreground/background colors were measured with the sRGB relative-luminance contrast formula across 924 rendered samples. The test requires >=4.5:1 for normal service text, including placeholders/dropdown text, and >=3:1 for control/focus boundaries.
+Measured values:
+- Main ivory text / near-black page: 13.23:1.
+- Gold headings / near-black page: 7.94:1.
+- Secondary text / surface: 7.00:1.
+- Selected drink text / green selection: 7.72:1.
+- Lowest measured normal text, including input placeholders: 6.19:1.
+- Input boundary / input surface: 4.59:1.
+- Selected boundary / green selection: 3.03:1.
+- Selected keyboard focus / green selection: 4.18:1.
+Visible UI backgrounds were audited for light-surface leakage; none were found. Photograph pixels are intentionally excluded from the UI-surface audit and retain presentation detail under the modest display filter. These are measured contrast checks, not a claim of comprehensive accessibility certification.
+
+Verification
+Full backend regression, Node 22.22.0: 646 passed; zero failed, skipped or cancelled.
+Browser: 81 passed; zero uncaught browser errors:
+- 15 dedicated theme checks.
+- 24 existing Recipe Book security/offline/cache-expiration/empty-state checks.
+- 21 existing Builder lifecycle, image retention, concurrency, permission and costing-isolation checks.
+- 21 existing usability/immersive navigation, reordering, draft recovery and station-isolation checks.
+All databases and recipes used for browser checks were disposable local PostgreSQL 18 fixtures. Both well identities, staff and management were tested. Desktop 1440x1000, tablet landscape 1024x768, tablet portrait 768x1024 were visually inspected and checked for unchanged 20/45/35 geometry and no outer overflow. Native dropdown colors were checked through computed styles/dark color-scheme in Chrome; physical tablet/Safari acceptance remains owner/device review.
+Builder computed styles and geometry matched the approved light baseline. Final baseline/current full-page captures were pixel-identical: 0 differing pixels out of 7,266,240. The comparison harness permits a documented tiny Chromium edge-antialiasing tolerance if needed; final captures required none. The full-size modal remained dark while the underlying Builder retained its exact light computed styles before/during/after closing.
+Source/service rows, original/generated image file hashes and protected domain state remained unchanged across theme checks. Existing bold quantities, regular ingredient names, 20 px whole-item indentation, search/filter behavior, nesting, navigation, publication, offline caching and authorization passed their existing checks.
+
+Evidence / screenshots
+low-light-evidence/desktop.png
+low-light-evidence/tablet-landscape.png
+low-light-evidence/tablet-portrait.png
+low-light-evidence/full-size-preview.png
+Additional screenshots cover offline, network error, unavailable/missing photo, loading, empty results/catalog, Well Two, regular staff, and the unchanged light Builder.
+low-light-evidence/contrast.json contains individual computed-color measurements.
+low-light-evidence/builder-comparison.json records image hashes and comparison results.
+low-light-evidence/palette.json contains exact theme colors.
+Backend/browser logs and named check results are alongside the screenshots; SHA256SUMS.json records integrity. Screenshot content is explicitly synthetic, not authoritative house recipes or photos. Existing private regression fixtures remain ignored and uncommitted.
+
+Failures / limitations
+Final failures/skips: none. An initial strict PNG-hash comparison encountered a tiny Chromium rounded-edge rasterization difference despite unchanged Builder styles; the harness now records explicit rasterization limits and separately requires exact computed-style/geometry equality. Final screenshots matched exactly. No functional or data defect was introduced or repaired. Physical low-light viewing conditions and real cocktail photographs should be reviewed by the owner before deployment; no real production photograph was altered or downloaded.
+
+Production status
+LOCAL ONLY. No push, deployment, production database connection/change, schema migration, account provisioning, infrastructure purchase or unrelated modification occurred. The original working directory and accepted WAHI-RECIPE-02 worktree were not modified. Separate production-release authorization is required.

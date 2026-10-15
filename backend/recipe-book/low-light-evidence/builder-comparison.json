@@ -1,0 +1,9 @@
+{
+  "baselineSHA256": "ddcc9effc21036eac576b9d0d8a386d4ac9ecf6897b7b56948d6070c555d1cb5",
+  "currentSHA256": "ddcc9effc21036eac576b9d0d8a386d4ac9ecf6897b7b56948d6070c555d1cb5",
+  "changedPixels": 0,
+  "totalPixels": 7266240,
+  "changedFraction": 0,
+  "maxChannelDelta": 0,
+  "allowance": "At most 0.01% pixels / 24 channel levels for Chromium edge antialiasing, with exact computed-style/geometry equality required separately"
+}

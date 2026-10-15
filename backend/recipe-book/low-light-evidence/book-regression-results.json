@@ -1,0 +1,103 @@
+{
+  "browser": "Chrome via Playwright, isolated disposable profiles",
+  "checks": [
+    {
+      "name": "station landing, sidebar and direct administrative API denial",
+      "passed": true
+    },
+    {
+      "name": "alphabetical list and immediate case-insensitive full-index search",
+      "passed": true
+    },
+    {
+      "name": "On Menu / Off Menu / All retain off-menu access",
+      "passed": true
+    },
+    {
+      "name": "correct instructions and aspect-preserving approved photograph",
+      "passed": true
+    },
+    {
+      "name": "shared formatting and wrapped whole-item indentation",
+      "passed": true
+    },
+    {
+      "name": "nested component expands without losing formatting",
+      "passed": true
+    },
+    {
+      "name": "independent list scrolling keeps search controls in place",
+      "passed": true
+    },
+    {
+      "name": "three columns retain 20/45/35 proportions on desktop and tablet",
+      "passed": true
+    },
+    {
+      "name": "missing photograph placeholder clears previous image",
+      "passed": true
+    },
+    {
+      "name": "rapid switching cannot render a stale photograph",
+      "passed": true
+    },
+    {
+      "name": "cache contains only published data, approved images and sanitized account identity",
+      "passed": true
+    },
+    {
+      "name": "offline reload restores authorized recipes, photo and last refresh timestamp",
+      "passed": true
+    },
+    {
+      "name": "reconnection refreshes publication, photo association and archived removal",
+      "passed": true
+    },
+    {
+      "name": "photo approval revocation removes the cached image on refresh",
+      "passed": true
+    },
+    {
+      "name": "tablet touch controls select recipes with usable target sizes",
+      "passed": true
+    },
+    {
+      "name": "independent station logout clears cache without terminating the other well",
+      "passed": true
+    },
+    {
+      "name": "account switch stores only the newly authenticated account scope",
+      "passed": true
+    },
+    {
+      "name": "expired cached lease cannot restore recipes",
+      "passed": true
+    },
+    {
+      "name": "offline logout clears data and blocks automatic offline session restoration",
+      "passed": true
+    },
+    {
+      "name": "reconnection observes account revocation and clears cached content",
+      "passed": true
+    },
+    {
+      "name": "in-session authenticated lease expiry immediately closes the cached book",
+      "passed": true
+    },
+    {
+      "name": "service browsing and publication changes leave costing/inventory/Toast domain unchanged",
+      "passed": true
+    },
+    {
+      "name": "empty published catalog has a clear usable empty state",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser JavaScript exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "productionWrites": false
+}

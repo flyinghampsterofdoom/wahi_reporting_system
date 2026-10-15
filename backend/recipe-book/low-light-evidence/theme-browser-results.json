@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "name": "administrative Builder and inline preview match baseline computed styles and appearance",
+      "passed": true
+    },
+    {
+      "name": "full-size bartender preview is dark while the underlying Builder remains light",
+      "passed": true
+    },
+    {
+      "name": "management immersive entry/exit preserves light Builder and unsaved edits",
+      "passed": true
+    },
+    {
+      "name": "desktop service palette, headings, selection, inputs, dropdown options and focus meet contrast targets",
+      "passed": true
+    },
+    {
+      "name": "photograph brightness is display-only, modest and preserves aspect ratio",
+      "passed": true
+    },
+    {
+      "name": "expanded nested recipes retain shared formatting, ivory text and gold headings",
+      "passed": true
+    },
+    {
+      "name": "desktop and tablet portraits/landscape remain dark with identical 20/45/35 geometry",
+      "passed": true
+    },
+    {
+      "name": "loading and missing photographs use subdued placeholders without light surfaces",
+      "passed": true
+    },
+    {
+      "name": "search, empty results and On/Off/All filters preserve behavior and low-light palette",
+      "passed": true
+    },
+    {
+      "name": "network/error notices and warning/error classes remain low-light and readable",
+      "passed": true
+    },
+    {
+      "name": "offline indicator, cached instructions and cached photograph remain dark after offline reload",
+      "passed": true
+    },
+    {
+      "name": "both well identities and regular staff receive the same theme without a permission change",
+      "passed": true
+    },
+    {
+      "name": "empty published catalog remains fully low-light with no content requirement",
+      "passed": true
+    },
+    {
+      "name": "recipe data, original/derivative image bytes and all costing domains remain unchanged",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "productionChanges": false
+}

@@ -1,0 +1,90 @@
+{
+  "checks": [
+    {
+      "name": "full-width editor, optional preview and on-demand component library",
+      "passed": true
+    },
+    {
+      "name": "top combobox searches alphabetically and supports keyboard import",
+      "passed": true
+    },
+    {
+      "name": "service quantities override originals with drops, dashes and descriptive amounts",
+      "passed": true
+    },
+    {
+      "name": "ingredient keyboard ordering preserves focus and every original reference",
+      "passed": true
+    },
+    {
+      "name": "native pointer ingredient dragging reorders only its section",
+      "passed": true
+    },
+    {
+      "name": "touch ingredient dragging uses the same stable-ID order operation",
+      "passed": true
+    },
+    {
+      "name": "touch drops near removal controls cannot accidentally delete an ingredient",
+      "passed": true
+    },
+    {
+      "name": "preparation and subordinate line ordering plus nested snapshots remain intact",
+      "passed": true
+    },
+    {
+      "name": "live preview uses the shared renderer and editor reclaims collapsed preview width",
+      "passed": true
+    },
+    {
+      "name": "entering immersive Recipe Book parks unsaved content and a selected photograph",
+      "passed": true
+    },
+    {
+      "name": "browser Back and Forward preserve the parked unsaved Builder",
+      "passed": true
+    },
+    {
+      "name": "full-size draft preview retains shared layout and exits without publishing",
+      "passed": true
+    },
+    {
+      "name": "save and reload persist service quantities, line order, nested references and photo",
+      "passed": true
+    },
+    {
+      "name": "publishing uses service measurements and menu classification remains independent",
+      "passed": true
+    },
+    {
+      "name": "historical recovery restores display amounts and provenance without replacing current publication",
+      "passed": true
+    },
+    {
+      "name": "responsive editor and immersive 20/45/35 columns have no outer overflow",
+      "passed": true
+    },
+    {
+      "name": "both wells retain immersive home, published measurements and strict API boundaries",
+      "passed": true
+    },
+    {
+      "name": "regular staff exit returns to prior authorized home and refresh restores immersive Book",
+      "passed": true
+    },
+    {
+      "name": "logout clears parked private Builder state before a different account signs in",
+      "passed": true
+    },
+    {
+      "name": "all source costing, inventory, waste and reporting domain records unchanged",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "productionWrites": false
+}

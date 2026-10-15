@@ -1,0 +1,91 @@
+{
+  "browser": "Headless Chrome via Playwright",
+  "checks": [
+    {
+      "name": "management full-width workspace and top source-title lookup",
+      "passed": true
+    },
+    {
+      "name": "source import populates quantities and nested snapshots without instructions",
+      "passed": true
+    },
+    {
+      "name": "nested expansion, click editing and visible titles render in live preview",
+      "passed": true
+    },
+    {
+      "name": "management authors preparation, garnish, glassware and service notes separately",
+      "passed": true
+    },
+    {
+      "name": "keyboard reordering preserves formatting and focuses the moved control",
+      "passed": true
+    },
+    {
+      "name": "drag reordering changes canvas and live preview order",
+      "passed": true
+    },
+    {
+      "name": "common-item creation and draggable insertion produce independently editable copies",
+      "passed": true
+    },
+    {
+      "name": "ingredient addition, name editing and removal remain service-only",
+      "passed": true
+    },
+    {
+      "name": "photograph previews before saving and associates on draft save",
+      "passed": true
+    },
+    {
+      "name": "draft persists with source IDs and exact shared preview formatting",
+      "passed": true
+    },
+    {
+      "name": "publishing creates an immutable version without changing menu classification",
+      "passed": true
+    },
+    {
+      "name": "stale edits remain visible and cannot overwrite a concurrent draft",
+      "passed": true
+    },
+    {
+      "name": "replacement retains the published photograph until an explicit new publication",
+      "passed": true
+    },
+    {
+      "name": "photo removal warns and does not block publication",
+      "passed": true
+    },
+    {
+      "name": "menu classification updates independently of publication",
+      "passed": true
+    },
+    {
+      "name": "desktop and tablet layouts remain usable without document overflow",
+      "passed": true
+    },
+    {
+      "name": "manager archive permission and station route/API boundaries stay enforced",
+      "passed": true
+    },
+    {
+      "name": "duplicate creates a private independent draft; incomplete drafts fail publication",
+      "passed": true
+    },
+    {
+      "name": "Admin can archive and restore service recipes from the Builder",
+      "passed": true
+    },
+    {
+      "name": "all Builder changes leave costing, inventory and Toast domain unchanged",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "productionWrites": false
+}

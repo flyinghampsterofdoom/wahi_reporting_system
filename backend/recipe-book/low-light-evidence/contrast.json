@@ -1,0 +1,8310 @@
+{
+  "criterion": "All visible service text >=4.5:1; control and focus boundaries >=3:1",
+  "minTextRatio": 6.19,
+  "samples": [
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Management draft preview · Nothing is published by",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "builder-close-preview",
+      "text": "Close preview",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Draft preview · Not published",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "full-size preview",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "36 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Off Menu Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "Off Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "SMALL",
+      "id": "",
+      "text": "On Menu",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "full-size preview",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "full-size preview",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "management Book",
+      "tag": "BUTTON",
+      "id": "recipe-exit",
+      "text": "← Exit Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "management Book",
+      "tag": "DIV",
+      "id": "account",
+      "text": "fixture.owner · ADMIN",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "management Book",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "management Book",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connecting…",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "management Book",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "management Book",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "management Book",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "management Book",
+      "tag": "P",
+      "id": "",
+      "text": "Select a recipe from the list.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "desktop",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "input and dropdown text",
+      "text": "Input value",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(41, 43, 36)",
+      "ratio": 10.56
+    },
+    {
+      "state": "input and dropdown text",
+      "text": "Input placeholder",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(41, 43, 36)",
+      "ratio": 6.19
+    },
+    {
+      "state": "input and dropdown text",
+      "text": "Native dropdown option",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(41, 43, 36)",
+      "ratio": 10.56
+    },
+    {
+      "state": "controls",
+      "text": "input boundary",
+      "fg": "rgb(134, 151, 124)",
+      "bg": "rgb(41, 43, 36)",
+      "ratio": 4.59
+    },
+    {
+      "state": "controls",
+      "text": "selected boundary",
+      "fg": "rgb(134, 151, 124)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 3.03
+    },
+    {
+      "state": "controls",
+      "text": "Selected keyboard focus",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 4.18
+    },
+    {
+      "state": "expanded components",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "expanded components",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "expanded components",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "expanded components",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "desktop",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "desktop",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "desktop",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "desktop",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-landscape",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "tablet-portrait",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "loading photo",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "H2",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "loading photo",
+      "tag": "SPAN",
+      "id": "",
+      "text": "◈",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "loading photo",
+      "tag": "P",
+      "id": "",
+      "text": "Loading reference photograph…",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "missing photo",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "missing photo",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "H2",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "missing photo",
+      "tag": "SPAN",
+      "id": "",
+      "text": "◈",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "missing photo",
+      "tag": "P",
+      "id": "",
+      "text": "No reference photograph yet",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "no matches",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "no matches",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "no matches",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "no matches",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "no matches",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "no matches",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "no matches",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "0 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "no matches",
+      "tag": "P",
+      "id": "",
+      "text": "No recipes match. Try All or another search.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "no matches",
+      "tag": "P",
+      "id": "",
+      "text": "Select a recipe from the list.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "no matches",
+      "tag": "SPAN",
+      "id": "",
+      "text": "◈",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "no matches",
+      "tag": "P",
+      "id": "",
+      "text": "No recipe selected",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "network error",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(57, 67, 52)",
+      "ratio": 7.63
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "recipe-cache-note",
+      "text": "Recipe data could not be refreshed.",
+      "fg": "rgb(210, 183, 134)",
+      "bg": "rgb(40, 37, 29)",
+      "ratio": 7.91
+    },
+    {
+      "state": "network error",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "network error",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "network error",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "network error",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:33 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(57, 67, 52)",
+      "ratio": 7.63
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "recipe-cache-note",
+      "text": "Recipe data could not be refreshed.",
+      "fg": "rgb(210, 183, 134)",
+      "bg": "rgb(40, 37, 29)",
+      "ratio": 7.91
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "DIV",
+      "id": "",
+      "text": "Controlled warning styling fixture",
+      "fg": "rgb(210, 183, 134)",
+      "bg": "rgb(40, 37, 29)",
+      "ratio": 7.91
+    },
+    {
+      "state": "warning and error classes",
+      "tag": "DIV",
+      "id": "",
+      "text": "Controlled error styling fixture",
+      "fg": "rgb(223, 176, 160)",
+      "bg": "rgb(48, 35, 31)",
+      "ratio": 7.83
+    },
+    {
+      "state": "offline",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Offline · cached recipes · Last refreshed 10/15/20",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7.16
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "offline",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "offline",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "offline",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "offline",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well Two · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:34 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "well.two",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "well.two",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "well.two",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "well.two",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well Two · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:34 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H2",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "SPAN",
+      "id": "",
+      "text": "◈",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "unavailable photograph",
+      "tag": "P",
+      "id": "",
+      "text": "Reference photograph unavailable",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "recipe-exit",
+      "text": "← Exit Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "DIV",
+      "id": "account",
+      "text": "fixture.staff · STAFF",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:35 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "35 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(237, 232, 217)",
+      "bg": "rgb(52, 75, 61)",
+      "ratio": 7.72
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Blue Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "No Photo Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 00",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 01",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 02",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 03",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 04",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 05",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 06",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 07",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 08",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 09",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 10",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 11",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 12",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 13",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 14",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 15",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 16",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 17",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 18",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 19",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 20",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 21",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 22",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 23",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 24",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 25",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 26",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 27",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 28",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 29",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 30",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Test Recipe 31",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H2",
+      "id": "",
+      "text": "Amber Test",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1.50 oz",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic ingredient with a deliberately long name",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Controlled fixture instructions only. Combine the ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "GARNISH",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic citrus garnish.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "GLASSWARE",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture highball.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "SERVICE NOTES",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Disposable acceptance fixture. Not an authoritativ",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "STRONG",
+      "id": "",
+      "text": "Synthetic house mix",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "INGREDIENTS",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "STRONG",
+      "id": "",
+      "text": "1 mL",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Fixture water",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "H3",
+      "id": "",
+      "text": "PREPARATION",
+      "fg": "rgb(193, 170, 119)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 7.94
+    },
+    {
+      "state": "fixture.staff",
+      "tag": "P",
+      "id": "",
+      "text": "Synthetic mix preparation for expansion testing on",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "empty catalog",
+      "tag": "DIV",
+      "id": "account",
+      "text": "Well One · Recipe Book",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "empty catalog",
+      "tag": "BUTTON",
+      "id": "logout",
+      "text": "Log out",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "empty catalog",
+      "tag": "P",
+      "id": "recipe-connection",
+      "text": "Connected · Last refreshed 10/15/2026, 10:45:36 AM",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "empty catalog",
+      "tag": "BUTTON",
+      "id": "recipe-refresh",
+      "text": "Refresh",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(48, 55, 46)",
+      "ratio": 9.04
+    },
+    {
+      "state": "empty catalog",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Find a drink",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "empty catalog",
+      "tag": "LABEL",
+      "id": "",
+      "text": "Menu status",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "empty catalog",
+      "tag": "P",
+      "id": "recipe-count",
+      "text": "0 recipes",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "empty catalog",
+      "tag": "P",
+      "id": "",
+      "text": "No published service recipes yet.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 11.94
+    },
+    {
+      "state": "empty catalog",
+      "tag": "P",
+      "id": "",
+      "text": "Select a recipe from the list.",
+      "fg": "rgb(226, 221, 206)",
+      "bg": "rgb(23, 23, 20)",
+      "ratio": 13.23
+    },
+    {
+      "state": "empty catalog",
+      "tag": "SPAN",
+      "id": "",
+      "text": "◈",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    },
+    {
+      "state": "empty catalog",
+      "tag": "P",
+      "id": "",
+      "text": "No recipe selected",
+      "fg": "rgb(166, 173, 155)",
+      "bg": "rgb(32, 33, 28)",
+      "ratio": 7
+    }
+  ]
+}
