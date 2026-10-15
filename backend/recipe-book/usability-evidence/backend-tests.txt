@@ -1,0 +1,3902 @@
+
+> wahi-domain-backend@0.1.0 test
+> node --test test/*.test.js
+
+TAP version 13
+# Subtest: rum package 750mL: exact 1.5 US fluid ounce serving
+ok 1 - rum package 750mL: exact 1.5 US fluid ounce serving
+  ---
+  duration_ms: 8.623333
+  type: 'test'
+  ...
+# Subtest: rum package 1L: exact 1.5 US fluid ounce serving
+ok 2 - rum package 1L: exact 1.5 US fluid ounce serving
+  ---
+  duration_ms: 0.811041
+  type: 'test'
+  ...
+# Subtest: rum package 1.75L: exact 1.5 US fluid ounce serving
+ok 3 - rum package 1.75L: exact 1.5 US fluid ounce serving
+  ---
+  duration_ms: 0.521084
+  type: 'test'
+  ...
+# Subtest: rum package 6 × 750mL: exact 1.5 US fluid ounce serving
+ok 4 - rum package 6 × 750mL: exact 1.5 US fluid ounce serving
+  ---
+  duration_ms: 0.356125
+  type: 'test'
+  ...
+# Subtest: pound/cup bridge, tablespoon/cup/gram/pound traversal and inverse use exact ratios
+ok 5 - pound/cup bridge, tablespoon/cup/gram/pound traversal and inverse use exact ratios
+  ---
+  duration_ms: 2.6465
+  type: 'test'
+  ...
+# Subtest: direct dash-family alias and indirect operational alias are rejected
+ok 6 - direct dash-family alias and indirect operational alias are rejected
+  ---
+  duration_ms: 0.937958
+  type: 'test'
+  ...
+# Subtest: 0.00113636 fl oz drops are independent ingredient observations, never a default
+ok 7 - 0.00113636 fl oz drops are independent ingredient observations, never a default
+  ---
+  duration_ms: 0.971209
+  type: 'test'
+  ...
+# Subtest: one pineapple to 4.84 cups chopped costs a 3 fl oz portion without allocation
+ok 8 - one pineapple to 4.84 cups chopped costs a 3 fl oz portion without allocation
+  ---
+  duration_ms: 0.940875
+  type: 'test'
+  ...
+# Subtest: Ginger weight purchase propagates unresolved through source, recipe and menu until its own bridge exists
+ok 9 - Ginger weight purchase propagates unresolved through source, recipe and menu until its own bridge exists
+  ---
+  duration_ms: 4.367708
+  type: 'test'
+  ...
+# Subtest: explicit Water zero survives recipe, history and audit; missing price remains distinct
+ok 10 - explicit Water zero survives recipe, history and audit; missing price remains distinct
+  ---
+  duration_ms: 2.96325
+  type: 'test'
+  ...
+# Subtest: all three independent blockers and known subtotal propagate through three nested recipes
+ok 11 - all three independent blockers and known subtotal propagate through three nested recipes
+  ---
+  duration_ms: 3.272541
+  type: 'test'
+  ...
+# Subtest: nested fixed 25/180, 18-minute derived labor and own recipe labor are counted exactly once
+ok 12 - nested fixed 25/180, 18-minute derived labor and own recipe labor are counted exactly once
+  ---
+  duration_ms: 2.500083
+  type: 'test'
+  ...
+# Subtest: price: before/at/after boundary and no backward extrapolation
+ok 13 - price: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 7.221083
+  type: 'test'
+  ...
+# Subtest: yield: before/at/after boundary and no backward extrapolation
+ok 14 - yield: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 1.074958
+  type: 'test'
+  ...
+# Subtest: measurement: before/at/after boundary and no backward extrapolation
+ok 15 - measurement: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 2.431708
+  type: 'test'
+  ...
+# Subtest: recipe: before/at/after boundary and no backward extrapolation
+ok 16 - recipe: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 1.052041
+  type: 'test'
+  ...
+# Subtest: laborRate: before/at/after boundary and no backward extrapolation
+ok 17 - laborRate: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 0.845292
+  type: 'test'
+  ...
+# Subtest: sellingPrice: before/at/after boundary and no backward extrapolation
+ok 18 - sellingPrice: before/at/after boundary and no backward extrapolation
+  ---
+  duration_ms: 0.963833
+  type: 'test'
+  ...
+# Subtest: BOH rate retroactive effective September 12 keeps both clocks and prior rate
+ok 19 - BOH rate retroactive effective September 12 keeps both clocks and prior rate
+  ---
+  duration_ms: 0.79975
+  type: 'test'
+  ...
+# Subtest: price entered September 20 effective September 10 preserves original September 1 price and audit
+ok 20 - price entered September 20 effective September 10 preserves original September 1 price and audit
+  ---
+  duration_ms: 0.511584
+  type: 'test'
+  ...
+# Subtest: 200 versus 240g conflicts; exactly equivalent paths agree, even with trailing decimal precision
+ok 21 - 200 versus 240g conflicts; exactly equivalent paths agree, even with trailing decimal precision
+  ---
+  duration_ms: 0.625458
+  type: 'test'
+  ...
+# Subtest: deep repeating fractions, fractional quantities, tiny and large amounts retain exact internal precision
+ok 22 - deep repeating fractions, fractional quantities, tiny and large amounts retain exact internal precision
+  ---
+  duration_ms: 14.88825
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "-1" atomically
+ok 23 - reject invalid numeric input "-1" atomically
+  ---
+  duration_ms: 0.798375
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "NaN" atomically
+ok 24 - reject invalid numeric input "NaN" atomically
+  ---
+  duration_ms: 0.628208
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "Infinity" atomically
+ok 25 - reject invalid numeric input "Infinity" atomically
+  ---
+  duration_ms: 0.632917
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "-Infinity" atomically
+ok 26 - reject invalid numeric input "-Infinity" atomically
+  ---
+  duration_ms: 0.66275
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "1e3" atomically
+ok 27 - reject invalid numeric input "1e3" atomically
+  ---
+  duration_ms: 0.466083
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "1,000" atomically
+ok 28 - reject invalid numeric input "1,000" atomically
+  ---
+  duration_ms: 0.431458
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input " 1" atomically
+ok 29 - reject invalid numeric input " 1" atomically
+  ---
+  duration_ms: 0.464083
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input "1.2.3" atomically
+ok 30 - reject invalid numeric input "1.2.3" atomically
+  ---
+  duration_ms: 0.519083
+  type: 'test'
+  ...
+# Subtest: reject invalid numeric input 1 atomically
+ok 31 - reject invalid numeric input 1 atomically
+  ---
+  duration_ms: 0.640667
+  type: 'test'
+  ...
+# Subtest: zero denominators and invalid calendar/submillisecond dates are rejected
+ok 32 - zero denominators and invalid calendar/submillisecond dates are rejected
+  ---
+  duration_ms: 0.459166
+  type: 'test'
+  ...
+# Subtest: recipe revisions, lines, steps and returned operational views cannot mutate history
+ok 33 - recipe revisions, lines, steps and returned operational views cannot mutate history
+  ---
+  duration_ms: 0.798667
+  type: 'test'
+  ...
+# Subtest: archive every identity preserves old costs and prevents new selection
+ok 34 - archive every identity preserves old costs and prevents new selection
+  ---
+  duration_ms: 2.639042
+  type: 'test'
+  ...
+# Subtest: Fish Four, Three and Two remain independent menu identities without inferred lineage
+ok 35 - Fish Four, Three and Two remain independent menu identities without inferred lineage
+  ---
+  duration_ms: 18.104667
+  type: 'test'
+  ...
+# Subtest: Lead/Staff deep response allowlists and every mutation deny internal data before input parsing
+ok 36 - Lead/Staff deep response allowlists and every mutation deny internal data before input parsing
+  ---
+  duration_ms: 11.757916
+  type: 'test'
+  ...
+# Subtest: undated evidence cannot mask a dated source cycle; rollback includes implicit basis and audits
+ok 37 - undated evidence cannot mask a dated source cycle; rollback includes implicit basis and audits
+  ---
+  duration_ms: 0.656333
+  type: 'test'
+  ...
+# Subtest: correction of inactive evidence audits actual superseded row, not a null prior value
+ok 38 - correction of inactive evidence audits actual superseded row, not a null prior value
+  ---
+  duration_ms: 0.396625
+  type: 'test'
+  ...
+# Subtest: price: real August 15 cost stays unresolved when required fact starts September 1
+ok 39 - price: real August 15 cost stays unresolved when required fact starts September 1
+  ---
+  duration_ms: 0.512667
+  type: 'test'
+  ...
+# Subtest: measurement: real August 15 cost stays unresolved when required fact starts September 1
+ok 40 - measurement: real August 15 cost stays unresolved when required fact starts September 1
+  ---
+  duration_ms: 0.399083
+  type: 'test'
+  ...
+# Subtest: yield: real August 15 cost stays unresolved when required fact starts September 1
+ok 41 - yield: real August 15 cost stays unresolved when required fact starts September 1
+  ---
+  duration_ms: 0.470459
+  type: 'test'
+  ...
+# Subtest: recipe: real August 15 cost stays unresolved when required fact starts September 1
+ok 42 - recipe: real August 15 cost stays unresolved when required fact starts September 1
+  ---
+  duration_ms: 0.58575
+  type: 'test'
+  ...
+# Subtest: laborRate: real August 15 cost stays unresolved when required fact starts September 1
+ok 43 - laborRate: real August 15 cost stays unresolved when required fact starts September 1
+  ---
+  duration_ms: 1.79325
+  type: 'test'
+  ...
+# Subtest: withdrawing an unused yield or recipe revision cannot deactivate a selected purchase basis
+ok 44 - withdrawing an unused yield or recipe revision cannot deactivate a selected purchase basis
+  ---
+  duration_ms: 0.997334
+  type: 'test'
+  ...
+# Subtest: one purchased line reports missing price AND missing physical bridge together
+ok 45 - one purchased line reports missing price AND missing physical bridge together
+  ---
+  duration_ms: 0.472417
+  type: 'test'
+  ...
+# Subtest: COGS: exact Toast fractional lexemes, stable GUID and PII allowlist
+ok 46 - COGS: exact Toast fractional lexemes, stable GUID and PII allowlist
+  ---
+  duration_ms: 1589.821792
+  type: 'test'
+  ...
+# Subtest: COGS: completed quantity >1, fractional split and full comp remain sales
+ok 47 - COGS: completed quantity >1, fractional split and full comp remain sales
+  ---
+  duration_ms: 71.50625
+  type: 'test'
+  ...
+# Subtest: COGS: open, void, deleted, test and zero quantity are distinct non-sales
+ok 48 - COGS: open, void, deleted, test and zero quantity are distinct non-sales
+  ---
+  duration_ms: 179.609708
+  type: 'test'
+  ...
+# Subtest: COGS: selection or payment refunds held separately; no guessed negative quantities
+ok 49 - COGS: selection or payment refunds held separately; no guessed negative quantities
+  ---
+  duration_ms: 105.420959
+  type: 'test'
+  ...
+# Subtest: COGS: discounts are already line net, modifier prices not added twice, tax ambiguity unavailable
+ok 50 - COGS: discounts are already line net, modifier prices not added twice, tax ambiguity unavailable
+  ---
+  duration_ms: 71.368584
+  type: 'test'
+  ...
+# Subtest: COGS: free text open item name omitted and missing identity remains selection-specific
+ok 51 - COGS: free text open item name omitted and missing identity remains selection-specific
+  ---
+  duration_ms: 63.642
+  type: 'test'
+  ...
+# Subtest: COGS: pagination follows next only; duplicate and wrong business date rejected
+ok 52 - COGS: pagination follows next only; duplicate and wrong business date rejected
+  ---
+  duration_ms: 84.503584
+  type: 'test'
+  ...
+# Subtest: COGS: sync idempotency, edited selection and removed selection persist versions without duplicate cost
+ok 53 - COGS: sync idempotency, edited selection and removed selection persist versions without duplicate cost
+  ---
+  duration_ms: 126.820875
+  type: 'test'
+  ...
+# Subtest: COGS: Admin explicit mapping, quantity reconciliation, exclusion and mapping correction invalidation
+ok 54 - COGS: Admin explicit mapping, quantity reconciliation, exclusion and mapping correction invalidation
+  ---
+  duration_ms: 627.712125
+  type: 'test'
+  ...
+# Subtest: COGS: historical effective intervals and sales-weighted average 1 at $2 plus 99 at $4
+ok 55 - COGS: historical effective intervals and sales-weighted average 1 at $2 plus 99 at $4
+  ---
+  duration_ms: 144.239083
+  type: 'test'
+  ...
+# Subtest: COGS: current complete fallback is estimated; retroactive correction upgrades to historical
+ok 56 - COGS: current complete fallback is estimated; retroactive correction upgrades to historical
+  ---
+  duration_ms: 135.373292
+  type: 'test'
+  ...
+# Subtest: COGS: unresolved improves to estimated after dependency price correction; current fallback refreshes
+ok 57 - COGS: unresolved improves to estimated after dependency price correction; current fallback refreshes
+  ---
+  duration_ms: 277.602667
+  type: 'test'
+  ...
+# Subtest: COGS: existing alternate purchase basis is defensible and explicitly estimated
+ok 58 - COGS: existing alternate purchase basis is defensible and explicitly estimated
+  ---
+  duration_ms: 238.9205
+  type: 'test'
+  ...
+# Subtest: COGS: mixed historical/current/unresolved preserves usable costs and exact fractional products
+ok 59 - COGS: mixed historical/current/unresolved preserves usable costs and exact fractional products
+  ---
+  duration_ms: 57.666166
+  type: 'test'
+  ...
+# Subtest: COGS: exact cost is aggregated before display rounding and weighted average
+ok 60 - COGS: exact cost is aggregated before display rounding and weighted average
+  ---
+  duration_ms: 60.132958
+  type: 'test'
+  ...
+# Subtest: COGS: scoped dependency read, repeated report has no engine or Toast calls, unrelated correction stays clean
+ok 61 - COGS: scoped dependency read, repeated report has no engine or Toast calls, unrelated correction stays clean
+  ---
+  duration_ms: 126.254834
+  type: 'test'
+  ...
+# Subtest: COGS: future effective price expires materialization without a new write
+ok 62 - COGS: future effective price expires materialization without a new write
+  ---
+  duration_ms: 244.500333
+  type: 'test'
+  ...
+# Subtest: COGS: date presets Sunday weeks month boundary arbitrary range and business-closeout default
+ok 63 - COGS: date presets Sunday weeks month boundary arbitrary range and business-closeout default
+  ---
+  duration_ms: 58.523166
+  type: 'test'
+  ...
+# Subtest: COGS: CSV underlying decimals, evidence coverage, period and safe formula escaping
+ok 64 - COGS: CSV underlying decimals, evidence coverage, period and safe formula escaping
+  ---
+  duration_ms: 57.933292
+  type: 'test'
+  ...
+# Subtest: COGS: capability checks Manager read/export, Admin mappings, Staff/Lead denied all cost paths
+ok 65 - COGS: capability checks Manager read/export, Admin mappings, Staff/Lead denied all cost paths
+  ---
+  duration_ms: 50.832875
+  type: 'test'
+  ...
+# Subtest: COGS: new identities require Admin decisions even for matching GUIDs or names
+ok 66 - COGS: new identities require Admin decisions even for matching GUIDs or names
+  ---
+  duration_ms: 127.634334
+  type: 'test'
+  ...
+# Subtest: COGS: menu portion correction and future revision invalidate affected knowledge
+ok 67 - COGS: menu portion correction and future revision invalidate affected knowledge
+  ---
+  duration_ms: 106.915834
+  type: 'test'
+  ...
+# Subtest: COGS: 1000 same-interval sales resolve once; repeated report does not load domain graph
+ok 68 - COGS: 1000 same-interval sales resolve once; repeated report does not load domain graph
+  ---
+  duration_ms: 136.7005
+  type: 'test'
+  ...
+# Subtest: COGS: failed refresh retains facts and records sanitized failure without claiming fresh data
+ok 69 - COGS: failed refresh retains facts and records sanitized failure without claiming fresh data
+  ---
+  duration_ms: 193.269791
+  type: 'test'
+  ...
+# Subtest: COGS: accessible yellow/red explanations and lazy detail in rendered UI
+ok 70 - COGS: accessible yellow/red explanations and lazy detail in rendered UI
+  ---
+  duration_ms: 59.688916
+  type: 'test'
+  ...
+# Subtest: COGS HTTP: authenticated Manager report/CSV, Staff/Lead denial, Admin mapping and CSRF
+ok 71 - COGS HTTP: authenticated Manager report/CSV, Staff/Lead denial, Admin mapping and CSRF
+  ---
+  duration_ms: 457.748792
+  type: 'test'
+  ...
+# Subtest: COGS: Toast modifier reordering is semantically idempotent and does not invalidate cached costs
+ok 72 - COGS: Toast modifier reordering is semantically idempotent and does not invalidate cached costs
+  ---
+  duration_ms: 49.525792
+  type: 'test'
+  ...
+# Subtest: Mapping: new identity is Needs Mapping, not unresolved cost or $0 COGS
+ok 73 - Mapping: new identity is Needs Mapping, not unresolved cost or $0 COGS
+  ---
+  duration_ms: 41.280875
+  type: 'test'
+  ...
+# Subtest: Mapping: mapped GUID survives rename and another GUID with same name needs a new decision
+ok 74 - Mapping: mapped GUID survives rename and another GUID with same name needs a new decision
+  ---
+  duration_ms: 147.379458
+  type: 'test'
+  ...
+# Subtest: Mapping: Ignore ON persists through rename; OFF never resurrects old mapping
+ok 75 - Mapping: Ignore ON persists through rename; OFF never resurrects old mapping
+  ---
+  duration_ms: 102.799583
+  type: 'test'
+  ...
+# Subtest: Mapping: Ignored to Mapped, Change Mapping, Remove Mapping are audited and require confirmation
+ok 76 - Mapping: Ignored to Mapped, Change Mapping, Remove Mapping are audited and require confirmation
+  ---
+  duration_ms: 91.385792
+  type: 'test'
+  ...
+# Subtest: Mapping: name normalization exact is unique, duplicate targets are ambiguous
+ok 77 - Mapping: name normalization exact is unique, duplicate targets are ambiguous
+  ---
+  duration_ms: 36.154833
+  type: 'test'
+  ...
+# Subtest: Mapping: suggested spelling/accents/extra words are not Exact; no candidate is explicit
+ok 78 - Mapping: suggested spelling/accents/extra words are not Exact; no candidate is explicit
+  ---
+  duration_ms: 35.199917
+  type: 'test'
+  ...
+# Subtest: Mapping: individual Exact confirmation makes a durable complete Recipe execution policy
+ok 79 - Mapping: individual Exact confirmation makes a durable complete Recipe execution policy
+  ---
+  duration_ms: 120.590833
+  type: 'test'
+  ...
+# Subtest: Mapping: bulk Exact confirmation is atomic, audited and excludes non-Exact
+ok 80 - Mapping: bulk Exact confirmation is atomic, audited and excludes non-Exact
+  ---
+  duration_ms: 93.096542
+  type: 'test'
+  ...
+# Subtest: Mapping: stale candidate review cannot confirm after target eligibility changes
+ok 81 - Mapping: stale candidate review cannot confirm after target eligibility changes
+  ---
+  duration_ms: 78.3645
+  type: 'test'
+  ...
+# Subtest: Mapping: exact recipe candidates confirm without quantity or unit
+ok 82 - Mapping: exact recipe candidates confirm without quantity or unit
+  ---
+  duration_ms: 73.717375
+  type: 'test'
+  ...
+# Subtest: Mapping: partial mapping immediately improves report; two reconciliations and revenue coverage
+ok 83 - Mapping: partial mapping immediately improves report; two reconciliations and revenue coverage
+  ---
+  duration_ms: 78.81725
+  type: 'test'
+  ...
+# Subtest: Mapping: mapped but incomplete cost remains mapped and uses the existing cost blocker
+ok 84 - Mapping: mapped but incomplete cost remains mapped and uses the existing cost blocker
+  ---
+  duration_ms: 63.159916
+  type: 'test'
+  ...
+# Subtest: Mapping: policy persists across inactive/no recent sales periods without touching domain facts
+ok 85 - Mapping: policy persists across inactive/no recent sales periods without touching domain facts
+  ---
+  duration_ms: 85.516583
+  type: 'test'
+  ...
+# Subtest: Mapping: only changed identity is invalidated; ignore/remove preserve source facts
+ok 86 - Mapping: only changed identity is invalidated; ignore/remove preserve source facts
+  ---
+  duration_ms: 89.332
+  type: 'test'
+  ...
+# Subtest: Mapping: candidate cache reuse and invalidation on target and Toast names without policy mutation
+ok 87 - Mapping: candidate cache reuse and invalidation on target and Toast names without policy mutation
+  ---
+  duration_ms: 90.188125
+  type: 'test'
+  ...
+# Subtest: Mapping: recent badge ignores deliberate Ignore and old history; queue retains all identities
+ok 88 - Mapping: recent badge ignores deliberate Ignore and old history; queue retains all identities
+  ---
+  duration_ms: 83.580083
+  type: 'test'
+  ...
+# Subtest: Mapping: current observed Toast name does not roll back when older sales are refreshed
+ok 89 - Mapping: current observed Toast name does not roll back when older sales are refreshed
+  ---
+  duration_ms: 43.589833
+  type: 'test'
+  ...
+# Subtest: Mapping: no raw sales history loaded for queue and warm suggestions generate zero candidates
+ok 90 - Mapping: no raw sales history loaded for queue and warm suggestions generate zero candidates
+  ---
+  duration_ms: 115.6005
+  type: 'test'
+  ...
+# Subtest: Mapping: direct mapping and report-return links preserve dates and reject unsafe return values
+ok 91 - Mapping: direct mapping and report-return links preserve dates and reject unsafe return values
+  ---
+  duration_ms: 81.587875
+  type: 'test'
+  ...
+# Subtest: Mapping: high-volume-first queue filters and sort use normalized aggregates
+ok 92 - Mapping: high-volume-first queue filters and sort use normalized aggregates
+  ---
+  duration_ms: 42.30625
+  type: 'test'
+  ...
+# Subtest: Mapping: Manager Staff Lead cannot configure, bulk confirm, inspect policy audit or badge
+ok 93 - Mapping: Manager Staff Lead cannot configure, bulk confirm, inspect policy audit or badge
+  ---
+  duration_ms: 41.528375
+  type: 'test'
+  ...
+# Mapping fixture timings (ms): {"queueCold":2.19,"queueWarm":1.05,"filterNeedsMapping":0.09,"sortUnits":0.02,"singleConfirm":1.85,"targetedRebuild":1.92,"bulk29":12.8,"ignoreOn":1.18,"ignoreOff":0.96}
+# Subtest: Mapping: fixture performance for queue, single save, targeted rebuild, bulk and Ignore reversal
+ok 94 - Mapping: fixture performance for queue, single save, targeted rebuild, bulk and Ignore reversal
+  ---
+  duration_ms: 830.622833
+  type: 'test'
+  ...
+# Subtest: Mapping: ambiguous duplicate exact targets cannot be bulk-confirmed and duplicates fail safely
+ok 95 - Mapping: ambiguous duplicate exact targets cannot be bulk-confirmed and duplicates fail safely
+  ---
+  duration_ms: 182.269375
+  type: 'test'
+  ...
+# Subtest: Mapping: opening report automatically refreshes only dirty mapped item with preserved return period
+ok 96 - Mapping: opening report automatically refreshes only dirty mapped item with preserved return period
+  ---
+  duration_ms: 109.235209
+  type: 'test'
+  ...
+# Subtest: Settings: migration initially enables only existing Final and Drink category IDs
+ok 97 - Settings: migration initially enables only existing Final and Drink category IDs
+  ---
+  duration_ms: 73.845125
+  type: 'test'
+  ...
+# Subtest: Settings: Prep Syrup Garnish recipes cannot be searched, suggested or mapped
+ok 98 - Settings: Prep Syrup Garnish recipes cannot be searched, suggested or mapped
+  ---
+  duration_ms: 234.939875
+  type: 'test'
+  ...
+# Subtest: Settings: a new category appears automatically and starts disabled
+ok 99 - Settings: a new category appears automatically and starts disabled
+  ---
+  duration_ms: 49.330291
+  type: 'test'
+  ...
+# Subtest: Settings: Admin enables new category, audits policy, and leaves Recipe/domain facts unchanged
+ok 100 - Settings: Admin enables new category, audits policy, and leaves Recipe/domain facts unchanged
+  ---
+  duration_ms: 114.853208
+  type: 'test'
+  ...
+# Subtest: Settings: Drink rename to Cocktails preserves eligibility identity
+ok 101 - Settings: Drink rename to Cocktails preserves eligibility identity
+  ---
+  duration_ms: 117.490667
+  type: 'test'
+  ...
+# Subtest: Settings: disable category removes new targets and cached suggestions without changing confirmed mappings
+ok 102 - Settings: disable category removes new targets and cached suggestions without changing confirmed mappings
+  ---
+  duration_ms: 111.91175
+  type: 'test'
+  ...
+# Subtest: Settings: category reassignment and future activation refresh only candidate assistance
+ok 103 - Settings: category reassignment and future activation refresh only candidate assistance
+  ---
+  duration_ms: 119.211875
+  type: 'test'
+  ...
+# Subtest: Execution: many Toast identities share one Recipe while quantities, revenue and percentages remain independent
+ok 104 - Execution: many Toast identities share one Recipe while quantities, revenue and percentages remain independent
+  ---
+  duration_ms: 118.159833
+  type: 'test'
+  ...
+# Subtest: Execution: Happy Hour may use a separate eligible Recipe
+ok 105 - Execution: Happy Hour may use a separate eligible Recipe
+  ---
+  duration_ms: 186.288458
+  type: 'test'
+  ...
+# Subtest: Execution: historical output changes select each complete Recipe execution, not current or 1-each output
+ok 106 - Execution: historical output changes select each complete Recipe execution, not current or 1-each output
+  ---
+  duration_ms: 132.87825
+  type: 'test'
+  ...
+# Subtest: Execution: nested Prep yield remains recursive and its costs are not duplicated
+ok 107 - Execution: nested Prep yield remains recursive and its costs are not duplicated
+  ---
+  duration_ms: 142.331375
+  type: 'test'
+  ...
+# Subtest: Execution: Exact and bulk confirmation require no portion configuration
+ok 108 - Execution: Exact and bulk confirmation require no portion configuration
+  ---
+  duration_ms: 109.604
+  type: 'test'
+  ...
+# Subtest: Execution: new mapping API rejects legacy quantity/unit/menu fields
+ok 109 - Execution: new mapping API rejects legacy quantity/unit/menu fields
+  ---
+  duration_ms: 110.596792
+  type: 'test'
+  ...
+# Subtest: Execution: only one current target per Toast GUID, changes are audited and targeted
+ok 110 - Execution: only one current target per Toast GUID, changes are audited and targeted
+  ---
+  duration_ms: 180.540084
+  type: 'test'
+  ...
+# Subtest: Settings: stale settings and stale Exact review fail without partial policy writes
+ok 111 - Settings: stale settings and stale Exact review fail without partial policy writes
+  ---
+  duration_ms: 109.716416
+  type: 'test'
+  ...
+# Subtest: Settings: Manager Staff Lead cannot read or change Mapping Settings
+ok 112 - Settings: Manager Staff Lead cannot read or change Mapping Settings
+  ---
+  duration_ms: 38.461708
+  type: 'test'
+  ...
+# Subtest: Settings: disabled Admin cannot change eligibility
+ok 113 - Settings: disabled Admin cannot change eligibility
+  ---
+  duration_ms: 36.630209
+  type: 'test'
+  ...
+# Subtest: Execution: ordinary mapping UI contains no quantity/unit controls and includes category/settings labels
+ok 114 - Execution: ordinary mapping UI contains no quantity/unit controls and includes category/settings labels
+  ---
+  duration_ms: 36.19175
+  type: 'test'
+  ...
+# Subtest: Execution: current fallback costs the complete current output and remains estimated
+ok 115 - Execution: current fallback costs the complete current output and remains estimated
+  ---
+  duration_ms: 118.620042
+  type: 'test'
+  ...
+# Subtest: Execution: alternate purchase basis remains explicit and scales to complete defined output
+ok 116 - Execution: alternate purchase basis remains explicit and scales to complete defined output
+  ---
+  duration_ms: 183.199583
+  type: 'test'
+  ...
+# Subtest: Execution: missing finished output remains a mapped cost blocker without inferred yield
+ok 117 - Execution: missing finished output remains a mapped cost blocker without inferred yield
+  ---
+  duration_ms: 125.764917
+  type: 'test'
+  ...
+# Subtest: Defect: exact source thirds, SQL aggregates, costs, revenue and averages survive display normalization
+ok 118 - Defect: exact source thirds, SQL aggregates, costs, revenue and averages survive display normalization
+  ---
+  duration_ms: 122.070667
+  type: 'test'
+  ...
+# Subtest: Defect: actual mapping editor submits only the current direct Recipe contract
+ok 119 - Defect: actual mapping editor submits only the current direct Recipe contract
+  ---
+  duration_ms: 121.901708
+  type: 'test'
+  ...
+# Subtest: Composite exact acceptance: three Pork
+ok 120 - Composite exact acceptance: three Pork
+  ---
+  duration_ms: 288.199875
+  type: 'test'
+  ...
+# Subtest: Composite exact acceptance: two Pork one Spam
+ok 121 - Composite exact acceptance: two Pork one Spam
+  ---
+  duration_ms: 292.905917
+  type: 'test'
+  ...
+# Subtest: Composite exact acceptance: one of each
+ok 122 - Composite exact acceptance: one of each
+  ---
+  duration_ms: 295.619916
+  type: 'test'
+  ...
+# Subtest: Composite: array order and duplicate occurrences canonicalize identically
+ok 123 - Composite: array order and duplicate occurrences canonicalize identically
+  ---
+  duration_ms: 311.208875
+  type: 'test'
+  ...
+# Subtest: Composite: explicit option quantity is summed, not row count
+ok 124 - Composite: explicit option quantity is summed, not row count
+  ---
+  duration_ms: 302.614625
+  type: 'test'
+  ...
+# Subtest: Composite: quantity two parent with explicit child totals six is not multiplied twice
+ok 125 - Composite: quantity two parent with explicit child totals six is not multiplied twice
+  ---
+  duration_ms: 307.72825
+  type: 'test'
+  ...
+# Subtest: Composite: split-sale decimal thirds preserve exact parent and child quantities
+ok 126 - Composite: split-sale decimal thirds preserve exact parent and child quantities
+  ---
+  duration_ms: 312.98625
+  type: 'test'
+  ...
+# Subtest: Composite: unsplit modifier quantities on fractional parent fail physical reconciliation
+ok 127 - Composite: unsplit modifier quantities on fractional parent fail physical reconciliation
+  ---
+  duration_ms: 320.963375
+  type: 'test'
+  ...
+# Subtest: Composite: incomplete two-of-three cannot use cost fallback to invent physical choices
+ok 128 - Composite: incomplete two-of-three cannot use cost fallback to invent physical choices
+  ---
+  duration_ms: 335.654459
+  type: 'test'
+  ...
+# Subtest: Composite: unknown fourth option goes to attention and reduces mapping coverage
+ok 129 - Composite: unknown fourth option goes to attention and reduces mapping coverage
+  ---
+  duration_ms: 352.15025
+  type: 'test'
+  ...
+# Subtest: Composite: missing selected group and excess pieces both stay unresolved
+ok 130 - Composite: missing selected group and excess pieces both stay unresolved
+  ---
+  duration_ms: 342.788625
+  type: 'test'
+  ...
+# Subtest: Composite: durable mapping, parent/option renames, materialized provenance and Manager detail
+ok 131 - Composite: durable mapping, parent/option renames, materialized provenance and Manager detail
+  ---
+  duration_ms: 376.89675
+  type: 'test'
+  ...
+# Subtest: Composite: two parent contexts share choices with different option/group GUIDs and keep revenue separate
+ok 132 - Composite: two parent contexts share choices with different option/group GUIDs and keep revenue separate
+  ---
+  duration_ms: 379.4895
+  type: 'test'
+  ...
+# Subtest: Composite: different options can intentionally share one Recipe target
+ok 133 - Composite: different options can intentionally share one Recipe target
+  ---
+  duration_ms: 376.296125
+  type: 'test'
+  ...
+# Subtest: Composite: unknown parent group option, duplicate aliases and invalid physical scales reject atomically
+ok 134 - Composite: unknown parent group option, duplicate aliases and invalid physical scales reject atomically
+  ---
+  duration_ms: 382.621042
+  type: 'test'
+  ...
+# Subtest: Composite: nested group path distinguishes the same leaf group under two different options
+ok 135 - Composite: nested group path distinguishes the same leaf group under two different options
+  ---
+  duration_ms: 379.220041
+  type: 'test'
+  ...
+# Subtest: Composite: ordinary sauce/note modifiers outside configured group never enter cost
+ok 136 - Composite: ordinary sauce/note modifiers outside configured group never enter cost
+  ---
+  duration_ms: 396.613584
+  type: 'test'
+  ...
+# Subtest: Composite: ineligible Recipe targets rejected on preview and save
+ok 137 - Composite: ineligible Recipe targets rejected on preview and save
+  ---
+  duration_ms: 393.778875
+  type: 'test'
+  ...
+# Subtest: Composite: complete historical and current fallback evidence use existing hierarchy
+ok 138 - Composite: complete historical and current fallback evidence use existing hierarchy
+  ---
+  duration_ms: 411.924292
+  type: 'test'
+  ...
+# Subtest: Composite: mixed evidence marks whole parent Estimated and retains subtype evidence
+ok 139 - Composite: mixed evidence marks whole parent Estimated and retains subtype evidence
+  ---
+  duration_ms: 465.060416
+  type: 'test'
+  ...
+# Subtest: Composite: unresolved Recipe cost is red but mapping remains complete
+ok 140 - Composite: unresolved Recipe cost is red but mapping remains complete
+  ---
+  duration_ms: 485.607417
+  type: 'test'
+  ...
+# Subtest: Composite: period weighted average sums actual compositions before dividing parent units
+ok 141 - Composite: period weighted average sums actual compositions before dividing parent units
+  ---
+  duration_ms: 425.593708
+  type: 'test'
+  ...
+# Subtest: Composite: changes invalidate attached parents only and preserve audit and original facts
+ok 142 - Composite: changes invalidate attached parents only and preserve audit and original facts
+  ---
+  duration_ms: 434.341958
+  type: 'test'
+  ...
+# Subtest: Composite: removing or Ignoring parent detaches definition, preserves history, and never restores stale mapping
+ok 143 - Composite: removing or Ignoring parent detaches definition, preserves history, and never restores stale mapping
+  ---
+  duration_ms: 851.673042
+  type: 'test'
+  ...
+# Subtest: Composite: definition save can detach one parent while retaining the other
+ok 144 - Composite: definition save can detach one parent while retaining the other
+  ---
+  duration_ms: 454.473875
+  type: 'test'
+  ...
+# Subtest: Composite: stale version and disabled Admin cannot mutate definitions
+ok 145 - Composite: stale version and disabled Admin cannot mutate definitions
+  ---
+  duration_ms: 469.916708
+  type: 'test'
+  ...
+# Subtest: Composite: Admin configuration, Manager reporting, Staff/Lead cost boundaries
+ok 146 - Composite: Admin configuration, Manager reporting, Staff/Lead cost boundaries
+  ---
+  duration_ms: 484.936209
+  type: 'test'
+  ...
+# Subtest: Composite: Potential Composite takes precedence over exact parent-name assistance without changing Simple mappings
+ok 147 - Composite: Potential Composite takes precedence over exact parent-name assistance without changing Simple mappings
+  ---
+  duration_ms: 202.017958
+  type: 'test'
+  ...
+# Composite fixture timings (ms) {
+#   previewAndBuild: 56.2366669999974,
+#   repeatReport: 5.745832999997219,
+#   resolutions: 2
+# }
+# Subtest: Composite: grouped resolver cache handles 500 mixed sales without 500 recursive costs
+ok 148 - Composite: grouped resolver cache handles 500 mixed sales without 500 recursive costs
+  ---
+  duration_ms: 562.392292
+  type: 'test'
+  ...
+# Subtest: Composite: alternate basis is explicit and makes mixed parent Estimated
+ok 149 - Composite: alternate basis is explicit and makes mixed parent Estimated
+  ---
+  duration_ms: 542.460125
+  type: 'test'
+  ...
+# Subtest: Composite: new observed option can be mapped without replacing stable existing option mappings
+ok 150 - Composite: new observed option can be mapped without replacing stable existing option mappings
+  ---
+  duration_ms: 509.336334
+  type: 'test'
+  ...
+# Subtest: Composite: moving parent between definitions removes stale association from old definition
+ok 151 - Composite: moving parent between definitions removes stale association from old definition
+  ---
+  duration_ms: 508.5495
+  type: 'test'
+  ...
+# Subtest: Composite: Recipe dependency correction invalidates materialized composites
+ok 152 - Composite: Recipe dependency correction invalidates materialized composites
+  ---
+  duration_ms: 541.44025
+  type: 'test'
+  ...
+# Subtest: Variant: one 3/4 choice executes the selected complete Recipe once and preview is read-only
+ok 153 - Variant: one 3/4 choice executes the selected complete Recipe once and preview is read-only
+  ---
+  duration_ms: 367.46475
+  type: 'test'
+  ...
+# Subtest: Variant: no quantity unit or scaling configuration accepted
+ok 154 - Variant: no quantity unit or scaling configuration accepted
+  ---
+  duration_ms: 369.174625
+  type: 'test'
+  ...
+# Subtest: Variant: saved definition reloads stable identities and preserves structured provenance through renames
+ok 155 - Variant: saved definition reloads stable identities and preserves structured provenance through renames
+  ---
+  duration_ms: 390.784917
+  type: 'test'
+  ...
+# Subtest: Variant: future unknown option retains old costs, revenue and historical option mappings
+ok 156 - Variant: future unknown option retains old costs, revenue and historical option mappings
+  ---
+  duration_ms: 391.283875
+  type: 'test'
+  ...
+# Subtest: Variant: missing choice is unresolved without double counting
+ok 157 - Variant: missing choice is unresolved without double counting
+  ---
+  duration_ms: 382.114
+  type: 'test'
+  ...
+# Subtest: Variant: conflicting choice is unresolved without double counting
+ok 158 - Variant: conflicting choice is unresolved without double counting
+  ---
+  duration_ms: 398.951375
+  type: 'test'
+  ...
+# Subtest: Variant: duplicate choice is unresolved without double counting
+ok 159 - Variant: duplicate choice is unresolved without double counting
+  ---
+  duration_ms: 388.016
+  type: 'test'
+  ...
+# Subtest: Variant: exact parent 2 with selector quantity 1
+ok 160 - Variant: exact parent 2 with selector quantity 1
+  ---
+  duration_ms: 388.529459
+  type: 'test'
+  ...
+# Subtest: Variant: exact parent 2 with selector quantity 2
+ok 161 - Variant: exact parent 2 with selector quantity 2
+  ---
+  duration_ms: 380.074209
+  type: 'test'
+  ...
+# Subtest: Variant: exact parent 0.3333333333333333 with selector quantity 1
+ok 162 - Variant: exact parent 0.3333333333333333 with selector quantity 1
+  ---
+  duration_ms: 387.741792
+  type: 'test'
+  ...
+# Subtest: Variant: exact parent 0.3333333333333333 with selector quantity 0.3333333333333333
+ok 163 - Variant: exact parent 0.3333333333333333 with selector quantity 0.3333333333333333
+  ---
+  duration_ms: 389.940792
+  type: 'test'
+  ...
+# Subtest: Variant: separate contexts share a definition and Recipe while revenue stays parent-specific
+ok 164 - Variant: separate contexts share a definition and Recipe while revenue stays parent-specific
+  ---
+  duration_ms: 425.670583
+  type: 'test'
+  ...
+# Subtest: Variant: historical option retained when absent from recent sales and display labels change
+ok 165 - Variant: historical option retained when absent from recent sales and display labels change
+  ---
+  duration_ms: 404.063583
+  type: 'test'
+  ...
+# Subtest: Variant: weighted average uses actual sales mix
+ok 166 - Variant: weighted average uses actual sales mix
+  ---
+  duration_ms: 409.057666
+  type: 'test'
+  ...
+# Subtest: Variant: historical and current fallback mix retains per-sale evidence
+ok 167 - Variant: historical and current fallback mix retains per-sale evidence
+  ---
+  duration_ms: 405.540208
+  type: 'test'
+  ...
+# Subtest: Variant: missing Recipe cost is separate from complete mapping
+ok 168 - Variant: missing Recipe cost is separate from complete mapping
+  ---
+  duration_ms: 513.809875
+  type: 'test'
+  ...
+# Subtest: Variant: targeted invalidation and append-only history preserve facts and unrelated Simple costs
+ok 169 - Variant: targeted invalidation and append-only history preserve facts and unrelated Simple costs
+  ---
+  duration_ms: 421.625042
+  type: 'test'
+  ...
+# Subtest: Variant: parent Ignore detaches definition and preserves audit
+ok 170 - Variant: parent Ignore detaches definition and preserves audit
+  ---
+  duration_ms: 422.98675
+  type: 'test'
+  ...
+# Subtest: Variant: Admin only writes, Manager reads, Staff/Lead denied and stale versions rejected
+ok 171 - Variant: Admin only writes, Manager reads, Staff/Lead denied and stale versions rejected
+  ---
+  duration_ms: 424.454375
+  type: 'test'
+  ...
+# Subtest: Variant: eligible categories and valid observed identities enforced
+ok 172 - Variant: eligible categories and valid observed identities enforced
+  ---
+  duration_ms: 430.10225
+  type: 'test'
+  ...
+# Variant fixture performance {
+#   previewMs: 11.570583000000624,
+#   saveMs: 5.751415999999153,
+#   recalculationMs: 13.789292000001296,
+#   repeatMs: 2.8137080000014976
+# }
+# Subtest: Variant: 500 sales share cached cost resolution and repeat views read materialized knowledge
+ok 173 - Variant: 500 sales share cached cost resolution and repeat views read materialized knowledge
+  ---
+  duration_ms: 492.73
+  type: 'test'
+  ...
+# Subtest: Variant: changing a dependent Recipe cost invalidates only its materialized parent
+ok 174 - Variant: changing a dependent Recipe cost invalidates only its materialized parent
+  ---
+  duration_ms: 468.550041
+  type: 'test'
+  ...
+# Subtest: Queue UX: modal closes without save and returns focus/position; save keeps next row and filters
+ok 175 - Queue UX: modal closes without save and returns focus/position; save keeps next row and filters
+  ---
+  duration_ms: 40.074792
+  type: 'test'
+  ...
+# Subtest: Queue UX: Escape exposes an in-modal discard choice and preserves edits
+ok 176 - Queue UX: Escape exposes an in-modal discard choice and preserves edits
+  ---
+  duration_ms: 37.689125
+  type: 'test'
+  ...
+# Subtest: Queue UX: searchable Variant suggestions never guess ambiguous Recipe targets
+ok 177 - Queue UX: searchable Variant suggestions never guess ambiguous Recipe targets
+  ---
+  duration_ms: 37.248708
+  type: 'test'
+  ...
+# Subtest: Queue UX: neutral choices are manually mappable and details remain inside separated records
+ok 178 - Queue UX: neutral choices are manually mappable and details remain inside separated records
+  ---
+  duration_ms: 37.659459
+  type: 'test'
+  ...
+# Subtest: Variant: disabling eligible category retains existing historical option targets on edit
+ok 179 - Variant: disabling eligible category retains existing historical option targets on edit
+  ---
+  duration_ms: 436.685708
+  type: 'test'
+  ...
+# Subtest: Variant: moving a parent to Composite removes stale Variant binding
+ok 180 - Variant: moving a parent to Composite removes stale Variant binding
+  ---
+  duration_ms: 439.337709
+  type: 'test'
+  ...
+# Subtest: currency presentation 27.988888888888
+ok 181 - currency presentation 27.988888888888
+  ---
+  duration_ms: 0.554334
+  type: 'test'
+  ...
+# Subtest: currency presentation 27.984
+ok 182 - currency presentation 27.984
+  ---
+  duration_ms: 0.073125
+  type: 'test'
+  ...
+# Subtest: currency presentation 14.5
+ok 183 - currency presentation 14.5
+  ---
+  duration_ms: 0.079083
+  type: 'test'
+  ...
+# Subtest: currency presentation 0
+ok 184 - currency presentation 0
+  ---
+  duration_ms: 0.0455
+  type: 'test'
+  ...
+# Subtest: currency presentation -27.985
+ok 185 - currency presentation -27.985
+  ---
+  duration_ms: 0.045167
+  type: 'test'
+  ...
+# Subtest: currency history: prices/totals format without mutating computational quantities
+ok 186 - currency history: prices/totals format without mutating computational quantities
+  ---
+  duration_ms: 0.113584
+  type: 'test'
+  ...
+# Subtest: currency rates: deliberate precision retains small rates while totals use cents
+ok 187 - currency rates: deliberate precision retains small rates while totals use cents
+  ---
+  duration_ms: 0.120834
+  type: 'test'
+  ...
+# Subtest: currency boundary: exact intermediates produce final recipe total before rounding
+ok 188 - currency boundary: exact intermediates produce final recipe total before rounding
+  ---
+  duration_ms: 0.264291
+  type: 'test'
+  ...
+# Subtest: real imported ingredient: price revisions propagate recursively, restore and preserve history
+ok 189 - real imported ingredient: price revisions propagate recursively, restore and preserve history
+  ---
+  duration_ms: 40.512209
+  type: 'test'
+  ...
+# Subtest: imported existing-item mutations: measurement, purchase, metadata, inventory assignment, serialization reload
+ok 190 - imported existing-item mutations: measurement, purchase, metadata, inventory assignment, serialization reload
+  ---
+  duration_ms: 7.648708
+  type: 'test'
+  ...
+# Subtest: imported and UI-created identities share save validation, failed measurement saves are atomic
+ok 191 - imported and UI-created identities share save validation, failed measurement saves are atomic
+  ---
+  duration_ms: 6.517333
+  type: 'test'
+  ...
+# Subtest: currency projection rounds directly from exact total, avoiding double rounding at API precision
+ok 192 - currency projection rounds directly from exact total, avoiding double rounding at API precision
+  ---
+  duration_ms: 0.165083
+  type: 'test'
+  ...
+# Subtest: pre-drop imported Pernod accepts the owner attempted addition through ordinary item save
+ok 193 - pre-drop imported Pernod accepts the owner attempted addition through ordinary item save
+  ---
+  duration_ms: 7.585417
+  type: 'test'
+  ...
+# Subtest: exact decimal arithmetic avoids binary floating point and rounds only at output
+ok 194 - exact decimal arithmetic avoids binary floating point and rounds only at output
+  ---
+  duration_ms: 0.952291
+  type: 'test'
+  ...
+# Subtest: all required standard conversions, including inverse paths and unambiguous ounces
+ok 195 - all required standard conversions, including inverse paths and unambiguous ounces
+  ---
+  duration_ms: 10.046917
+  type: 'test'
+  ...
+# Subtest: ingredient-specific density resolves both directions across mass and volume
+ok 196 - ingredient-specific density resolves both directions across mass and volume
+  ---
+  duration_ms: 7.773
+  type: 'test'
+  ...
+# Subtest: fluid and mass dashes, drops and custom servings never leak across ingredients
+ok 197 - fluid and mass dashes, drops and custom servings never leak across ingredients
+  ---
+  duration_ms: 1.452416
+  type: 'test'
+  ...
+# Subtest: count bridge resolves each to grams and back; multi-bridge paths reach volume
+ok 198 - count bridge resolves each to grams and back; multi-bridge paths reach volume
+  ---
+  duration_ms: 2.47375
+  type: 'test'
+  ...
+# Subtest: conflicting paths are reported with measurement evidence, even on standard-family requests
+ok 199 - conflicting paths are reported with measurement evidence, even on standard-family requests
+  ---
+  duration_ms: 0.79125
+  type: 'test'
+  ...
+# Subtest: pineapple $3 / 12 spears costs $0.25; independent yields have no allocation
+ok 200 - pineapple $3 / 12 spears costs $0.25; independent yields have no allocation
+  ---
+  duration_ms: 2.054958
+  type: 'test'
+  ...
+# Subtest: missing yield saves and propagates; seven resolved lines preserve subtotal and counts
+ok 201 - missing yield saves and propagates; seven resolved lines preserve subtotal and counts
+  ---
+  duration_ms: 19.939208
+  type: 'test'
+  ...
+# Subtest: missing physical bridge does not prevent source or recipe save and later resolves automatically
+ok 202 - missing physical bridge does not prevent source or recipe save and later resolves automatically
+  ---
+  duration_ms: 1.36475
+  type: 'test'
+  ...
+# Subtest: resolved zero water differs from unpriced ingredient and is never auto-added
+ok 203 - resolved zero water differs from unpriced ingredient and is never auto-added
+  ---
+  duration_ms: 1.56875
+  type: 'test'
+  ...
+# Subtest: multiple purchasing options require explicit selection; package is not a global unit
+ok 204 - multiple purchasing options require explicit selection; package is not a global unit
+  ---
+  duration_ms: 0.97125
+  type: 'test'
+  ...
+# Subtest: multi-generation source/source/recipe traversal preserves exact arithmetic
+ok 205 - multi-generation source/source/recipe traversal preserves exact arithmetic
+  ---
+  duration_ms: 5.697583
+  type: 'test'
+  ...
+# Subtest: fixed labor preserves legacy allocation with no inferred time or department
+ok 206 - fixed labor preserves legacy allocation with no inferred time or department
+  ---
+  duration_ms: 0.619042
+  type: 'test'
+  ...
+# Subtest: time labor uses dated department rates and nested material/labor remain separate
+ok 207 - time labor uses dated department rates and nested material/labor remain separate
+  ---
+  duration_ms: 11.792208
+  type: 'test'
+  ...
+# Subtest: configured incomplete labor or missing department rate leaves complete cost null
+ok 208 - configured incomplete labor or missing department rate leaves complete cost null
+  ---
+  duration_ms: 1.034209
+  type: 'test'
+  ...
+# Subtest: historical prices and yields select independent effective revisions
+ok 209 - historical prices and yields select independent effective revisions
+  ---
+  duration_ms: 1.000875
+  type: 'test'
+  ...
+# Subtest: retroactive recording preserves effective and recorded time and as-known history
+ok 210 - retroactive recording preserves effective and recorded time and as-known history
+  ---
+  duration_ms: 0.619583
+  type: 'test'
+  ...
+# Subtest: same-effective corrections require supersession and preserve original record
+ok 211 - same-effective corrections require supersession and preserve original record
+  ---
+  duration_ms: 0.6985
+  type: 'test'
+  ...
+# Subtest: unknown effective facts remain evidence and never acquire a guessed date
+ok 212 - unknown effective facts remain evidence and never acquire a guessed date
+  ---
+  duration_ms: 2.69825
+  type: 'test'
+  ...
+# Subtest: direct, indirect and mixed cycles rejected transactionally with complete path
+ok 213 - direct, indirect and mixed cycles rejected transactionally with complete path
+  ---
+  duration_ms: 1.161042
+  type: 'test'
+  ...
+# Subtest: future graph boundaries and concurrent reciprocal edits cannot create cycles
+ok 214 - future graph boundaries and concurrent reciprocal edits cannot create cycles
+  ---
+  duration_ms: 2.675584
+  type: 'test'
+  ...
+# Subtest: evaluator defensively reports cycle from corrupted legacy-shaped state
+ok 215 - evaluator defensively reports cycle from corrupted legacy-shaped state
+  ---
+  duration_ms: 0.334166
+  type: 'test'
+  ...
+# Subtest: audit groups atomic changes, stores prior/new facts, actor and evidence
+ok 216 - audit groups atomic changes, stores prior/new facts, actor and evidence
+  ---
+  duration_ms: 0.68575
+  type: 'test'
+  ...
+# Subtest: permissions allow internal cost only to Admin/Manager while menu price remains operational
+ok 217 - permissions allow internal cost only to Admin/Manager while menu price remains operational
+  ---
+  duration_ms: 1.926834
+  type: 'test'
+  ...
+# Subtest: historical recipe, measurement and purchase selection revisions independently reproduce costs
+ok 218 - historical recipe, measurement and purchase selection revisions independently reproduce costs
+  ---
+  duration_ms: 1.627584
+  type: 'test'
+  ...
+# Subtest: measurement evidence is not inherited by a source-derived ingredient; keys cannot cross owners
+ok 219 - measurement evidence is not inherited by a source-derived ingredient; keys cannot cross owners
+  ---
+  duration_ms: 0.699417
+  type: 'test'
+  ...
+# Subtest: currency mismatches cannot be silently added and incomplete fixed labor is unresolved
+ok 220 - currency mismatches cannot be silently added and incomplete fixed labor is unresolved
+  ---
+  duration_ms: 0.681084
+  type: 'test'
+  ...
+# Subtest: undated conceptual source relationships reject cycles before activation
+ok 221 - undated conceptual source relationships reject cycles before activation
+  ---
+  duration_ms: 0.350084
+  type: 'test'
+  ...
+# Subtest: selling prices have independent history; archival does not manufacture menu lineage
+ok 222 - selling prices have independent history; archival does not manufacture menu lineage
+  ---
+  duration_ms: 0.295
+  type: 'test'
+  ...
+# Subtest: drop graph: exact 1 drop conversion
+ok 223 - drop graph: exact 1 drop conversion
+  ---
+  duration_ms: 31.3335
+  type: 'test'
+  ...
+# Subtest: drop graph: exact 2 drop conversion
+ok 224 - drop graph: exact 2 drop conversion
+  ---
+  duration_ms: 3.84825
+  type: 'test'
+  ...
+# Subtest: drop graph: exact 5 drop conversion
+ok 225 - drop graph: exact 5 drop conversion
+  ---
+  duration_ms: 4.496
+  type: 'test'
+  ...
+# Subtest: drop graph: exact 6 drop conversion
+ok 226 - drop graph: exact 6 drop conversion
+  ---
+  duration_ms: 2.025875
+  type: 'test'
+  ...
+# Subtest: drop costing: ordinary graph prices real Pernod recipe line
+ok 227 - drop costing: ordinary graph prices real Pernod recipe line
+  ---
+  duration_ms: 4.581625
+  type: 'test'
+  ...
+# Subtest: drop history: future revisions do not rewrite earlier conversion or known-at results
+ok 228 - drop history: future revisions do not rewrite earlier conversion or known-at results
+  ---
+  duration_ms: 8.236208
+  type: 'test'
+  ...
+# Subtest: unit visibility: Admin and Manager see authoritative catalog unit and resolvable detail conversions only
+ok 229 - unit visibility: Admin and Manager see authoritative catalog unit and resolvable detail conversions only
+  ---
+  duration_ms: 3.79275
+  type: 'test'
+  ...
+# Subtest: unit authorization: Staff and Lead retain safe projections and cannot write conversions
+ok 230 - unit authorization: Staff and Lead retain safe projections and cannot write conversions
+  ---
+  duration_ms: 2.334042
+  type: 'test'
+  ...
+# Subtest: unit graph: explicit bottle measurement becomes visible, conflicting drops do not produce a false equivalent
+ok 231 - unit graph: explicit bottle measurement becomes visible, conflicting drops do not produce a false equivalent
+  ---
+  duration_ms: 16.316875
+  type: 'test'
+  ...
+# Subtest: email setup: hashed 256-bit code, 24h, neutral verification, canonical fragment link, no API token
+ok 232 - email setup: hashed 256-bit code, 24h, neutral verification, canonical fragment link, no API token
+  ---
+  duration_ms: 1635.789167
+  type: 'test'
+  ...
+# Subtest: email setup and manual issuance share supersession; purpose cannot cross
+ok 233 - email setup and manual issuance share supersession; purpose cannot cross
+  ---
+  duration_ms: 190.446625
+  type: 'test'
+  ...
+# Subtest: expired, malformed, fabricated setup and verification links fail neutrally
+ok 234 - expired, malformed, fabricated setup and verification links fail neutrally
+  ---
+  duration_ms: 106.477792
+  type: 'test'
+  ...
+# Subtest: verification: single-use, superseded, exact email binding and email-change re-verification
+ok 235 - verification: single-use, superseded, exact email binding and email-change re-verification
+  ---
+  duration_ms: 157.248584
+  type: 'test'
+  ...
+# Subtest: recovery: nonexistent, unverified, disabled and malformed inputs return identical response with no send
+ok 236 - recovery: nonexistent, unverified, disabled and malformed inputs return identical response with no send
+  ---
+  duration_ms: 87.344
+  type: 'test'
+  ...
+# Subtest: reset: one hour, supersession, all sessions revoked, old password rejected, new accepted and single-use
+ok 237 - reset: one hour, supersession, all sessions revoked, old password rejected, new accepted and single-use
+  ---
+  duration_ms: 182.875209
+  type: 'test'
+  ...
+# Subtest: reset: expired token, email change and disabled account invalidate reset
+ok 238 - reset: expired token, email change and disabled account invalidate reset
+  ---
+  duration_ms: 293.096208
+  type: 'test'
+  ...
+# Subtest: password change: current password required, invalidates reset and revokes sessions
+ok 239 - password change: current password required, invalidates reset and revokes sessions
+  ---
+  duration_ms: 344.516584
+  type: 'test'
+  ...
+# Subtest: resend throttles, public neutrality, safe failure and fresh retry without storing plaintext
+ok 240 - resend throttles, public neutrality, safe failure and fresh retry without storing plaintext
+  ---
+  duration_ms: 86.050791
+  type: 'test'
+  ...
+# Subtest: configuration: encrypted secret, no API readback, recipient/header injection rejected and role boundaries
+ok 241 - configuration: encrypted secret, no API readback, recipient/header injection rejected and role boundaries
+  ---
+  duration_ms: 25.934334
+  type: 'test'
+  ...
+# Subtest: origin and template defenses: HTTPS only, no redirect field, no unexpected variables or host substitution
+ok 242 - origin and template defenses: HTTPS only, no redirect field, no unexpected variables or host substitution
+  ---
+  duration_ms: 21.947083
+  type: 'test'
+  ...
+# Subtest: concurrent reset consumption has one winner and audit failure rolls token/password back
+ok 243 - concurrent reset consumption has one winner and audit failure rolls token/password back
+  ---
+  duration_ms: 138.27025
+  type: 'test'
+  ...
+# Subtest: HTTP: neutral public structure/timing, same-origin public POST, authenticated CSRF and role checks
+ok 244 - HTTP: neutral public structure/timing, same-origin public POST, authenticated CSRF and role checks
+  ---
+  duration_ms: 1926.596833
+  type: 'test'
+  ...
+# Subtest: failed create delivery retains account, never returns a token, and retry supersedes the failed credential
+ok 245 - failed create delivery retains account, never returns a token, and retry supersedes the failed credential
+  ---
+  duration_ms: 68.292541
+  type: 'test'
+  ...
+# Subtest: verification compares exact email even if state invalidation is bypassed; own-account payload cannot select identity
+ok 246 - verification compares exact email even if state invalidation is bypassed; own-account payload cannot select identity
+  ---
+  duration_ms: 45.403666
+  type: 'test'
+  ...
+# Subtest: manual setup without email, disabled creation, and invalid email delivery remain transactional
+ok 247 - manual setup without email, disabled creation, and invalid email delivery remain transactional
+  ---
+  duration_ms: 39.180833
+  type: 'test'
+  ...
+# Subtest: durable email limits cap hourly issuance and keep public throttled responses neutral
+ok 248 - durable email limits cap hourly issuance and keep public throttled responses neutral
+  ---
+  duration_ms: 52.598834
+  type: 'test'
+  ...
+# Subtest: reset request provider latency is decoupled and provider failure never reaches public response
+ok 249 - reset request provider latency is decoupled and provider failure never reaches public response
+  ---
+  duration_ms: 44.349125
+  type: 'test'
+  ...
+# Subtest: hosted startup fails closed for missing secrets, account hashes or wrong database/origin
+ok 250 - hosted startup fails closed for missing secrets, account hashes or wrong database/origin
+  ---
+  duration_ms: 68.966666
+  type: 'test'
+  ...
+# Subtest: hosted public HTML contains no review instructions, credentials or automatic sign-in
+ok 251 - hosted public HTML contains no review instructions, credentials or automatic sign-in
+  ---
+  duration_ms: 31.588291
+  type: 'test'
+  ...
+# Subtest: hosted sessions use secure cookies and logout invalidates access
+ok 252 - hosted sessions use secure cookies and logout invalidates access
+  ---
+  duration_ms: 34.442833
+  type: 'test'
+  ...
+# Subtest: hosted authorization, origin and CSRF checks remain authoritative
+ok 253 - hosted authorization, origin and CSRF checks remain authoritative
+  ---
+  duration_ms: 140.182917
+  type: 'test'
+  ...
+# Subtest: hosted has no review runtime/static data or debug routes
+ok 254 - hosted has no review runtime/static data or debug routes
+  ---
+  duration_ms: 35.05325
+  type: 'test'
+  ...
+# Subtest: hosted fingerprinted assets are immutable; HTML, unversioned assets and authenticated APIs remain no-store
+ok 255 - hosted fingerprinted assets are immutable; HTML, unversioned assets and authenticated APIs remain no-store
+  ---
+  duration_ms: 40.271625
+  type: 'test'
+  ...
+# Subtest: session fast path does not read domain state
+ok 256 - session fast path does not read domain state
+  ---
+  duration_ms: 28.060709
+  type: 'test'
+  ...
+# Subtest: inventory: configurable locations share FOH/BOH architecture and stable ordering
+ok 257 - inventory: configurable locations share FOH/BOH architecture and stable ordering
+  ---
+  duration_ms: 4.731625
+  type: 'test'
+  ...
+# Subtest: inventory: one universal item has multiple ordered location assignments without duplication
+ok 258 - inventory: one universal item has multiple ordered location assignments without duplication
+  ---
+  duration_ms: 2.695833
+  type: 'test'
+  ...
+# Subtest: inventory: STAFF can independently count and submit arbitrary-day decimal observations
+ok 259 - inventory: STAFF can independently count and submit arbitrary-day decimal observations
+  ---
+  duration_ms: 5.684083
+  type: 'test'
+  ...
+# Subtest: inventory: LEAD can independently count and submit arbitrary-day decimal observations
+ok 260 - inventory: LEAD can independently count and submit arbitrary-day decimal observations
+  ---
+  duration_ms: 1.266417
+  type: 'test'
+  ...
+# Subtest: inventory: draft ownership, revision IDs and submission entry set prevent lost updates
+ok 261 - inventory: draft ownership, revision IDs and submission entry set prevent lost updates
+  ---
+  duration_ms: 1.904083
+  type: 'test'
+  ...
+# Subtest: inventory: drafts do not enter totals; partial sheets retain omissions rather than inventing zero
+ok 262 - inventory: drafts do not enter totals; partial sheets retain omissions rather than inventing zero
+  ---
+  duration_ms: 10.922209
+  type: 'test'
+  ...
+# Subtest: inventory: overall 3.4 + 6 + 12 is exact and preserves differently aged locations
+ok 263 - inventory: overall 3.4 + 6 + 12 is exact and preserves differently aged locations
+  ---
+  duration_ms: 6.798583
+  type: 'test'
+  ...
+# Subtest: inventory: exact standard conversions and explicitly configured bottle conversion
+ok 264 - inventory: exact standard conversions and explicitly configured bottle conversion
+  ---
+  duration_ms: 2.248458
+  type: 'test'
+  ...
+# Subtest: inventory: unresolved conversions are preserved, propagate null total and never borrow another item measurement
+ok 265 - inventory: unresolved conversions are preserved, propagate null total and never borrow another item measurement
+  ---
+  duration_ms: 8.507584
+  type: 'test'
+  ...
+# Subtest: inventory: later conversion changes and corrections never reinterpret a submitted observation
+ok 266 - inventory: later conversion changes and corrections never reinterpret a submitted observation
+  ---
+  duration_ms: 1.765458
+  type: 'test'
+  ...
+# Subtest: inventory: historical knowledge selects original observation before correction and hides unsubmitted counts
+ok 267 - inventory: historical knowledge selects original observation before correction and hides unsubmitted counts
+  ---
+  duration_ms: 1.77175
+  type: 'test'
+  ...
+# Subtest: inventory: partial later sheet retains older omitted item observation and its true age
+ok 268 - inventory: partial later sheet retains older omitted item observation and its true age
+  ---
+  duration_ms: 1.628834
+  type: 'test'
+  ...
+# Subtest: inventory: equal-time independent observations are an explicit conflict, not last writer wins
+ok 269 - inventory: equal-time independent observations are an explicit conflict, not last writer wins
+  ---
+  duration_ms: 1.29325
+  type: 'test'
+  ...
+# Subtest: inventory: archive assignment, location and ingredient without losing snapshots, observations or corrections
+ok 270 - inventory: archive assignment, location and ingredient without losing snapshots, observations or corrections
+  ---
+  duration_ms: 2.01375
+  type: 'test'
+  ...
+# Subtest: inventory: an existing draft snapshot survives subsequent configuration and archival
+ok 271 - inventory: an existing draft snapshot survives subsequent configuration and archival
+  ---
+  duration_ms: 0.838125
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "-1" cannot mutate observations or audit
+ok 272 - inventory: invalid count "-1" cannot mutate observations or audit
+  ---
+  duration_ms: 0.654625
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "NaN" cannot mutate observations or audit
+ok 273 - inventory: invalid count "NaN" cannot mutate observations or audit
+  ---
+  duration_ms: 0.383875
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "Infinity" cannot mutate observations or audit
+ok 274 - inventory: invalid count "Infinity" cannot mutate observations or audit
+  ---
+  duration_ms: 0.360166
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "-Infinity" cannot mutate observations or audit
+ok 275 - inventory: invalid count "-Infinity" cannot mutate observations or audit
+  ---
+  duration_ms: 0.355709
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "1e3" cannot mutate observations or audit
+ok 276 - inventory: invalid count "1e3" cannot mutate observations or audit
+  ---
+  duration_ms: 9.024708
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "1,000" cannot mutate observations or audit
+ok 277 - inventory: invalid count "1,000" cannot mutate observations or audit
+  ---
+  duration_ms: 1.565792
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count "" cannot mutate observations or audit
+ok 278 - inventory: invalid count "" cannot mutate observations or audit
+  ---
+  duration_ms: 0.482583
+  type: 'test'
+  ...
+# Subtest: inventory: invalid count 1 cannot mutate observations or audit
+ok 279 - inventory: invalid count 1 cannot mutate observations or audit
+  ---
+  duration_ms: 0.464916
+  type: 'test'
+  ...
+# Subtest: inventory: tiny, fractional and large authoritative quantities retain exact totals
+ok 280 - inventory: tiny, fractional and large authoritative quantities retain exact totals
+  ---
+  duration_ms: 1.324125
+  type: 'test'
+  ...
+# Subtest: inventory: capability authorization denies configuration, correction, other sheets and sensitive audits for Lead/Staff
+ok 281 - inventory: capability authorization denies configuration, correction, other sheets and sensitive audits for Lead/Staff
+  ---
+  duration_ms: 2.656833
+  type: 'test'
+  ...
+# Subtest: inventory: correction requires reason and matching revision, and audit preserves actor and old/new quantity
+ok 282 - inventory: correction requires reason and matching revision, and audit preserves actor and old/new quantity
+  ---
+  duration_ms: 1.419792
+  type: 'test'
+  ...
+# Subtest: inventory: invalid future dates, ambiguous units and invented overall write commands reject
+ok 283 - inventory: invalid future dates, ambiguous units and invented overall write commands reject
+  ---
+  duration_ms: 0.517833
+  type: 'test'
+  ...
+# Subtest: inventory: observations use the conversion effective at counting time, not entry time
+ok 284 - inventory: observations use the conversion effective at counting time, not entry time
+  ---
+  duration_ms: 2.336333
+  type: 'test'
+  ...
+# Subtest: inventory: correcting an older sheet never promotes its timestamp above a newer observation
+ok 285 - inventory: correcting an older sheet never promotes its timestamp above a newer observation
+  ---
+  duration_ms: 1.456625
+  type: 'test'
+  ...
+# Subtest: inventory: mixed resolved and unresolved locations preserve exact known subtotal with null overall
+ok 286 - inventory: mixed resolved and unresolved locations preserve exact known subtotal with null overall
+  ---
+  duration_ms: 16.884542
+  type: 'test'
+  ...
+# Subtest: inventory: archived employee identity is retained as observation text without a live-user dependency
+ok 287 - inventory: archived employee identity is retained as observation text without a live-user dependency
+  ---
+  duration_ms: 1.009333
+  type: 'test'
+  ...
+# Subtest: inventory: purchasing package size is not inferred into inventory measurements
+ok 288 - inventory: purchasing package size is not inferred into inventory measurements
+  ---
+  duration_ms: 0.707708
+  type: 'test'
+  ...
+# Subtest: inventory: later assignment archival cannot rewrite historical as-known coverage
+ok 289 - inventory: later assignment archival cannot rewrite historical as-known coverage
+  ---
+  duration_ms: 1.328125
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 16 uses entire 32-hour allotment
+ok 290 - pace: Tuesday actual 16 uses entire 32-hour allotment
+  ---
+  duration_ms: 5.944041
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 20 uses entire 32-hour allotment
+ok 291 - pace: Tuesday actual 20 uses entire 32-hour allotment
+  ---
+  duration_ms: 0.303958
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 24 uses entire 32-hour allotment
+ok 292 - pace: Tuesday actual 24 uses entire 32-hour allotment
+  ---
+  duration_ms: 0.383083
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 28 uses entire 32-hour allotment
+ok 293 - pace: Tuesday actual 28 uses entire 32-hour allotment
+  ---
+  duration_ms: 1.115917
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 32 uses entire 32-hour allotment
+ok 294 - pace: Tuesday actual 32 uses entire 32-hour allotment
+  ---
+  duration_ms: 0.888458
+  type: 'test'
+  ...
+# Subtest: pace: Tuesday actual 36 uses entire 32-hour allotment
+ok 295 - pace: Tuesday actual 36 uses entire 32-hour allotment
+  ---
+  duration_ms: 0.628709
+  type: 'test'
+  ...
+# Subtest: pace: independent departments and weighted overall, weekly context preserved
+ok 296 - pace: independent departments and weighted overall, weekly context preserved
+  ---
+  duration_ms: 1.421541
+  type: 'test'
+  ...
+# Subtest: pace: business-day rollover includes full new day without time prorating
+ok 297 - pace: business-day rollover includes full new day without time prorating
+  ---
+  duration_ms: 12.622917
+  type: 'test'
+  ...
+# Subtest: pace: DST Sunday cutoff uses restaurant business day
+ok 298 - pace: DST Sunday cutoff uses restaurant business day
+  ---
+  duration_ms: 1.445792
+  type: 'test'
+  ...
+# Subtest: allotments: derive exact decimal weekly totals
+ok 299 - allotments: derive exact decimal weekly totals
+  ---
+  duration_ms: 0.412334
+  type: 'test'
+  ...
+# Subtest: allotments: missing (null) suppresses FOH and overall only
+ok 300 - allotments: missing (null) suppresses FOH and overall only
+  ---
+  duration_ms: 0.273875
+  type: 'test'
+  ...
+# Subtest: allotments: missing (["10",null,"12","12","12","12","12"]) suppresses FOH and overall only
+ok 301 - allotments: missing (["10",null,"12","12","12","12","12"]) suppresses FOH and overall only
+  ---
+  duration_ms: 0.181709
+  type: 'test'
+  ...
+# Subtest: allotments: missing (["10"]) suppresses FOH and overall only
+ok 302 - allotments: missing (["10"]) suppresses FOH and overall only
+  ---
+  duration_ms: 0.12675
+  type: 'test'
+  ...
+# Subtest: allotments: missing (["","10","12","12","12","12","12"]) suppresses FOH and overall only
+ok 303 - allotments: missing (["","10","12","12","12","12","12"]) suppresses FOH and overall only
+  ---
+  duration_ms: 0.51625
+  type: 'test'
+  ...
+# Subtest: allotments: invalid (["-1","10","12","12","12","12","12"]) suppresses FOH and overall only
+ok 304 - allotments: invalid (["-1","10","12","12","12","12","12"]) suppresses FOH and overall only
+  ---
+  duration_ms: 0.349333
+  type: 'test'
+  ...
+# Subtest: allotments: daily inputs supersede independent totals without comparison
+ok 305 - allotments: daily inputs supersede independent totals without comparison
+  ---
+  duration_ms: 0.377917
+  type: 'test'
+  ...
+# Subtest: allotments: explicit zero and seven zero days are complete, missing is not
+ok 306 - allotments: explicit zero and seven zero days are complete, missing is not
+  ---
+  duration_ms: 0.567625
+  type: 'test'
+  ...
+# Subtest: pace: valid zero allotment keeps variance but percentage undefined
+ok 307 - pace: valid zero allotment keeps variance but percentage undefined
+  ---
+  duration_ms: 0.31525
+  type: 'test'
+  ...
+# Subtest: pace: exclusions, unassigned, deleted, unresolved and observed open-shift handling unchanged
+ok 308 - pace: exclusions, unassigned, deleted, unresolved and observed open-shift handling unchanged
+  ---
+  duration_ms: 0.538959
+  type: 'test'
+  ...
+# Subtest: pace UI: existing three cards display pace, ratio, variance and weekly context
+ok 309 - pace UI: existing three cards display pace, ratio, variance and weekly context
+  ---
+  duration_ms: 10.970834
+  type: 'test'
+  ...
+# Subtest: allotment UI: read-only weekly sums update immediately, missing cannot save and zero can
+ok 310 - allotment UI: read-only weekly sums update immediately, missing cannot save and zero can
+  ---
+  duration_ms: 3.8415
+  type: 'test'
+  ...
+# Subtest: Labor Pace release: production graph upgrades with 023 and additive Recipe Book tables without account deletion or invented allotments
+ok 311 - Labor Pace release: production graph upgrades with 023 and additive Recipe Book tables without account deletion or invented allotments
+  ---
+  duration_ms: 1803.497125
+  type: 'test'
+  ...
+# Subtest: labor: exact JSON number lexemes survive ingestion including exponents
+ok 312 - labor: exact JSON number lexemes survive ingestion including exponents
+  ---
+  duration_ms: 1557.399583
+  type: 'test'
+  ...
+# Subtest: labor: regular plus overtime is authoritative; breaks are not subtracted twice
+ok 313 - labor: regular plus overtime is authoritative; breaks are not subtracted twice
+  ---
+  duration_ms: 17.987917
+  type: 'test'
+  ...
+# Subtest: labor: completed zero hours is a valid zero
+ok 314 - labor: completed zero hours is a valid zero
+  ---
+  duration_ms: 12.419584
+  type: 'test'
+  ...
+# Subtest: labor: open entry uses elapsed time only through synchronized observation
+ok 315 - labor: open entry uses elapsed time only through synchronized observation
+  ---
+  duration_ms: 14.255
+  type: 'test'
+  ...
+# Subtest: labor: open unpaid breaks subtracted, paid breaks retained
+ok 316 - labor: open unpaid breaks subtracted, paid breaks retained
+  ---
+  duration_ms: 13.977834
+  type: 'test'
+  ...
+# Subtest: labor: ongoing unpaid break and missed/waived breaks handled
+ok 317 - labor: ongoing unpaid break and missed/waived breaks handled
+  ---
+  duration_ms: 13.76075
+  type: 'test'
+  ...
+# Subtest: labor: ambiguous, overlapping and stale open shifts stay unresolved
+ok 318 - labor: ambiguous, overlapping and stale open shifts stay unresolved
+  ---
+  duration_ms: 18.553708
+  type: 'test'
+  ...
+# Subtest: labor: authoritative closed hours replace provisional estimate
+ok 319 - labor: authoritative closed hours replace provisional estimate
+  ---
+  duration_ms: 52.955125
+  type: 'test'
+  ...
+# Subtest: labor: job-specific classification for one employee
+ok 320 - labor: job-specific classification for one employee
+  ---
+  duration_ms: 43.643959
+  type: 'test'
+  ...
+# Subtest: labor: unassigned and excluded are distinct and not in overall
+ok 321 - labor: unassigned and excluded are distinct and not in overall
+  ---
+  duration_ms: 38.867417
+  type: 'test'
+  ...
+# Subtest: labor: percentage and remaining hours deterministic
+ok 322 - labor: percentage and remaining hours deterministic
+  ---
+  duration_ms: 24.476875
+  type: 'test'
+  ...
+# Subtest: labor: over target percentage uncapped and positive over hours
+ok 323 - labor: over target percentage uncapped and positive over hours
+  ---
+  duration_ms: 21.593334
+  type: 'test'
+  ...
+# Subtest: labor: exact 100 percent and zero target semantics
+ok 324 - labor: exact 100 percent and zero target semantics
+  ---
+  duration_ms: 32.582041
+  type: 'test'
+  ...
+# Subtest: labor: missing target retains known worked hours without fabricated target
+ok 325 - labor: missing target retains known worked hours without fabricated target
+  ---
+  duration_ms: 27.320292
+  type: 'test'
+  ...
+# Subtest: labor: no premature rounding of components
+ok 326 - labor: no premature rounding of components
+  ---
+  duration_ms: 17.703916
+  type: 'test'
+  ...
+# Subtest: labor: business cutoff respects timezone and DST transitions
+ok 327 - labor: business cutoff respects timezone and DST transitions
+  ---
+  duration_ms: 34.298333
+  type: 'test'
+  ...
+# Subtest: labor: fixed Sunday through Saturday boundaries ignore legacy week rules
+ok 328 - labor: fixed Sunday through Saturday boundaries ignore legacy week rules
+  ---
+  duration_ms: 22.491208
+  type: 'test'
+  ...
+# Subtest: labor: jobs and employees synchronize by GUID, without credentials or PII
+ok 329 - labor: jobs and employees synchronize by GUID, without credentials or PII
+  ---
+  duration_ms: 62.17775
+  type: 'test'
+  ...
+# Subtest: labor: synchronization idempotently updates changed entries and retains job identity
+ok 330 - labor: synchronization idempotently updates changed entries and retains job identity
+  ---
+  duration_ms: 37.155667
+  type: 'test'
+  ...
+# Subtest: labor: deleted Toast entries are removed from actual hours
+ok 331 - labor: deleted Toast entries are removed from actual hours
+  ---
+  duration_ms: 50.707042
+  type: 'test'
+  ...
+# Subtest: labor: missing entries in complete business-date response are reconciled
+ok 332 - labor: missing entries in complete business-date response are reconciled
+  ---
+  duration_ms: 45.843416
+  type: 'test'
+  ...
+# Subtest: labor: mapping FOH, BOH, Excluded and Unassigned persists
+ok 333 - labor: mapping FOH, BOH, Excluded and Unassigned persists
+  ---
+  duration_ms: 60.869333
+  type: 'test'
+  ...
+# Subtest: labor: classification changes immediately update historical interpretation
+ok 334 - labor: classification changes immediately update historical interpretation
+  ---
+  duration_ms: 43.89075
+  type: 'test'
+  ...
+# Subtest: labor: standing targets carry forward and current-week changes preserve completed weeks
+ok 335 - labor: standing targets carry forward and current-week changes preserve completed weeks
+  ---
+  duration_ms: 47.79925
+  type: 'test'
+  ...
+# Subtest: labor: derived target concurrency, invalid hours, manual totals and caller-supplied dates rejected
+ok 336 - labor: derived target concurrency, invalid hours, manual totals and caller-supplied dates rejected
+  ---
+  duration_ms: 86.840625
+  type: 'test'
+  ...
+# Subtest: labor: configurable week endpoint is retired
+ok 337 - labor: configurable week endpoint is retired
+  ---
+  duration_ms: 144.451583
+  type: 'test'
+  ...
+# Subtest: labor: no synced data is unavailable, not zero
+ok 338 - labor: no synced data is unavailable, not zero
+  ---
+  duration_ms: 217.147458
+  type: 'test'
+  ...
+# Subtest: labor: stale data and failed sync preserve snapshot with explicit status
+ok 339 - labor: stale data and failed sync preserve snapshot with explicit status
+  ---
+  duration_ms: 134.080791
+  type: 'test'
+  ...
+# Subtest: labor: synchronization is throttled across service instances
+ok 340 - labor: synchronization is throttled across service instances
+  ---
+  duration_ms: 23.193166
+  type: 'test'
+  ...
+# Subtest: labor: dashboard performs bounded week read without domain/costing load or Toast calls
+ok 341 - labor: dashboard performs bounded week read without domain/costing load or Toast calls
+  ---
+  duration_ms: 26.805875
+  type: 'test'
+  ...
+# Subtest: labor: Manager can view/refresh but cannot configure policy; Staff/Lead denied
+ok 342 - labor: Manager can view/refresh but cannot configure policy; Staff/Lead denied
+  ---
+  duration_ms: 25.6035
+  type: 'test'
+  ...
+# Subtest: labor: audit failure rolls policy changes back
+ok 343 - labor: audit failure rolls policy changes back
+  ---
+  duration_ms: 48.035541
+  type: 'test'
+  ...
+# Subtest: labor: invalid sync payload rolls entire synchronization back
+ok 344 - labor: invalid sync payload rolls entire synchronization back
+  ---
+  duration_ms: 23.298834
+  type: 'test'
+  ...
+# Subtest: labor: Toast client only GETs data, authenticates server-side and caches token
+ok 345 - labor: Toast client only GETs data, authenticates server-side and caches token
+  ---
+  duration_ms: 20.767833
+  type: 'test'
+  ...
+# Subtest: labor: unexpected pagination and unauthorized scope fail safely
+ok 346 - labor: unexpected pagination and unauthorized scope fail safely
+  ---
+  duration_ms: 15.586542
+  type: 'test'
+  ...
+# Subtest: labor: Sunday weeks never truncate at legacy rule transitions
+ok 347 - labor: Sunday weeks never truncate at legacy rule transitions
+  ---
+  duration_ms: 14.648584
+  type: 'test'
+  ...
+# Subtest: labor HTTP: direct APIs enforce capability, CSRF and strict configuration payloads
+ok 348 - labor HTTP: direct APIs enforce capability, CSRF and strict configuration payloads
+  ---
+  duration_ms: 260.559292
+  type: 'test'
+  ...
+# Subtest: labor UI: script is loaded and navigation gives Manager read functions without Admin policy controls
+ok 349 - labor UI: script is loaded and navigation gives Manager read functions without Admin policy controls
+  ---
+  duration_ms: 86.388541
+  type: 'test'
+  ...
+# Subtest: labor: referenced historical jobs absent from current list are fetched and remain classifiable
+ok 350 - labor: referenced historical jobs absent from current list are fetched and remain classifiable
+  ---
+  duration_ms: 109.290708
+  type: 'test'
+  ...
+# Subtest: labor: disappearing current jobs become inactive without losing historical identity
+ok 351 - labor: disappearing current jobs become inactive without losing historical identity
+  ---
+  duration_ms: 67.587458
+  type: 'test'
+  ...
+# Subtest: labor: automatic current week works without rules or targets
+ok 352 - labor: automatic current week works without rules or targets
+  ---
+  duration_ms: 20.19175
+  type: 'test'
+  ...
+# Subtest: labor UI: session routing waits for all deferred area scripts before startup
+ok 353 - labor UI: session routing waits for all deferred area scripts before startup
+  ---
+  duration_ms: 34.583792
+  type: 'test'
+  ...
+# Subtest: labor: two changes in active week use latest derived revision and retain audit history
+ok 354 - labor: two changes in active week use latest derived revision and retain audit history
+  ---
+  duration_ms: 23.697916
+  type: 'test'
+  ...
+# Subtest: labor: standing target save leaves existing Owner job classifications untouched
+ok 355 - labor: standing target save leaves existing Owner job classifications untouched
+  ---
+  duration_ms: 20.578417
+  type: 'test'
+  ...
+# Subtest: labor: first standing target never backfills completed unconfigured weeks
+ok 356 - labor: first standing target never backfills completed unconfigured weeks
+  ---
+  duration_ms: 18.425458
+  type: 'test'
+  ...
+# Subtest: labor: same-instant standing saves resolve by monotonic revision
+ok 357 - labor: same-instant standing saves resolve by monotonic revision
+  ---
+  duration_ms: 21.618458
+  type: 'test'
+  ...
+# Subtest: labor: migration retains original targets and mappings while carrying established values forward
+ok 358 - labor: migration retains original targets and mappings while carrying established values forward
+  ---
+  duration_ms: 27.425791
+  type: 'test'
+  ...
+# Subtest: labor periods: default and This Week resolve current Sunday–Saturday
+ok 359 - labor periods: default and This Week resolve current Sunday–Saturday
+  ---
+  duration_ms: 13.4345
+  type: 'test'
+  ...
+# Subtest: labor periods: Last Week resolves previous Sunday–Saturday
+ok 360 - labor periods: Last Week resolves previous Sunday–Saturday
+  ---
+  duration_ms: 10.946208
+  type: 'test'
+  ...
+# Subtest: labor periods: single day remains one day without target semantics
+ok 361 - labor periods: single day remains one day without target semantics
+  ---
+  duration_ms: 12.668583
+  type: 'test'
+  ...
+# Subtest: labor periods: arbitrary dates and month/year boundaries are not snapped to weeks
+ok 362 - labor periods: arbitrary dates and month/year boundaries are not snapped to weeks
+  ---
+  duration_ms: 12.198833
+  type: 'test'
+  ...
+# Subtest: labor periods: exact custom historical week qualifies, multiple weeks do not
+ok 363 - labor periods: exact custom historical week qualifies, multiple weeks do not
+  ---
+  duration_ms: 11.231625
+  type: 'test'
+  ...
+# Subtest: labor periods: 4 a.m. Pacific Sunday cutoff determines current and last week
+ok 364 - labor periods: 4 a.m. Pacific Sunday cutoff determines current and last week
+  ---
+  duration_ms: 10.621958
+  type: 'test'
+  ...
+# Subtest: labor periods: reject reversed, incomplete, invalid and mixed selections
+ok 365 - labor periods: reject reversed, incomplete, invalid and mixed selections
+  ---
+  duration_ms: 11.095709
+  type: 'test'
+  ...
+# Subtest: labor periods: exact week retains standing targets but partial range suppresses comparisons
+ok 366 - labor periods: exact week retains standing targets but partial range suppresses comparisons
+  ---
+  duration_ms: 23.515833
+  type: 'test'
+  ...
+# Subtest: labor periods: custom aggregation preserves FOH/BOH and separate excluded/unassigned hours
+ok 367 - labor periods: custom aggregation preserves FOH/BOH and separate excluded/unassigned hours
+  ---
+  duration_ms: 25.348042
+  type: 'test'
+  ...
+# Subtest: labor periods: refresh fetches exactly the requested dates, reuses fresh finalized history
+ok 368 - labor periods: refresh fetches exactly the requested dates, reuses fresh finalized history
+  ---
+  duration_ms: 24.244708
+  type: 'test'
+  ...
+# Subtest: labor periods: long requests sync in bounded batches with incomplete coverage explicit
+ok 369 - labor periods: long requests sync in bounded batches with incomplete coverage explicit
+  ---
+  duration_ms: 72.991792
+  type: 'test'
+  ...
+# Subtest: labor periods: Last Week dashboard resolves that completed weeks historical target
+ok 370 - labor periods: Last Week dashboard resolves that completed weeks historical target
+  ---
+  duration_ms: 49.577666
+  type: 'test'
+  ...
+# Subtest: labor periods UI: controls and custom actual-only presentation omit misleading target fields
+ok 371 - labor periods UI: controls and custom actual-only presentation omit misleading target fields
+  ---
+  duration_ms: 67.191666
+  type: 'test'
+  ...
+# Subtest: current mapping: FOH applies immediately to old and new entries
+ok 372 - current mapping: FOH applies immediately to old and new entries
+  ---
+  duration_ms: 34.628709
+  type: 'test'
+  ...
+# Subtest: current mapping: BOH applies immediately to old and new entries
+ok 373 - current mapping: BOH applies immediately to old and new entries
+  ---
+  duration_ms: 20.279333
+  type: 'test'
+  ...
+# Subtest: current mapping: Excluded applies immediately to old and new entries
+ok 374 - current mapping: Excluded applies immediately to old and new entries
+  ---
+  duration_ms: 19.836583
+  type: 'test'
+  ...
+# Subtest: current mapping: Unassigned to FOH moves historical hours and target use
+ok 375 - current mapping: Unassigned to FOH moves historical hours and target use
+  ---
+  duration_ms: 24.914208
+  type: 'test'
+  ...
+# Subtest: current mapping: Unassigned to BOH moves historical hours and target use
+ok 376 - current mapping: Unassigned to BOH moves historical hours and target use
+  ---
+  duration_ms: 19.1325
+  type: 'test'
+  ...
+# Subtest: current mapping: reclassification updates completed weeks while preserving original evidence
+ok 377 - current mapping: reclassification updates completed weeks while preserving original evidence
+  ---
+  duration_ms: 22.062417
+  type: 'test'
+  ...
+# Subtest: current mapping: bucket reconciliation independently matches applicable Toast worked quantities
+ok 378 - current mapping: bucket reconciliation independently matches applicable Toast worked quantities
+  ---
+  duration_ms: 11.519375
+  type: 'test'
+  ...
+# Subtest: current mapping: deleted and unresolved entries explicitly excluded from reconciliation
+ok 379 - current mapping: deleted and unresolved entries explicitly excluded from reconciliation
+  ---
+  duration_ms: 12.178833
+  type: 'test'
+  ...
+# Subtest: current mapping: targets and actual Toast observations never change on reclassification
+ok 380 - current mapping: targets and actual Toast observations never change on reclassification
+  ---
+  duration_ms: 22.809625
+  type: 'test'
+  ...
+# Subtest: current mapping: Admin-only saves reject Staff Lead Manager
+ok 381 - current mapping: Admin-only saves reject Staff Lead Manager
+  ---
+  duration_ms: 14.845291
+  type: 'test'
+  ...
+# Subtest: current mapping: rejects effective-date controls malformed areas and missing concurrency
+ok 382 - current mapping: rejects effective-date controls malformed areas and missing concurrency
+  ---
+  duration_ms: 17.33175
+  type: 'test'
+  ...
+# Subtest: current mapping: concurrent changes reject stale edit atomically
+ok 383 - current mapping: concurrent changes reject stale edit atomically
+  ---
+  duration_ms: 20.224625
+  type: 'test'
+  ...
+# Subtest: current mapping: audit failure rolls back current pointer and history
+ok 384 - current mapping: audit failure rolls back current pointer and history
+  ---
+  duration_ms: 18.833333
+  type: 'test'
+  ...
+# Subtest: current mapping: batch conflict rolls back first pointer and audit
+ok 385 - current mapping: batch conflict rolls back first pointer and audit
+  ---
+  duration_ms: 49.768416
+  type: 'test'
+  ...
+# Subtest: current mapping: duplicate job mutations are rejected
+ok 386 - current mapping: duplicate job mutations are rejected
+  ---
+  duration_ms: 17.746292
+  type: 'test'
+  ...
+# Subtest: current mapping: unchanged save avoids duplicate audit and survives service reload
+ok 387 - current mapping: unchanged save avoids duplicate audit and survives service reload
+  ---
+  duration_ms: 17.674
+  type: 'test'
+  ...
+# Subtest: current mapping UI: simple current dropdown saves changes without historical controls
+ok 388 - current mapping UI: simple current dropdown saves changes without historical controls
+  ---
+  duration_ms: 17.304875
+  type: 'test'
+  ...
+# Subtest: current mapping migration: preserves selected current policy and ignores future activation without deleting evidence
+ok 389 - current mapping migration: preserves selected current policy and ignores future activation without deleting evidence
+  ---
+  duration_ms: 18.75625
+  type: 'test'
+  ...
+# Subtest: pace service: migration keeps weekly targets with no invented daily allocation
+ok 390 - pace service: migration keeps weekly targets with no invented daily allocation
+  ---
+  duration_ms: 17.681958
+  type: 'test'
+  ...
+# Subtest: pace service: changing a daily allotment atomically derives weekly target and retains history
+ok 391 - pace service: changing a daily allotment atomically derives weekly target and retains history
+  ---
+  duration_ms: 20.677667
+  type: 'test'
+  ...
+# Subtest: pace service: incomplete or invalid days reject without changing either department
+ok 392 - pace service: incomplete or invalid days reject without changing either department
+  ---
+  duration_ms: 24.38675
+  type: 'test'
+  ...
+# Subtest: pace service: failed save rolls back daily inputs, derived totals and audit atomically
+ok 393 - pace service: failed save rolls back daily inputs, derived totals and audit atomically
+  ---
+  duration_ms: 21.733292
+  type: 'test'
+  ...
+# Subtest: pace service: beginning Tuesday, midday, day and week rollover with observed actuals
+ok 394 - pace service: beginning Tuesday, midday, day and week rollover with observed actuals
+  ---
+  duration_ms: 24.774542
+  type: 'test'
+  ...
+# Subtest: pace service: historical full weeks retain comparisons and partial ranges remain actual-only
+ok 395 - pace service: historical full weeks retain comparisons and partial ranges remain actual-only
+  ---
+  duration_ms: 21.126667
+  type: 'test'
+  ...
+# Subtest: pace migration: existing weekly revisions and classifications preserved, daily columns remain null
+ok 396 - pace migration: existing weekly revisions and classifications preserved, daily columns remain null
+  ---
+  duration_ms: 18.6085
+  type: 'test'
+  ...
+# Subtest: release audit: Admin HTTP and real UI handlers save/reload daily configuration after nullable migration
+ok 397 - release audit: Admin HTTP and real UI handlers save/reload daily configuration after nullable migration
+  ---
+  duration_ms: 124.684084
+  type: 'test'
+  ...
+# Subtest: derived targets: prior manual historical totals remain unchanged after current daily configuration
+ok 398 - derived targets: prior manual historical totals remain unchanged after current daily configuration
+  ---
+  duration_ms: 69.641875
+  type: 'test'
+  ...
+# Subtest: derived targets: current pre-correction daily arrays override old total without mutating historical evidence
+ok 399 - derived targets: current pre-correction daily arrays override old total without mutating historical evidence
+  ---
+  duration_ms: 46.26975
+  type: 'test'
+  ...
+# Subtest: derived targets: explicit zeros save and reload, all-zero weekly totals never divide by zero
+ok 400 - derived targets: explicit zeros save and reload, all-zero weekly totals never divide by zero
+  ---
+  duration_ms: 45.187917
+  type: 'test'
+  ...
+# Subtest: derived targets: independent invalid legacy daily inputs suppress affected pace
+ok 401 - derived targets: independent invalid legacy daily inputs suppress affected pace
+  ---
+  duration_ms: 21.092959
+  type: 'test'
+  ...
+# Subtest: management: configurable category identity, ordering, renaming and archival retain assignments and audits
+ok 402 - management: configurable category identity, ordering, renaming and archival retain assignments and audits
+  ---
+  duration_ms: 20.241333
+  type: 'test'
+  ...
+# Subtest: management: recipe detail preserves output link, recursive prep cost and exact mapped portion percentage
+ok 403 - management: recipe detail preserves output link, recursive prep cost and exact mapped portion percentage
+  ---
+  duration_ms: 22.490416
+  type: 'test'
+  ...
+# Subtest: management: STAFF cannot manage categories or receive internal costs
+ok 404 - management: STAFF cannot manage categories or receive internal costs
+  ---
+  duration_ms: 1.441792
+  type: 'test'
+  ...
+# Subtest: management: LEAD cannot manage categories or receive internal costs
+ok 405 - management: LEAD cannot manage categories or receive internal costs
+  ---
+  duration_ms: 1.3135
+  type: 'test'
+  ...
+# Subtest: management: item table supports combined search, type, category, active state and stable ascending/descending sorting
+ok 406 - management: item table supports combined search, type, category, active state and stable ascending/descending sorting
+  ---
+  duration_ms: 0.455625
+  type: 'test'
+  ...
+# Subtest: management: recipe search and category identity filtering survive rename and inactive categories
+ok 407 - management: recipe search and category identity filtering survive rename and inactive categories
+  ---
+  duration_ms: 0.077166
+  type: 'test'
+  ...
+# Subtest: management: blank, zero and mismatched-currency selling prices never invent cost percentages
+ok 408 - management: blank, zero and mismatched-currency selling prices never invent cost percentages
+  ---
+  duration_ms: 3.028375
+  type: 'test'
+  ...
+# Subtest: management: compact table renderer supplies semantic headers, linked records, empty state and scroll region
+ok 409 - management: compact table renderer supplies semantic headers, linked records, empty state and scroll region
+  ---
+  duration_ms: 0.999583
+  type: 'test'
+  ...
+# Subtest: management: uncategorized filter includes only unassigned recipes and item categories
+ok 410 - management: uncategorized filter includes only unassigned recipes and item categories
+  ---
+  duration_ms: 0.283125
+  type: 'test'
+  ...
+# Subtest: management: new recipe and category assignment save atomically through existing item workflow
+ok 411 - management: new recipe and category assignment save atomically through existing item workflow
+  ---
+  duration_ms: 1.676083
+  type: 'test'
+  ...
+# Subtest: migration: scientific numeric lexemes expand exactly, malformed/negative/missing never become zero
+ok 412 - migration: scientific numeric lexemes expand exactly, malformed/negative/missing never become zero
+  ---
+  duration_ms: 1.505666
+  type: 'test'
+  ...
+# Subtest: migration: identical source and activation produce deterministic complete states and provenance
+ok 413 - migration: identical source and activation produce deterministic complete states and provenance
+  ---
+  duration_ms: 65.14675
+  type: 'test'
+  ...
+# Subtest: migration: actual Demerara syrup relationships, category and exact recursive costs survive import
+ok 414 - migration: actual Demerara syrup relationships, category and exact recursive costs survive import
+  ---
+  duration_ms: 5.50175
+  type: 'test'
+  ...
+# Subtest: migration: Egg Roll Wraps keeps zero-price evidence without invented size or valid purchase package
+ok 415 - migration: Egg Roll Wraps keeps zero-price evidence without invented size or valid purchase package
+  ---
+  duration_ms: 8.682875
+  type: 'test'
+  ...
+# Subtest: migration: valid explicit zero purchase price resolves as zero; cached costs never act as fallback
+ok 416 - migration: valid explicit zero purchase price resolves as zero; cached costs never act as fallback
+  ---
+  duration_ms: 5.117708
+  type: 'test'
+  ...
+# Subtest: migration: duplicate-looking definition names are reported and never silently merged
+ok 417 - migration: duplicate-looking definition names are reported and never silently merged
+  ---
+  duration_ms: 3.297792
+  type: 'test'
+  ...
+# Subtest: migration: unknown units and quantities preserve unresolved recipe lines and evidence
+ok 418 - migration: unknown units and quantities preserve unresolved recipe lines and evidence
+  ---
+  duration_ms: 10.030417
+  type: 'test'
+  ...
+# Subtest: migration: missing ingredient-specific measurement blocks cost instead of reusing cached source cost
+ok 419 - migration: missing ingredient-specific measurement blocks cost instead of reusing cached source cost
+  ---
+  duration_ms: 4.187459
+  type: 'test'
+  ...
+# Subtest: migration: management shows unknown package contents and real recipe output quantities
+ok 420 - migration: management shows unknown package contents and real recipe output quantities
+  ---
+  duration_ms: 10.575834
+  type: 'test'
+  ...
+# Subtest: approved package rounding normalizes only the observed 33.8 artifact
+ok 421 - approved package rounding normalizes only the observed 33.8 artifact
+  ---
+  duration_ms: 0.685334
+  type: 'test'
+  ...
+# Subtest: package rounding preserves raw workbook evidence and normalizes package label and contents
+ok 422 - package rounding preserves raw workbook evidence and normalizes package label and contents
+  ---
+  duration_ms: 15.251916
+  type: 'test'
+  ...
+# Subtest: request-scoped memoization preserves exact recursive results, references, quantities and dates
+ok 423 - request-scoped memoization preserves exact recursive results, references, quantities and dates
+  ---
+  duration_ms: 26.530291
+  type: 'test'
+  ...
+# Subtest: memoization never reuses unresolved caller-specific blocker paths
+ok 424 - memoization never reuses unresolved caller-specific blocker paths
+  ---
+  duration_ms: 0.823625
+  type: 'test'
+  ...
+# Subtest: compact DTOs omit formulas/history/evidence and preserve Staff/Lead cost restrictions
+ok 425 - compact DTOs omit formulas/history/evidence and preserve Staff/Lead cost restrictions
+  ---
+  duration_ms: 4.82925
+  type: 'test'
+  ...
+# Subtest: real Wahi compact current costs match authoritative calculations for every imported item/recipe
+ok 426 - real Wahi compact current costs match authoritative calculations for every imported item/recipe
+  ---
+  duration_ms: 15.902375
+  type: 'test'
+  ...
+# Subtest: PostgreSQL migration is explicit, transactional, idempotent and isolated
+ok 427 - PostgreSQL migration is explicit, transactional, idempotent and isolated
+  ---
+  duration_ms: 1741.332833
+  type: 'test'
+  ...
+# Subtest: PostgreSQL stores exact prices, recipe lines/steps, partial costs and transactional audit
+ok 428 - PostgreSQL stores exact prices, recipe lines/steps, partial costs and transactional audit
+  ---
+  duration_ms: 213.416291
+  type: 'test'
+  ...
+# Subtest: PostgreSQL rolls back domain changes if audit insertion fails
+ok 429 - PostgreSQL rolls back domain changes if audit insertion fails
+  ---
+  duration_ms: 78.541459
+  type: 'test'
+  ...
+# Subtest: PostgreSQL serializes independent writers to prevent mixed dependency cycles
+ok 430 - PostgreSQL serializes independent writers to prevent mixed dependency cycles
+  ---
+  duration_ms: 47.688084
+  type: 'test'
+  ...
+# Subtest: PostgreSQL prevents history mutation and foreign reference corruption
+ok 431 - PostgreSQL prevents history mutation and foreign reference corruption
+  ---
+  duration_ms: 25.766208
+  type: 'test'
+  ...
+# Subtest: PostgreSQL persists historical measurements, labor, menu prices and operational projections
+ok 432 - PostgreSQL persists historical measurements, labor, menu prices and operational projections
+  ---
+  duration_ms: 104.1055
+  type: 'test'
+  ...
+# Subtest: Phase 1 connection factory refuses remote database configuration and legacy fallback
+ok 433 - Phase 1 connection factory refuses remote database configuration and legacy fallback
+  ---
+  duration_ms: 0.231792
+  type: 'test'
+  ...
+# Subtest: PostgreSQL concurrent price updates retain history and reject same-effective ambiguity
+ok 434 - PostgreSQL concurrent price updates retain history and reject same-effective ambiguity
+  ---
+  duration_ms: 47.442
+  type: 'test'
+  ...
+# Subtest: PostgreSQL concurrent yield updates retain history and reject same-effective ambiguity
+ok 435 - PostgreSQL concurrent yield updates retain history and reject same-effective ambiguity
+  ---
+  duration_ms: 99.291375
+  type: 'test'
+  ...
+# Subtest: PostgreSQL concurrent recipe updates retain history and reject same-effective ambiguity
+ok 436 - PostgreSQL concurrent recipe updates retain history and reject same-effective ambiguity
+  ---
+  duration_ms: 87.08275
+  type: 'test'
+  ...
+# Subtest: PostgreSQL concurrent basis updates retain history and reject same-effective ambiguity
+ok 437 - PostgreSQL concurrent basis updates retain history and reject same-effective ambiguity
+  ---
+  duration_ms: 156.965791
+  type: 'test'
+  ...
+# Subtest: PostgreSQL archive lifecycle persists while immutable package and recipe facts remain protected
+ok 438 - PostgreSQL archive lifecycle persists while immutable package and recipe facts remain protected
+  ---
+  duration_ms: 51.231334
+  type: 'test'
+  ...
+# Subtest: PostgreSQL rejects invalid physical NUMERIC values directly, including NaN and infinity
+ok 439 - PostgreSQL rejects invalid physical NUMERIC values directly, including NaN and infinity
+  ---
+  duration_ms: 176.752667
+  type: 'test'
+  ...
+# Subtest: PostgreSQL directly enforces revision scope collisions and preserves explicit supersession
+ok 440 - PostgreSQL directly enforces revision scope collisions and preserves explicit supersession
+  ---
+  duration_ms: 72.5015
+  type: 'test'
+  ...
+# Subtest: PostgreSQL grouped source/basis/audit transaction rolls back completely on audit failure
+ok 441 - PostgreSQL grouped source/basis/audit transaction rolls back completely on audit failure
+  ---
+  duration_ms: 45.654125
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: two employees count different locations simultaneously with exact derived total
+ok 442 - PostgreSQL inventory: two employees count different locations simultaneously with exact derived total
+  ---
+  duration_ms: 79.053
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: concurrent distinct entries survive; competing edits of one entry conflict
+ok 443 - PostgreSQL inventory: concurrent distinct entries survive; competing edits of one entry conflict
+  ---
+  duration_ms: 84.129708
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: concurrent manager corrections reject a stale version and retain both original and winner
+ok 444 - PostgreSQL inventory: concurrent manager corrections reject a stale version and retain both original and winner
+  ---
+  duration_ms: 171.16875
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: location archival racing correction keeps all historical observations
+ok 445 - PostgreSQL inventory: location archival racing correction keeps all historical observations
+  ---
+  duration_ms: 141.477541
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: audit insertion failure rolls back correction and preserves effective count
+ok 446 - PostgreSQL inventory: audit insertion failure rolls back correction and preserves effective count
+  ---
+  duration_ms: 57.53825
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: fractional conversion evidence and history survive repository reopening and conversion changes
+ok 447 - PostgreSQL inventory: fractional conversion evidence and history survive repository reopening and conversion changes
+  ---
+  duration_ms: 65.545375
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: constraints reject invalid numeric counts, destructive history and changed base units
+ok 448 - PostgreSQL inventory: constraints reject invalid numeric counts, destructive history and changed base units
+  ---
+  duration_ms: 58.601583
+  type: 'test'
+  ...
+# Subtest: PostgreSQL inventory: submission audit failure leaves draft unsubmitted and excluded from overall
+ok 449 - PostgreSQL inventory: submission audit failure leaves draft unsubmitted and excluded from overall
+  ---
+  duration_ms: 75.071375
+  type: 'test'
+  ...
+# Subtest: PostgreSQL recipe category lifecycle persists audit and immutable assignment history
+ok 450 - PostgreSQL recipe category lifecycle persists audit and immutable assignment history
+  ---
+  duration_ms: 64.541209
+  type: 'test'
+  ...
+# Subtest: PostgreSQL migration replacement rolls back DDL and prior data when imported state fails validation
+ok 451 - PostgreSQL migration replacement rolls back DDL and prior data when imported state fails validation
+  ---
+  duration_ms: 284.125708
+  type: 'test'
+  ...
+# Subtest: PostgreSQL imported real item supports normal edits and inventory configuration across repository reload
+ok 452 - PostgreSQL imported real item supports normal edits and inventory configuration across repository reload
+  ---
+  duration_ms: 234.835958
+  type: 'test'
+  ...
+# Subtest: integration: encrypted secret storage, safe metadata/audit and normal repository isolation
+ok 453 - integration: encrypted secret storage, safe metadata/audit and normal repository isolation
+  ---
+  duration_ms: 7.152875
+  type: 'test'
+  ...
+# Subtest: integration: replacement changes secret, omitted secret preserves it
+ok 454 - integration: replacement changes secret, omitted secret preserves it
+  ---
+  duration_ms: 4.221542
+  type: 'test'
+  ...
+# Subtest: integration: stale or invalid replacement preserves prior config and encrypted secret
+ok 455 - integration: stale or invalid replacement preserves prior config and encrypted secret
+  ---
+  duration_ms: 4.087709
+  type: 'test'
+  ...
+# Subtest: integration: audit failure rolls back configuration and replacement atomically
+ok 456 - integration: audit failure rolls back configuration and replacement atomically
+  ---
+  duration_ms: 4.845166
+  type: 'test'
+  ...
+# Subtest: integration: Manager Staff Lead cannot read or save even when calling service directly
+ok 457 - integration: Manager Staff Lead cannot read or save even when calling service directly
+  ---
+  duration_ms: 1.926417
+  type: 'test'
+  ...
+# Subtest: integration: environment separation prevents cross-environment reads and writes
+ok 458 - integration: environment separation prevents cross-environment reads and writes
+  ---
+  duration_ms: 3.464667
+  type: 'test'
+  ...
+# Subtest: integration: invalid host, missing secret, unknown fields and malformed restaurant GUID fail safely
+ok 459 - integration: invalid host, missing secret, unknown fields and malformed restaurant GUID fail safely
+  ---
+  duration_ms: 3.355917
+  type: 'test'
+  ...
+# Subtest: integration: missing key refuses saves, authentication tag protects secret and context
+ok 460 - integration: missing key refuses saves, authentication tag protects secret and context
+  ---
+  duration_ms: 2.429958
+  type: 'test'
+  ...
+# Subtest: integration: disable is audited and prevents future service credential consumption
+ok 461 - integration: disable is audited and prevents future service credential consumption
+  ---
+  duration_ms: 3.706375
+  type: 'test'
+  ...
+# Subtest: integration HTTP: real PostgreSQL secret submission/read and failure responses never expose secret
+ok 462 - integration HTTP: real PostgreSQL secret submission/read and failure responses never expose secret
+  ---
+  duration_ms: 87.782084
+  type: 'test'
+  ...
+# Subtest: hosted PostgreSQL sessions survive store recreation and logout; login limits persist
+ok 463 - hosted PostgreSQL sessions survive store recreation and logout; login limits persist
+  ---
+  duration_ms: 7.476167
+  type: 'test'
+  ...
+# Subtest: hosted importer rejects wrong database before inserting into any schema
+ok 464 - hosted importer rejects wrong database before inserting into any schema
+  ---
+  duration_ms: 11.75025
+  type: 'test'
+  ...
+# Subtest: hosted batched importer uses canonical mappings, preserves exact facts and rolls back safely
+ok 465 - hosted batched importer uses canonical mappings, preserves exact facts and rolls back safely
+  ---
+  duration_ms: 356.769291
+  type: 'test'
+  ...
+# Subtest: current SQL snapshot is one bounded exact read, without audit/import/history reconstruction
+ok 466 - current SQL snapshot is one bounded exact read, without audit/import/history reconstruction
+  ---
+  duration_ms: 34.450584
+  type: 'test'
+  ...
+# Subtest: current SQL selects supersession and future boundaries identically to historical authority
+ok 467 - current SQL selects supersession and future boundaries identically to historical authority
+  ---
+  duration_ms: 29.641
+  type: 'test'
+  ...
+# Subtest: current projections use fresh SQL after price mutation and restoration; history remains exact
+ok 468 - current projections use fresh SQL after price mutation and restoration; history remains exact
+  ---
+  duration_ms: 33.71925
+  type: 'test'
+  ...
+# Subtest: current SQL vendor eligibility retains future-only and historical source evidence without returning history
+ok 469 - current SQL vendor eligibility retains future-only and historical source evidence without returning history
+  ---
+  duration_ms: 33.189208
+  type: 'test'
+  ...
+# Subtest: password activation revokes every same-user HTTP session, rejects old password and preserves other users
+ok 470 - password activation revokes every same-user HTTP session, rejects old password and preserves other users
+  ---
+  duration_ms: 236.297791
+  type: 'test'
+  ...
+# Subtest: credential activation and audit roll back if session revocation fails
+ok 471 - credential activation and audit roll back if session revocation fails
+  ---
+  duration_ms: 5.094292
+  type: 'test'
+  ...
+# Subtest: audit failure rolls back credential activation and session deletion
+ok 472 - audit failure rolls back credential activation and session deletion
+  ---
+  duration_ms: 1.39575
+  type: 'test'
+  ...
+# Subtest: concurrent login insertion cannot survive credential activation with an old generation
+ok 473 - concurrent login insertion cannot survive credential activation with an old generation
+  ---
+  duration_ms: 7.569958
+  type: 'test'
+  ...
+# Subtest: unchanged activation preserves existing sessions and adopts pre-fix sessions once; removal revokes access
+ok 474 - unchanged activation preserves existing sessions and adopts pre-fix sessions once; removal revokes access
+  ---
+  duration_ms: 1.425167
+  type: 'test'
+  ...
+# Subtest: recipe resolution: scoped item read returns transitive dependent selectors in one query, no histories
+ok 475 - recipe resolution: scoped item read returns transitive dependent selectors in one query, no histories
+  ---
+  duration_ms: 24.774208
+  type: 'test'
+  ...
+# Subtest: recipe creation: PostgreSQL concurrent duplicate saves serialize without duplicate output identities
+ok 476 - recipe creation: PostgreSQL concurrent duplicate saves serialize without duplicate output identities
+  ---
+  duration_ms: 31.961958
+  type: 'test'
+  ...
+# Subtest: PostgreSQL waste: exact entry survives reopening, retry, archive; database prevents historical mutation
+ok 477 - PostgreSQL waste: exact entry survives reopening, retry, archive; database prevents historical mutation
+  ---
+  duration_ms: 42.420084
+  type: 'test'
+  ...
+# Subtest: PostgreSQL waste: Drink category entry restriction preserves historical reporting and follows effective assignments
+ok 478 - PostgreSQL waste: Drink category entry restriction preserves historical reporting and follows effective assignments
+  ---
+  duration_ms: 166.227625
+  type: 'test'
+  ...
+# Subtest: quantity display: integer values trim decimal padding
+ok 479 - quantity display: integer values trim decimal padding
+  ---
+  duration_ms: 0.509833
+  type: 'test'
+  ...
+# Subtest: quantity display: only narrow near-integer residue is normalized
+ok 480 - quantity display: only narrow near-integer residue is normalized
+  ---
+  duration_ms: 0.067708
+  type: 'test'
+  ...
+# Subtest: quantity display: meaningful fractions and tiny quantities remain exact
+ok 481 - quantity display: meaningful fractions and tiny quantities remain exact
+  ---
+  duration_ms: 0.103125
+  type: 'test'
+  ...
+# Subtest: quantity display: no binary floating point or currency rounding for large values
+ok 482 - quantity display: no binary floating point or currency rounding for large values
+  ---
+  duration_ms: 0.05
+  type: 'test'
+  ...
+# Subtest: real acceptance imports all five identities with exact quantities and revision references; missing house content stays pending
+ok 483 - real acceptance imports all five identities with exact quantities and revision references; missing house content stays pending
+  ---
+  duration_ms: 2134.66575
+  type: 'test'
+  ...
+# Subtest: quantity contract retains source precision without rounding and remains bounded
+ok 484 - quantity contract retains source precision without rounding and remains bounded
+  ---
+  duration_ms: 1.090333
+  type: 'test'
+  ...
+# Subtest: disposable database and private media backup restore immutable history and photos after draft recovery
+ok 485 - disposable database and private media backup restore immutable history and photos after draft recovery
+  ---
+  duration_ms: 824.302291
+  type: 'test'
+  ...
+# Subtest: recipe migration: exact namespace, idempotence, station DB protections and unchanged underlying recipe schema
+ok 486 - recipe migration: exact namespace, idempotence, station DB protections and unchanged underlying recipe schema
+  ---
+  duration_ms: 1722.395209
+  type: 'test'
+  ...
+# Subtest: recipe lifecycle: drafts stay private; publishing requires confirmation and missing photos are allowed
+ok 487 - recipe lifecycle: drafts stay private; publishing requires confirmation and missing photos are allowed
+  ---
+  duration_ms: 35.533542
+  type: 'test'
+  ...
+# Subtest: recipe publication: immutable document and event history; edited draft cannot change selected publication
+ok 488 - recipe publication: immutable document and event history; edited draft cannot change selected publication
+  ---
+  duration_ms: 59.435291
+  type: 'test'
+  ...
+# Subtest: recipe concurrency: racing draft writes have one winner and stale preview publication is rejected
+ok 489 - recipe concurrency: racing draft writes have one winner and stale preview publication is rejected
+  ---
+  duration_ms: 28.1755
+  type: 'test'
+  ...
+# Subtest: recipe publication: concurrent publish has one winner and menu classification remains independent
+ok 490 - recipe publication: concurrent publish has one winner and menu classification remains independent
+  ---
+  duration_ms: 31.387958
+  type: 'test'
+  ...
+# Subtest: recipe recovery: Admin-only service archive and prior-version draft recovery retain history
+ok 491 - recipe recovery: Admin-only service archive and prior-version draft recovery retain history
+  ---
+  duration_ms: 30.689083
+  type: 'test'
+  ...
+# Subtest: recipe atomicity: required publication audit failure rolls back version, pointer and concurrency revision
+ok 492 - recipe atomicity: required publication audit failure rolls back version, pointer and concurrency revision
+  ---
+  duration_ms: 20.232125
+  type: 'test'
+  ...
+# Subtest: recipe sources and costing: nested snapshots freeze copied names/instructions and all service writes leave the entire domain unchanged
+ok 493 - recipe sources and costing: nested snapshots freeze copied names/instructions and all service writes leave the entire domain unchanged
+  ---
+  duration_ms: 266.934208
+  type: 'test'
+  ...
+# Subtest: recipe validation: bounded nesting, ancestor cycles, duplicate IDs and source/revision pairs
+ok 494 - recipe validation: bounded nesting, ancestor cycles, duplicate IDs and source/revision pairs
+  ---
+  duration_ms: 82.956583
+  type: 'test'
+  ...
+# Subtest: recipe validation: missing quantities stay in drafts but cannot publish; forged references and unapproved media rejected
+ok 495 - recipe validation: missing quantities stay in drafts but cannot publish; forged references and unapproved media rejected
+  ---
+  duration_ms: 44.175833
+  type: 'test'
+  ...
+# Subtest: recipe authorization: role capabilities and database role recheck deny stale elevated principals
+ok 496 - recipe authorization: role capabilities and database role recheck deny stale elevated principals
+  ---
+  duration_ms: 80.043625
+  type: 'test'
+  ...
+# Subtest: recipe renderer: shared quantity markup, escaping, indentation rules and collapsed nested source presentation
+ok 497 - recipe renderer: shared quantity markup, escaping, indentation rules and collapsed nested source presentation
+  ---
+  duration_ms: 75.233667
+  type: 'test'
+  ...
+# Subtest: recipe offline contract: twelve-hour account/environment/generation scope capped by authenticated session expiry
+ok 498 - recipe offline contract: twelve-hour account/environment/generation scope capped by authenticated session expiry
+  ---
+  duration_ms: 51.124959
+  type: 'test'
+  ...
+# Subtest: recipe station HTTP: two independent named sessions, complete unrelated API denial, forged roles and navigation redirect
+ok 499 - recipe station HTTP: two independent named sessions, complete unrelated API denial, forged roles and navigation redirect
+  ---
+  duration_ms: 316.656166
+  type: 'test'
+  ...
+# Subtest: recipe station account controls: Admin-only provisioning and immutable designated usernames
+ok 500 - recipe station account controls: Admin-only provisioning and immutable designated usernames
+  ---
+  duration_ms: 9.707167
+  type: 'test'
+  ...
+# Subtest: recipe amendment: ingredient-only source is usable; management authors instructions in service drafts without changing costing
+ok 501 - recipe amendment: ingredient-only source is usable; management authors instructions in service drafts without changing costing
+  ---
+  duration_ms: 61.341792
+  type: 'test'
+  ...
+# Subtest: recipe amendment: fixture media stays associated with its publication when a draft replaces or removes the photo
+ok 502 - recipe amendment: fixture media stays associated with its publication when a draft replaces or removes the photo
+  ---
+  duration_ms: 53.181375
+  type: 'test'
+  ...
+# Subtest: builder migration applies and remains idempotent
+ok 503 - builder migration applies and remains idempotent
+  ---
+  duration_ms: 1977.190708
+  type: 'test'
+  ...
+# Subtest: builder imports missing-preparation sources and preserves nested immutable revision references
+ok 504 - builder imports missing-preparation sources and preserves nested immutable revision references
+  ---
+  duration_ms: 45.127125
+  type: 'test'
+  ...
+# Subtest: builder common library and ingredient lookup create independently editable snapshots
+ok 505 - builder common library and ingredient lookup create independently editable snapshots
+  ---
+  duration_ms: 8.533916
+  type: 'test'
+  ...
+# Subtest: builder photo decoder validates JPEG PNG WebP, byte size, actual content, pixels and animation
+ok 506 - builder photo decoder validates JPEG PNG WebP, byte size, actual content, pixels and animation
+  ---
+  duration_ms: 283.669292
+  type: 'test'
+  ...
+# Subtest: builder replacement and removal preserve historical published photos and prevent station draft access
+ok 507 - builder replacement and removal preserve historical published photos and prevent station draft access
+  ---
+  duration_ms: 357.464375
+  type: 'test'
+  ...
+# Subtest: builder duplicate, concurrency, archive, restore and publication validation respect existing permissions
+ok 508 - builder duplicate, concurrency, archive, restore and publication validation respect existing permissions
+  ---
+  duration_ms: 19.144625
+  type: 'test'
+  ...
+# Subtest: builder HTTP upload requires management, CSRF, same origin; protected originals are not served
+ok 509 - builder HTTP upload requires management, CSRF, same origin; protected originals are not served
+  ---
+  duration_ms: 422.450625
+  type: 'test'
+  ...
+# Subtest: builder operations preserve all protected domain tables, costing and BOH baseline code
+ok 510 - builder operations preserve all protected domain tables, costing and BOH baseline code
+  ---
+  duration_ms: 132.179667
+  type: 'test'
+  ...
+# Subtest: builder shared renderer honors all visible titles, bold quantities and escaped authored text
+ok 511 - builder shared renderer honors all visible titles, bold quantities and escaped authored text
+  ---
+  duration_ms: 0.999042
+  type: 'test'
+  ...
+# Subtest: builder upgrade from exact Phase 3 manifest retains existing draft/publication/media and checksums
+ok 512 - builder upgrade from exact Phase 3 manifest retains existing draft/publication/media and checksums
+  ---
+  duration_ms: 339.538875
+  type: 'test'
+  ...
+# Subtest: release media requires a persistent mount and refuses an ephemeral hosted root
+ok 513 - release media requires a persistent mount and refuses an ephemeral hosted root
+  ---
+  duration_ms: 5.360292
+  type: 'test'
+  ...
+# Subtest: persistent private photographs survive adapter restart, preserve originals and reject quota overflow without deleting history
+ok 514 - persistent private photographs survive adapter restart, preserve originals and reject quota overflow without deleting history
+  ---
+  duration_ms: 276.691375
+  type: 'test'
+  ...
+# Subtest: compatibility recovery mode freezes Recipe Book writes, retains published service and station denial, and preserves other capabilities
+ok 515 - compatibility recovery mode freezes Recipe Book writes, retains published service and station denial, and preserves other capabilities
+  ---
+  duration_ms: 2365.991167
+  type: 'test'
+  ...
+# Subtest: service list: alphabetical complete-index search and independent menu filters
+ok 516 - service list: alphabetical complete-index search and independent menu filters
+  ---
+  duration_ms: 8.90925
+  type: 'test'
+  ...
+# Subtest: offline validity: hard expiry, twelve-hour cap and clock rollback rejection
+ok 517 - offline validity: hard expiry, twelve-hour cap and clock rollback rejection
+  ---
+  duration_ms: 2.045375
+  type: 'test'
+  ...
+# Subtest: fixture adapter: derivative integrity, missing asset and path traversal protection
+ok 518 - fixture adapter: derivative integrity, missing asset and path traversal protection
+  ---
+  duration_ms: 23.583209
+  type: 'test'
+  ...
+# Subtest: protected media: no station access to draft/foreign/historical/archived/unapproved images
+ok 519 - protected media: no station access to draft/foreign/historical/archived/unapproved images
+  ---
+  duration_ms: 2322.901417
+  type: 'test'
+  ...
+# Subtest: disposable media adapter is never accepted by hosted runtime
+ok 520 - disposable media adapter is never accepted by hosted runtime
+  ---
+  duration_ms: 0.564875
+  type: 'test'
+  ...
+# Subtest: service import preserves exact original measurement and stable source identities per line
+ok 521 - service import preserves exact original measurement and stable source identities per line
+  ---
+  duration_ms: 2036.621417
+  type: 'test'
+  ...
+# Subtest: service display accepts drops, dashes and descriptive quantities without costing conversion
+ok 522 - service display accepts drops, dashes and descriptive quantities without costing conversion
+  ---
+  duration_ms: 2.829625
+  type: 'test'
+  ...
+# Subtest: overrides, reordered lines, publication and historical recovery preserve costing and source snapshots
+ok 523 - overrides, reordered lines, publication and historical recovery preserve costing and source snapshots
+  ---
+  duration_ms: 80.894708
+  type: 'test'
+  ...
+# Subtest: forged original measurements are rejected without altering source or costing
+ok 524 - forged original measurements are rejected without altering source or costing
+  ---
+  duration_ms: 8.259125
+  type: 'test'
+  ...
+# Subtest: legacy service documents remain valid without new metadata
+ok 525 - legacy service documents remain valid without new metadata
+  ---
+  duration_ms: 0.261
+  type: 'test'
+  ...
+# Subtest: recipe creation: new active output identity and recipe basis are automatic; steps trimmed
+ok 526 - recipe creation: new active output identity and recipe basis are automatic; steps trimmed
+  ---
+  duration_ms: 16.903542
+  type: 'test'
+  ...
+# Subtest: recipe creation: purchased backup cannot be targeted; separate house recipe can coexist
+ok 527 - recipe creation: purchased backup cannot be targeted; separate house recipe can coexist
+  ---
+  duration_ms: 3.88275
+  type: 'test'
+  ...
+# Subtest: recipe creation: blank placeholders and forged internal controls rejected atomically
+ok 528 - recipe creation: blank placeholders and forged internal controls rejected atomically
+  ---
+  duration_ms: 5.332167
+  type: 'test'
+  ...
+# Subtest: recipe creation: normalized duplicate returns existing recipe without merging or writes
+ok 529 - recipe creation: normalized duplicate returns existing recipe without merging or writes
+  ---
+  duration_ms: 1.605458
+  type: 'test'
+  ...
+# Subtest: recipe creation: concurrent normalized duplicate permits only one new identity
+ok 530 - recipe creation: concurrent normalized duplicate permits only one new identity
+  ---
+  duration_ms: 1.701708
+  type: 'test'
+  ...
+# Subtest: resolution: contextual recipe preserves existing ID and recalculates dependent cost
+ok 531 - resolution: contextual recipe preserves existing ID and recalculates dependent cost
+  ---
+  duration_ms: 5.705458
+  type: 'test'
+  ...
+# Subtest: resolution: Add Purchasing targets existing identity and recalculates parent
+ok 532 - resolution: Add Purchasing targets existing identity and recalculates parent
+  ---
+  duration_ms: 1.981792
+  type: 'test'
+  ...
+# Subtest: resolution: stale contextual target cannot replace new purchasing configuration
+ok 533 - resolution: stale contextual target cannot replace new purchasing configuration
+  ---
+  duration_ms: 1.483625
+  type: 'test'
+  ...
+# Subtest: resolution: multiple actual blockers have accurate messages and distinct actions
+ok 534 - resolution: multiple actual blockers have accurate messages and distinct actions
+  ---
+  duration_ms: 1.791083
+  type: 'test'
+  ...
+# Subtest: resolution: conversion correction recalculates parent without retained unresolved cache
+ok 535 - resolution: conversion correction recalculates parent without retained unresolved cache
+  ---
+  duration_ms: 3.530125
+  type: 'test'
+  ...
+# Subtest: recipe editing: steps and yields remain immutable revisions; labor and measurements available later
+ok 536 - recipe editing: steps and yields remain immutable revisions; labor and measurements available later
+  ---
+  duration_ms: 8.248208
+  type: 'test'
+  ...
+# Subtest: resolution authorization: STAFF cannot create or see blocker actions/costs
+ok 537 - resolution authorization: STAFF cannot create or see blocker actions/costs
+  ---
+  duration_ms: 0.629792
+  type: 'test'
+  ...
+# Subtest: resolution authorization: LEAD cannot create or see blocker actions/costs
+ok 538 - resolution authorization: LEAD cannot create or see blocker actions/costs
+  ---
+  duration_ms: 0.364125
+  type: 'test'
+  ...
+# Subtest: recipe creation: category organization and finished visibility remain separate
+ok 539 - recipe creation: category organization and finished visibility remain separate
+  ---
+  duration_ms: 2.676375
+  type: 'test'
+  ...
+# Subtest: recipe creation UI: direct form blank placeholders no output machinery and retained category/steps
+ok 540 - recipe creation UI: direct form blank placeholders no output machinery and retained category/steps
+  ---
+  duration_ms: 1.143125
+  type: 'test'
+  ...
+# Subtest: resolution: incomplete source yield offers contextual recipe and purchasing with accurate missing-yield reason
+ok 541 - resolution: incomplete source yield offers contextual recipe and purchasing with accurate missing-yield reason
+  ---
+  duration_ms: 2.891417
+  type: 'test'
+  ...
+# Subtest: resolution: complete source yield cannot be hijacked by contextual recipe
+ok 542 - resolution: complete source yield cannot be hijacked by contextual recipe
+  ---
+  duration_ms: 0.629625
+  type: 'test'
+  ...
+# Subtest: reports: defaults disabled with no invented time/day and explicit Pacific timezone
+ok 543 - reports: defaults disabled with no invented time/day and explicit Pacific timezone
+  ---
+  duration_ms: 1618.987917
+  type: 'test'
+  ...
+# Subtest: reports: daily and weekly configuration validation, version conflict and audited recipient changes
+ok 544 - reports: daily and weekly configuration validation, version conflict and audited recipient changes
+  ---
+  duration_ms: 113.791625
+  type: 'test'
+  ...
+# Subtest: reports: active verified Manager eligible; disabled missing unverified and lower roles rejected
+ok 545 - reports: active verified Manager eligible; disabled missing unverified and lower roles rejected
+  ---
+  duration_ms: 58.284292
+  type: 'test'
+  ...
+# Subtest: reports: Manager Staff Lead cannot read configure preview or send, revoked Admin rechecked
+ok 546 - reports: Manager Staff Lead cannot read configure preview or send, revoked Admin rechecked
+  ---
+  duration_ms: 43.669834
+  type: 'test'
+  ...
+# Subtest: reports: canonical preview/dashboard equality FOH BOH Overall remaining OVER and uncapped percentage
+ok 547 - reports: canonical preview/dashboard equality FOH BOH Overall remaining OVER and uncapped percentage
+  ---
+  duration_ms: 273.259
+  type: 'test'
+  ...
+# Subtest: reports: weekly uses last completed week and historical target selection
+ok 548 - reports: weekly uses last completed week and historical target selection
+  ---
+  duration_ms: 310.398833
+  type: 'test'
+  ...
+# Subtest: reports: stale failed and missing-day warnings never claim unavailable hours are zero
+ok 549 - reports: stale failed and missing-day warnings never claim unavailable hours are zero
+  ---
+  duration_ms: 53.567417
+  type: 'test'
+  ...
+# Subtest: reports: manual send has frozen HTML/text, separate key, provider acceptance and safe history
+ok 550 - reports: manual send has frozen HTML/text, separate key, provider acceptance and safe history
+  ---
+  duration_ms: 72.46625
+  type: 'test'
+  ...
+# Subtest: reports: due dispatch repeated and overlapping checks plus new runner do not duplicate
+ok 551 - reports: due dispatch repeated and overlapping checks plus new runner do not duplicate
+  ---
+  duration_ms: 66.210125
+  type: 'test'
+  ...
+# Subtest: reports: weekly due dispatch uses configured weekday and no invented weekday
+ok 552 - reports: weekly due dispatch uses configured weekday and no invented weekday
+  ---
+  duration_ms: 46.697959
+  type: 'test'
+  ...
+# Subtest: reports: transient retry retains exact sender destination payload and provider idempotency key
+ok 553 - reports: transient retry retains exact sender destination payload and provider idempotency key
+  ---
+  duration_ms: 47.882541
+  type: 'test'
+  ...
+# Subtest: reports: bounded retries and permanent provider rejection never marked sent
+ok 554 - reports: bounded retries and permanent provider rejection never marked sent
+  ---
+  duration_ms: 49.320333
+  type: 'test'
+  ...
+# Subtest: reports: permanent rejection is terminal without retry storm
+ok 555 - reports: permanent rejection is terminal without retry storm
+  ---
+  duration_ms: 48.547334
+  type: 'test'
+  ...
+# Subtest: reports: uncertain outcome after downtime cannot retry outside Resend retention window
+ok 556 - reports: uncertain outcome after downtime cannot retry outside Resend retention window
+  ---
+  duration_ms: 214.550709
+  type: 'test'
+  ...
+# Subtest: reports: generation failures retry boundedly with sanitized history and no provider send
+ok 557 - reports: generation failures retry boundedly with sanitized history and no provider send
+  ---
+  duration_ms: 151.684416
+  type: 'test'
+  ...
+# Subtest: reports: recipient disabled or email changed before retry skips old address
+ok 558 - reports: recipient disabled or email changed before retry skips old address
+  ---
+  duration_ms: 66.722
+  type: 'test'
+  ...
+# Subtest: reports: verified replacement email still cannot receive old frozen occurrence
+ok 559 - reports: verified replacement email still cannot receive old frozen occurrence
+  ---
+  duration_ms: 38.283291
+  type: 'test'
+  ...
+# Subtest: reports: disabled and unverified selected accounts get skip evidence with no mail
+ok 560 - reports: disabled and unverified selected accounts get skip evidence with no mail
+  ---
+  duration_ms: 40.704167
+  type: 'test'
+  ...
+# Subtest: reports: removed recipients and disabled reports cancel pending scheduled retries
+ok 561 - reports: removed recipients and disabled reports cancel pending scheduled retries
+  ---
+  duration_ms: 44.237167
+  type: 'test'
+  ...
+# Subtest: reports: schedule DST spring gap shifts forward and fall fold uses earliest single occurrence
+ok 562 - reports: schedule DST spring gap shifts forward and fall fold uses earliest single occurrence
+  ---
+  duration_ms: 50.370792
+  type: 'test'
+  ...
+# Subtest: reports: due detection observes config start no retroactive sends and 24h catchup
+ok 563 - reports: due detection observes config start no retroactive sends and 24h catchup
+  ---
+  duration_ms: 43.021917
+  type: 'test'
+  ...
+# Subtest: reports: deep link contains only period and destination preserves safe hash query
+ok 564 - reports: deep link contains only period and destination preserves safe hash query
+  ---
+  duration_ms: 43.351375
+  type: 'test'
+  ...
+# Subtest: reports: reject external protocol-relative script data encoded and invalid period returns
+ok 565 - reports: reject external protocol-relative script data encoded and invalid period returns
+  ---
+  duration_ms: 100.5845
+  type: 'test'
+  ...
+# Subtest: reports: provider configuration change blocks frozen message retry under another credential
+ok 566 - reports: provider configuration change blocks frozen message retry under another credential
+  ---
+  duration_ms: 107.1175
+  type: 'test'
+  ...
+# Subtest: reports: crash after provider acceptance before ledger commit replays same bytes and key
+ok 567 - reports: crash after provider acceptance before ledger commit replays same bytes and key
+  ---
+  duration_ms: 40.04075
+  type: 'test'
+  ...
+# Subtest: reports: Copy Leadership Summary writes canonical text to clipboard and shows Copied
+ok 568 - reports: Copy Leadership Summary writes canonical text to clipboard and shows Copied
+  ---
+  duration_ms: 35.036083
+  type: 'test'
+  ...
+# Subtest: reports: login routing retains safe destination for Admin/Manager and rejects lower roles
+ok 569 - reports: login routing retains safe destination for Admin/Manager and rejects lower roles
+  ---
+  duration_ms: 29.4845
+  type: 'test'
+  ...
+# Subtest: reports: HTTP authentication CSRF admin-only configuration and public assets
+ok 570 - reports: HTTP authentication CSRF admin-only configuration and public assets
+  ---
+  duration_ms: 266.299708
+  type: 'test'
+  ...
+# Subtest: reports: real advancing clock dispatches newly enqueued occurrence in the same tick
+ok 571 - reports: real advancing clock dispatches newly enqueued occurrence in the same tick
+  ---
+  duration_ms: 34.064166
+  type: 'test'
+  ...
+# Subtest: review HTTP: login required, bad password rejected, principal cannot be supplied by request
+ok 572 - review HTTP: login required, bad password rejected, principal cannot be supplied by request
+  ---
+  duration_ms: 190.523083
+  type: 'test'
+  ...
+# Subtest: review HTTP: origin and CSRF protection reject unauthorized browser writes
+ok 573 - review HTTP: origin and CSRF protection reject unauthorized browser writes
+  ---
+  duration_ms: 49.705708
+  type: 'test'
+  ...
+# Subtest: review HTTP: STAFF catalog and inventory omit protected cost data; sensitive routes deny access
+ok 574 - review HTTP: STAFF catalog and inventory omit protected cost data; sensitive routes deny access
+  ---
+  duration_ms: 91.086417
+  type: 'test'
+  ...
+# Subtest: review HTTP: LEAD catalog and inventory omit protected cost data; sensitive routes deny access
+ok 575 - review HTTP: LEAD catalog and inventory omit protected cost data; sensitive routes deny access
+  ---
+  duration_ms: 53.530958
+  type: 'test'
+  ...
+# Subtest: review HTTP: full Staff count -> submit -> Manager correction -> history and overall workflow
+ok 576 - review HTTP: full Staff count -> submit -> Manager correction -> history and overall workflow
+  ---
+  duration_ms: 85.548542
+  type: 'test'
+  ...
+# Subtest: review HTTP: one employee cannot edit or retrieve another employee draft
+ok 577 - review HTTP: one employee cannot edit or retrieve another employee draft
+  ---
+  duration_ms: 58.192042
+  type: 'test'
+  ...
+# Subtest: review HTTP: Manager sees costs but cannot set Admin labor rates; Admin can
+ok 578 - review HTTP: Manager sees costs but cannot set Admin labor rates; Admin can
+  ---
+  duration_ms: 54.098791
+  type: 'test'
+  ...
+# Subtest: review HTTP: validation errors never return stacks, SQL or rejected sensitive input
+ok 579 - review HTTP: validation errors never return stacks, SQL or rejected sensitive input
+  ---
+  duration_ms: 26.745
+  type: 'test'
+  ...
+# Subtest: review HTTP: private runtime credentials and arbitrary files are never served
+ok 580 - review HTTP: private runtime credentials and arbitrary files are never served
+  ---
+  duration_ms: 35.91225
+  type: 'test'
+  ...
+# Subtest: review HTTP: logout revokes session and foreign Host headers are rejected
+ok 581 - review HTTP: logout revokes session and foreign Host headers are rejected
+  ---
+  duration_ms: 28.863333
+  type: 'test'
+  ...
+# Subtest: review HTTP: database exceptions with codes are sanitized before serialization
+ok 582 - review HTTP: database exceptions with codes are sanitized before serialization
+  ---
+  duration_ms: 31.037041
+  type: 'test'
+  ...
+# Subtest: review HTTP: item form saves associated records; new detail endpoint enforces roles
+ok 583 - review HTTP: item form saves associated records; new detail endpoint enforces roles
+  ---
+  duration_ms: 130.510916
+  type: 'test'
+  ...
+# Subtest: waste HTTP: BOH allowlist, CSRF, no costs, durable duplicate requests, Admin role unchanged by preview
+ok 584 - waste HTTP: BOH allowlist, CSRF, no costs, durable duplicate requests, Admin role unchanged by preview
+  ---
+  duration_ms: 87.713416
+  type: 'test'
+  ...
+# Subtest: item workflow: purchased package, exact current costs, conversion and inventory stay under correct identity
+ok 585 - item workflow: purchased package, exact current costs, conversion and inventory stay under correct identity
+  ---
+  duration_ms: 17.879375
+  type: 'test'
+  ...
+# Subtest: item workflow: prepared recipe recursively costs purchased and prepared components, yield and fixed labor
+ok 586 - item workflow: prepared recipe recursively costs purchased and prepared components, yield and fixed labor
+  ---
+  duration_ms: 5.180291
+  type: 'test'
+  ...
+# Subtest: item workflow: edits append price and recipe revisions, preserve prior evidence and identity audit
+ok 587 - item workflow: edits append price and recipe revisions, preserve prior evidence and identity audit
+  ---
+  duration_ms: 9.051333
+  type: 'test'
+  ...
+# Subtest: item workflow: unknown package size and recipe yield remain unresolved, no invented facts
+ok 588 - item workflow: unknown package size and recipe yield remain unresolved, no invented facts
+  ---
+  duration_ms: 0.894125
+  type: 'test'
+  ...
+# Subtest: item workflow: invalid multi-command save rolls back identity, package, measurement and audit
+ok 589 - item workflow: invalid multi-command save rolls back identity, package, measurement and audit
+  ---
+  duration_ms: 1.602584
+  type: 'test'
+  ...
+# Subtest: item workflow: STAFF safe detail excludes all costs and rejects composite writes
+ok 590 - item workflow: STAFF safe detail excludes all costs and rejects composite writes
+  ---
+  duration_ms: 0.933125
+  type: 'test'
+  ...
+# Subtest: item workflow: LEAD safe detail excludes all costs and rejects composite writes
+ok 591 - item workflow: LEAD safe detail excludes all costs and rejects composite writes
+  ---
+  duration_ms: 0.4935
+  type: 'test'
+  ...
+# Subtest: item workflow: inactive item can be edited/restored without erasing history
+ok 592 - item workflow: inactive item can be edited/restored without erasing history
+  ---
+  duration_ms: 1.257042
+  type: 'test'
+  ...
+# Subtest: item workflow: backdated purchase price changes only its effective interval
+ok 593 - item workflow: backdated purchase price changes only its effective interval
+  ---
+  duration_ms: 1.42875
+  type: 'test'
+  ...
+# Subtest: item workflow: recursive cycle and inactive component reject entire edit
+ok 594 - item workflow: recursive cycle and inactive component reject entire edit
+  ---
+  duration_ms: 2.382042
+  type: 'test'
+  ...
+# Subtest: review HTTP: direct Admin URLs reject every non-admin capability set
+ok 595 - review HTTP: direct Admin URLs reject every non-admin capability set
+  ---
+  duration_ms: 176.647
+  type: 'test'
+  ...
+# Subtest: review HTTP: Admin shell metadata and inventory metrics are truthful and capability filtered
+ok 596 - review HTTP: Admin shell metadata and inventory metrics are truthful and capability filtered
+  ---
+  duration_ms: 73.079708
+  type: 'test'
+  ...
+# Subtest: shell: full Admin area navigation and preserved inventory URLs
+ok 597 - shell: full Admin area navigation and preserved inventory URLs
+  ---
+  duration_ms: 0.6385
+  type: 'test'
+  ...
+# Subtest: shell: administration and integration routes are capability-driven
+ok 598 - shell: administration and integration routes are capability-driven
+  ---
+  duration_ms: 0.103042
+  type: 'test'
+  ...
+# Subtest: shell: future areas are distinct destinations without implemented metrics
+ok 599 - shell: future areas are distinct destinations without implemented metrics
+  ---
+  duration_ms: 0.098875
+  type: 'test'
+  ...
+# Subtest: shell: desktop collapse and expand do not change drawer state
+ok 600 - shell: desktop collapse and expand do not change drawer state
+  ---
+  duration_ms: 0.060208
+  type: 'test'
+  ...
+# Subtest: shell: tablet drawer toggles independently of desktop rail
+ok 601 - shell: tablet drawer toggles independently of desktop rail
+  ---
+  duration_ms: 0.112834
+  type: 'test'
+  ...
+# Subtest: shell: Staff and Lead get a smaller count-oriented navigation surface
+ok 602 - shell: Staff and Lead get a smaller count-oriented navigation surface
+  ---
+  duration_ms: 0.066916
+  type: 'test'
+  ...
+# Subtest: users: bootstrap preserves IDs/sessions and is never an environment overwrite
+ok 603 - users: bootstrap preserves IDs/sessions and is never an environment overwrite
+  ---
+  duration_ms: 1692.086292
+  type: 'test'
+  ...
+# Subtest: users: normalized usernames prevent case-only duplicates; rename preserves attribution
+ok 604 - users: normalized usernames prevent case-only duplicates; rename preserves attribution
+  ---
+  duration_ms: 47.425667
+  type: 'test'
+  ...
+# Subtest: users: email optional, normalized, unique even disabled, validated and never implicitly verified
+ok 605 - users: email optional, normalized, unique even disabled, validated and never implicitly verified
+  ---
+  duration_ms: 23.800458
+  type: 'test'
+  ...
+# Subtest: users: email changes clear future verification and reject forged verification/capabilities
+ok 606 - users: email changes clear future verification and reject forged verification/capabilities
+  ---
+  duration_ms: 19.980042
+  type: 'test'
+  ...
+# Subtest: users: setup code has 256-bit entropy, hashes only at rest, expires in 24h and is not retrievable/audited
+ok 607 - users: setup code has 256-bit entropy, hashes only at rest, expires in 24h and is not retrievable/audited
+  ---
+  duration_ms: 47.672833
+  type: 'test'
+  ...
+# Subtest: users: own password establishment consumes token once and never creates an authenticated session
+ok 608 - users: own password establishment consumes token once and never creates an authenticated session
+  ---
+  duration_ms: 117.177917
+  type: 'test'
+  ...
+# Subtest: users: expired, fabricated, used and disabled tokens have neutral rejection
+ok 609 - users: expired, fabricated, used and disabled tokens have neutral rejection
+  ---
+  duration_ms: 89.635875
+  type: 'test'
+  ...
+# Subtest: users: new issuance supersedes every previous code
+ok 610 - users: new issuance supersedes every previous code
+  ---
+  duration_ms: 141.367583
+  type: 'test'
+  ...
+# Subtest: users: concurrent token consumption has one winner
+ok 611 - users: concurrent token consumption has one winner
+  ---
+  duration_ms: 63.281916
+  type: 'test'
+  ...
+# Subtest: users: reset revokes all same-user sessions including sessions created after issuance; other account retained
+ok 612 - users: reset revokes all same-user sessions including sessions created after issuance; other account retained
+  ---
+  duration_ms: 236.529792
+  type: 'test'
+  ...
+# Subtest: users: Manager downgrade and Staff elevation both revoke prior sessions
+ok 613 - users: Manager downgrade and Staff elevation both revoke prior sessions
+  ---
+  duration_ms: 118.772417
+  type: 'test'
+  ...
+# Subtest: users: Admin downgrade revokes prior administrative session
+ok 614 - users: Admin downgrade revokes prior administrative session
+  ---
+  duration_ms: 67.389458
+  type: 'test'
+  ...
+# Subtest: users: disable prevents login and invalidates sessions; enable cannot resurrect them
+ok 615 - users: disable prevents login and invalidates sessions; enable cannot resurrect them
+  ---
+  duration_ms: 112.735416
+  type: 'test'
+  ...
+# Subtest: users: explicit revocation is individual and records security event
+ok 616 - users: explicit revocation is individual and records security event
+  ---
+  duration_ms: 146.75775
+  type: 'test'
+  ...
+# Subtest: users: last usable Admin protected; pending Admin does not count; own demotion/disable prohibited
+ok 617 - users: last usable Admin protected; pending Admin does not count; own demotion/disable prohibited
+  ---
+  duration_ms: 90.48275
+  type: 'test'
+  ...
+# Subtest: users: database prevents destructive deletion and security audit mutation
+ok 618 - users: database prevents destructive deletion and security audit mutation
+  ---
+  duration_ms: 51.28525
+  type: 'test'
+  ...
+# Subtest: users: disabled creation issues no useless code; enabling allows explicit issue
+ok 619 - users: disabled creation issues no useless code; enabling allows explicit issue
+  ---
+  duration_ms: 82.838083
+  type: 'test'
+  ...
+# Subtest: users: stale profile version cannot overwrite concurrent access changes
+ok 620 - users: stale profile version cannot overwrite concurrent access changes
+  ---
+  duration_ms: 20.13625
+  type: 'test'
+  ...
+# Subtest: users: required audit failure rolls back creation, token issuance, access changes and revocation
+ok 621 - users: required audit failure rolls back creation, token issuance, access changes and revocation
+  ---
+  duration_ms: 81.127166
+  type: 'test'
+  ...
+# Subtest: users: password reset audit failure rolls back password/token/session changes
+ok 622 - users: password reset audit failure rolls back password/token/session changes
+  ---
+  duration_ms: 150.27675
+  type: 'test'
+  ...
+# Subtest: users: login authenticated before downgrade cannot insert stale session afterward
+ok 623 - users: login authenticated before downgrade cannot insert stale session afterward
+  ---
+  duration_ms: 39.162833
+  type: 'test'
+  ...
+# Subtest: users HTTP: real lower-role sessions cannot list/create/edit/revoke/issue, including forged role headers
+ok 624 - users HTTP: real lower-role sessions cannot list/create/edit/revoke/issue, including forged role headers
+  ---
+  duration_ms: 187.379083
+  type: 'test'
+  ...
+# Subtest: users HTTP: CSRF, strict payloads, neutral setup errors, secret-free detail and successful setup login
+ok 625 - users HTTP: CSRF, strict payloads, neutral setup errors, secret-free detail and successful setup login
+  ---
+  duration_ms: 161.660084
+  type: 'test'
+  ...
+# Subtest: users table: search matches name, username, email and access; filters combine
+ok 626 - users table: search matches name, username, email and access; filters combine
+  ---
+  duration_ms: 21.116167
+  type: 'test'
+  ...
+# Subtest: users table: sensible sorting, direction and missing email/login values
+ok 627 - users table: sensible sorting, direction and missing email/login values
+  ---
+  duration_ms: 33.643291
+  type: 'test'
+  ...
+# Subtest: users UI: returning from public setup restores an already-authenticated workspace
+ok 628 - users UI: returning from public setup restores an already-authenticated workspace
+  ---
+  duration_ms: 21.492666
+  type: 'test'
+  ...
+# Subtest: users: generic BOH uses existing accounts, setup, sessions and immediate revocation
+ok 629 - users: generic BOH uses existing accounts, setup, sessions and immediate revocation
+  ---
+  duration_ms: 62.236167
+  type: 'test'
+  ...
+# Subtest: vendors: imported purchasing relationships appear in management and detail
+ok 630 - vendors: imported purchasing relationships appear in management and detail
+  ---
+  duration_ms: 25.79825
+  type: 'test'
+  ...
+# Subtest: vendors: sorting uses all displayed vendor names with stable item tie-break
+ok 631 - vendors: sorting uses all displayed vendor names with stable item tie-break
+  ---
+  duration_ms: 6.660125
+  type: 'test'
+  ...
+# Subtest: vendors: filtering matches any associated vendor and no-vendor
+ok 632 - vendors: filtering matches any associated vendor and no-vendor
+  ---
+  duration_ms: 0.168292
+  type: 'test'
+  ...
+# Subtest: vendors: search is case insensitive and combines with vendor filter
+ok 633 - vendors: search is case insensitive and combines with vendor filter
+  ---
+  duration_ms: 0.10725
+  type: 'test'
+  ...
+# Subtest: vendors: multiple active sources retain distinct IDs, selection for costing does not discard alternatives
+ok 634 - vendors: multiple active sources retain distinct IDs, selection for costing does not discard alternatives
+  ---
+  duration_ms: 8.234541
+  type: 'test'
+  ...
+# Subtest: vendors: absent vendor remains empty without invented fallback
+ok 635 - vendors: absent vendor remains empty without invented fallback
+  ---
+  duration_ms: 7.291458
+  type: 'test'
+  ...
+# Subtest: vendors: inactive and future-only sources excluded; dated source eligibility respects known-at
+ok 636 - vendors: inactive and future-only sources excluded; dated source eligibility respects known-at
+  ---
+  duration_ms: 4.30175
+  type: 'test'
+  ...
+# Subtest: vendors: Staff and Lead do not receive purchasing vendor projections
+ok 637 - vendors: Staff and Lead do not receive purchasing vendor projections
+  ---
+  duration_ms: 6.359792
+  type: 'test'
+  ...
+# Subtest: vendors: supplier identity, filter matches and projection persist across repository reload
+ok 638 - vendors: supplier identity, filter matches and projection persist across repository reload
+  ---
+  duration_ms: 6.964084
+  type: 'test'
+  ...
+# Subtest: vendors: imported same-name supplier identities remain distinct selectable filters
+ok 639 - vendors: imported same-name supplier identities remain distinct selectable filters
+  ---
+  duration_ms: 0.414375
+  type: 'test'
+  ...
+# Subtest: HTTP BOH Drink exclusion: catalog/search, direct IDs, Admin BOH View, and authorized history
+ok 640 - HTTP BOH Drink exclusion: catalog/search, direct IDs, Admin BOH View, and authorized history
+  ---
+  duration_ms: 207.498416
+  type: 'test'
+  ...
+# Subtest: waste: purchased and prepared identities, batches, exact normalization, cost snapshots and audit
+ok 641 - waste: purchased and prepared identities, batches, exact normalization, cost snapshots and audit
+  ---
+  duration_ms: 17.766042
+  type: 'test'
+  ...
+# Subtest: waste: concurrent retries are durable and payload conflicts are rejected
+ok 642 - waste: concurrent retries are durable and payload conflicts are rejected
+  ---
+  duration_ms: 2.591417
+  type: 'test'
+  ...
+# Subtest: waste: history survives rename, archive and price changes; optional notes and date filters
+ok 643 - waste: history survives rename, archive and price changes; optional notes and date filters
+  ---
+  duration_ms: 2.673958
+  type: 'test'
+  ...
+# Subtest: waste: four frequency-driven items stable during a week, scoped by location
+ok 644 - waste: four frequency-driven items stable during a week, scoped by location
+  ---
+  duration_ms: 4.578041
+  type: 'test'
+  ...
+# Subtest: waste: unresolved conversions and costs do not stop operational entry
+ok 645 - waste: unresolved conversions and costs do not stop operational entry
+  ---
+  duration_ms: 1.359417
+  type: 'test'
+  ...
+# Subtest: waste: Drink category excludes both identities, cached/common frequency and Admin preview without hiding history
+ok 646 - waste: Drink category excludes both identities, cached/common frequency and Admin preview without hiding history
+  ---
+  duration_ms: 10.027291
+  type: 'test'
+  ...
+1..646
+# tests 646
+# suites 0
+# pass 646
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 35486.678

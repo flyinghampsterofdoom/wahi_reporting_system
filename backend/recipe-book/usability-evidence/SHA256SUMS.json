@@ -1,0 +1,16 @@
+{
+  "backend-tests.txt": "54bceae6e163fec0cc16f44c0ce896ab40af252c2739d928c3d4b1bb572da528",
+  "usability-browser-results.json": "d1f9626a78966a31b64a912d145f405fe31385bfcda7a877b4120861c2daf316",
+  "builder-regression-results.json": "92349d8d25192fa5d3a64181df611ea11bea35e836ea2bfb02e9b2b4c26d4fa7",
+  "service-browser-results.json": "8300d99417b9a9243e518d0ae3830e1cfb9f24837a2eb958efaf741274ac1abe",
+  "usability-browser.txt": "cbde04046908a3860fbc2295de21d0286225c88ea1c0b38b8bf524119d841080",
+  "builder-regression.txt": "272bb626d467521675767fa42887563817a359d1c8b89171a538e248032ae0f3",
+  "service-browser.txt": "6a9a4016e1ec9b361bf9e265dbec645ef626234b4f594bb7bd33c2b467900b66",
+  "builder-desktop.png": "e26d3400ae4c9909ef1e45c1d98716dd6f74e77d7b6acf32493739b59c8a1876",
+  "builder-preview-desktop.png": "c3a9c755ab925e6968aca8249871d1991817b2b968bdb70f78da933535b0a8f5",
+  "immersive-desktop.png": "cdc6f718f2e7d82693e4ff0674c3f90b6de1dd00ca9cc9ea29a5cccd8bc66634",
+  "immersive-tablet-landscape.png": "f842125f3609887b128dd5c496bf965be0f1449fe6cf4c772ca7478812ea3cae",
+  "immersive-tablet-portrait.png": "e18d926114efddbffde8aa5898694bb08ac87a65dfa045ff0d38f56805e4888e",
+  "well.one.png": "751aec470cb475dfed39ccc0a83f26b5a70bebf3a54237f0a46954a9515bfb1e",
+  "well.two.png": "8bc5c5b8d05fc0b3cd61b898aa8f9170fb84368937c453f5d786552098e19f4d"
+}

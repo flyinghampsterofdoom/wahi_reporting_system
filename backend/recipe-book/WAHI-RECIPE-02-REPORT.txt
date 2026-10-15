@@ -1,0 +1,37 @@
+WAHI-RECIPE-02 — LOCAL IMPLEMENTATION / OWNER ACCEPTANCE
+
+Status: COMPLETE locally; ready for owner acceptance. Deployment is not authorized and was not attempted.
+Branch: codex/wahi-recipe-02
+Isolated worktree: /Users/justinrawlinson/.codex/worktrees/wahi-recipe-02/Wahi_reporting_system
+Exact parent / approved production baseline: c050ed593693894b44f597444451ea6c7e8aa9e8
+The implementation commit identifier is supplied in the completion response.
+
+Delivered
+A. Existing Recipe is a top-of-Builder searchable combobox. Results are alphabetical, with keyboard selection and stable source identities. Stale results clear immediately on typing; overlapping imports are prevented. The component library, common-item creation and nested insertion remain available through Add Component.
+B. The management editor uses the entire available content width and vertical section cards. The optional live preview can be opened or collapsed; closing it returns the width to the editor. Existing full-size bartender preview remains and uses the shared Book layout/renderer.
+C. Service quantities and units are independently editable: drops, dashes, splashes, pinches, pieces, pumps, conventional units, fractions, and descriptive quantities such as To taste and Top with. Descriptive quantities may omit a unit; numeric quantities require a unit at publication. No conversion or costing calculation is invoked. Imported lines retain an exact sourceMeasurement snapshot (recipe, revision and line IDs, original quantity and unit), validated against immutable costing history on the server. Original values remain visible read-only in management. Snapshot metadata survives save, duplication, immutable publication history and historical recovery, and is omitted from bartender API payloads/offline records. The shared renderer displays only service quantities/units, bold before regular-weight ingredient names.
+D. Ingredient and instruction lines have individual drag handles and keyboard Move Up/Down controls. Mouse/pointer and actual Chromium-emulated touch gestures use stable IDs. Touch click suppression prevents a drop on a removal control from deleting a line. Ordering preserves quantities, source references and nested components; saves, previews and publications retain that order. Whole-section ordering and editing-card collapsing remain available.
+E. Open Recipe Book enters an immersive in-page view: Wahi header, navigation, ordinary page title and dashboard containers disappear. No Fullscreen API or new tab is used. The three columns occupy the viewport at 20/45/35 proportions, with independent list/instruction/photo scrolling and no document overflow on tested desktop/tablet sizes. Connection status, refresh time and account/logout controls remain available. Management sees one Exit Recipe Book control returning to Builder; regular staff return to their prior successful authorized page/home. Wells have no exit control and remain server-restricted to published Recipe Book access.
+
+Draft-state and security behavior
+Builder DOM/model, section folds, source references, scroll position and selected unsaved photo/File remain in memory while visiting the Book. Exit and browser Back/Forward restore that same editor rather than reconstructing a fresh draft. Logout/authorization loss disposes the private state and revokes its photo URL; another account cannot inherit it. No draft or local photo is written into the published-only offline cache.
+A hard refresh restores the authorized Book/session. Unsaved Builder changes remain transient until Save Draft: refreshing or closing the tab with dirty state invokes the standard browser unsaved-changes warning, including while the draft is parked behind the Book. Confirming that warning intentionally discards unsaved memory state. Navigation between Builder and Book does not trigger this warning or lose edits.
+Both well identities keep their authorized home and only appropriate account/logout controls. URL manipulation still redirects their UI to the Book, and direct non-Book API requests remain denied by the unchanged server allowlist.
+
+Verification and evidence
+Full backend regression: 646 passed; 0 failed, skipped or cancelled (Node 22.22.0).
+Browser suites: see the three results JSON files in usability-evidence/ for exact named checks. They cover the new usability/immersive requirements, the existing 21 Builder lifecycle/media/concurrency checks, and the existing 24 Recipe Book security/offline/expiration/empty-state checks. All pass; no uncaught browser exceptions.
+Disposable PostgreSQL 18 only; source imports, photographs, preparation text and station accounts in these tests are disposable fixtures. No authoritative house instructions or photos were fabricated.
+Desktop 1720x1100, tablet landscape 1024x768, tablet portrait 768x1024; both wells also verified in independent browser contexts. Touch input was exercised through Chromium's touch event pipeline. Physical device acceptance remains an owner review activity.
+The five new backend tests cover exact source snapshots, descriptive/unit overrides, publication/recovery independence, original-measurement tamper rejection and legacy-document compatibility. Existing costing, inventory, labor, reporting, waste and BOH tests pass. Their implementation files and production migration files are unchanged from the approved parent. Controlled domain snapshots remain unchanged after all Builder/Book operations.
+Screenshots and logs are in usability-evidence/. All screenshot content is explicitly synthetic. SHA256SUMS.json records their integrity. Existing confidential test fixtures were copied into ignored, private local fixture files solely to run the baseline suite; they are excluded from this commit.
+
+Failures / existing defects
+Final failures and skips: zero. No unrelated BOH repair was made. During development, a stale dropdown keyboard-selection race and a route-test dependency on an unavailable Book global were fixed. Initial isolated-checkout fixture omissions and tests expecting the former always-visible library/preview were corrected; no test was skipped. Touch tests were adjusted to use valid visible drop coordinates and verify both ordering and non-deletion.
+
+Schema / deployment considerations
+No SQL migration or migration-number reservation is necessary: the existing service JSON documents support optional provenance and service display quantities. Existing schemaVersion 1 documents without new metadata continue to work, with their existing source revision references intact. Newly imported lines receive the additional exact original-measurement snapshot; legacy drafts are not silently rewritten or ambiguously backfilled.
+Future deployment requires separate owner authorization and acceptance of this commit. After new-format drafts are saved in a future production release, reverting application code must retain a compatible reader/validator for descriptive quantities and optional sourceMeasurement metadata; do not blindly revert to the older strict contract. No source costing or financial schema change is needed.
+
+Production status
+No push, deployment, production database connection/change, account provisioning, external infrastructure purchase or unrelated integration occurred in WAHI-RECIPE-02. The original working directory and the approved production release worktree were not modified. Production remains on the previously authorized release.

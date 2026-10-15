@@ -2,7 +2,9 @@
 const {z}=require('zod');
 const id=z.string().uuid(),text=z.string().trim().min(1).max(500),note=z.string().max(10000);
 const quantity=z.string().regex(/^(?:0|[1-9]\d{0,11})(?:\.\d{1,24})?$/);
-const ingredient=z.object({id,ingredientId:id.nullable(),name:text,quantity:quantity.nullable(),unit:z.string().trim().min(1).max(80).nullable(),notes:note.default('')}).strict();
+const serviceQuantity=z.string().trim().min(1).max(80).refine(v=>!/[\x00-\x1f\x7f]/.test(v)&&(/^(?:0|[1-9]\d{0,11})(?:\.\d{1,24})?$/.test(v)||/[\p{L}¼½¾⅓⅔⅛⅜⅝⅞]/u.test(v)||/^\d+\/\d+$/.test(v)));
+const sourceMeasurement=z.object({recipeId:id,revisionId:id,lineId:id,quantity:quantity.nullable(),unit:z.string().max(80).nullable()}).strict();
+const ingredient=z.object({id,ingredientId:id.nullable(),name:text,quantity:serviceQuantity.nullable(),unit:z.string().trim().min(1).max(80).nullable(),sourceMeasurement:sourceMeasurement.optional(),notes:note.default('')}).strict();
 const instruction=z.object({id,text:note.trim().min(1)}).strict();
 const component=z.lazy(()=>z.object({id,type:z.enum(['recipe','ingredients','preparation','garnish','glassware','notes']),visibleTitle:text,
  sourceRecipeId:id.nullable().default(null),sourceRevisionId:id.nullable().default(null),collapsed:z.boolean().default(false),outputQuantity:quantity.nullable().default(null),outputUnit:z.string().trim().min(1).max(80).nullable().default(null),
@@ -16,7 +18,7 @@ function document(input,{publish=false}={}){
  function shape(nodes,depth){if(depth>8||!Array.isArray(nodes)||nodes.length>100)fail();for(const c of nodes){if(!c||typeof c!=='object'||seen.has(c)||++count>200)fail();seen.add(c);items+=(Array.isArray(c.ingredients)?c.ingredients.length:0)+(Array.isArray(c.instructions)?c.instructions.length:0);if(items>1000)fail();if(c.children!==undefined)shape(c.children,depth+1);}}
  shape(input?.components,1);const d=schema.parse(input);let ingredients=0,preparation=0,garnish=0,glassware=0;
  function visit(nodes,ancestors=[]){for(const c of nodes){if(c.sourceRecipeId&&ancestors.includes(c.sourceRecipeId))fail();for(const row of [c,...c.ingredients,...c.instructions]){if(identities.has(row.id))fail();identities.add(row.id);}if(!!c.sourceRecipeId!==!!c.sourceRevisionId||c.sourceRecipeId&&c.type!=='recipe')fail();
- for(const i of c.ingredients){ingredients++;if(publish&&(i.quantity===null||i.unit===null))fail();}
+ for(const i of c.ingredients){ingredients++;if(publish&&(i.quantity===null||i.unit===null&&!/[\p{L}]/u.test(i.quantity)))fail();}
  if(c.type==='garnish')garnish+=c.instructions.length;if(c.type==='preparation')preparation+=c.instructions.length;if(c.type==='glassware')glassware+=c.instructions.length;visit(c.children,c.sourceRecipeId?[...ancestors,c.sourceRecipeId]:ancestors);}}
  visit(d.components);if(publish&&(!ingredients||!preparation||!garnish||!glassware))fail();return d;
 }

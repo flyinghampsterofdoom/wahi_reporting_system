@@ -2,6 +2,8 @@
 const {randomUUID}=require('node:crypto'),{z}=require('zod');
 const {authorize,can}=require('../auth'),{latest}=require('../domain/history'),contracts=require('./contracts');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
+// Costing provenance remains in management drafts and immutable history, never bartender payloads.
+function serviceDocument(input){const d=structuredClone(input);const visit=nodes=>{for(const n of nodes){for(const i of n.ingredients||[])delete i.sourceMeasurement;visit(n.children||[]);}};visit(d.components);return d;}
 const menu=z.enum(['on_menu','off_menu']);
 class RecipeBook {
  constructor(pool,{clock=()=>new Date().toISOString()}={}){this.pool=pool;this.clock=clock;}
@@ -18,7 +20,9 @@ class RecipeBook {
  async bump(c,actor,e){await c.query('UPDATE wahi_v2.recipe_book_entries SET version=version+1,updated_at=$2,updated_by=$3 WHERE id=$1',[e.id,this.clock(),actor.id]);return {id:e.id,version:e.version+1};}
  async references(c,d){
   const visit=async nodes=>{for(const n of nodes){if(n.sourceRecipeId){if(!(await c.query('SELECT id FROM wahi_v2.recipe_revisions WHERE id=$1 AND recipe_id=$2',[n.sourceRevisionId,n.sourceRecipeId])).rowCount)fail('invalid_request');}
-   for(const i of n.ingredients)if(i.ingredientId&&!(await c.query('SELECT id FROM wahi_v2.ingredients WHERE id=$1',[i.ingredientId])).rowCount)fail('invalid_request');await visit(n.children);}};
+   for(const i of n.ingredients){if(i.ingredientId&&!(await c.query('SELECT id FROM wahi_v2.ingredients WHERE id=$1',[i.ingredientId])).rowCount)fail('invalid_request');
+    if(i.sourceMeasurement){const m=i.sourceMeasurement,row=(await c.query('SELECT l.quantity,l.unit,l.ingredient_id FROM wahi_v2.recipe_lines l JOIN wahi_v2.recipe_revisions r ON r.id=l.recipe_revision_id WHERE l.id=$1 AND r.id=$2 AND r.recipe_id=$3',[m.lineId,m.revisionId,m.recipeId])).rows[0];if(!row||row.quantity!==m.quantity||row.unit!==m.unit||row.ingredient_id!==i.ingredientId)fail('invalid_request');}}
+   await visit(n.children);}};
   await visit(d.components);
   if(d.photoId&&!(await c.query('SELECT id FROM wahi_v2.recipe_book_media WHERE id=$1 AND approved=true',[d.photoId])).rowCount)fail('invalid_request');
  }
@@ -38,7 +42,7 @@ class RecipeBook {
  async entries(actor,query=''){z.string().max(500).parse(query);return this.transaction(actor,'recipes.edit',async c=>(await c.query(`SELECT e.id,e.version,e.menu_status AS "menuStatus",e.archived,e.published_id AS "publishedId",d.document->>'title' AS title FROM wahi_v2.recipe_book_entries e JOIN wahi_v2.recipe_book_drafts d ON d.entry_id=e.id WHERE position(lower($1) IN lower(d.document->>'title'))>0 ORDER BY lower(d.document->>'title'),e.id`,[query])).rows,{read:true});}
  async draft(actor,id){contracts.id.parse(id);return this.transaction(actor,'recipes.edit',async c=>{const e=(await c.query('SELECT e.*,d.document FROM wahi_v2.recipe_book_entries e JOIN wahi_v2.recipe_book_drafts d ON d.entry_id=e.id WHERE e.id=$1',[id])).rows[0];if(!e)fail('not_found');return e;},{read:true});}
  async history(actor,id){contracts.id.parse(id);return this.transaction(actor,'recipes.edit',async c=>{if(!(await c.query('SELECT id FROM wahi_v2.recipe_book_entries WHERE id=$1',[id])).rowCount)fail('not_found');return {versions:(await c.query('SELECT * FROM wahi_v2.recipe_book_versions WHERE entry_id=$1 ORDER BY number DESC',[id])).rows,events:(await c.query('SELECT * FROM wahi_v2.recipe_book_events WHERE entry_id=$1 ORDER BY recorded_at,id',[id])).rows};},{read:true});}
- async published(actor,{id=null,menuStatus='all'}={}){if(id)contracts.id.parse(id);z.enum(['all','on_menu','off_menu']).parse(menuStatus);return this.transaction(actor,'recipes.view',async c=>{const rows=(await c.query(`SELECT e.id,e.menu_status AS "menuStatus",v.id AS "versionId",v.document,v.published_at AS "publishedAt",EXISTS(SELECT 1 FROM wahi_v2.recipe_book_media m WHERE m.id=v.photo_id AND m.approved) AS "photoAvailable" FROM wahi_v2.recipe_book_entries e JOIN wahi_v2.recipe_book_versions v ON v.id=e.published_id WHERE NOT e.archived AND ($1::uuid IS NULL OR e.id=$1) AND ($2='all' OR e.menu_status=$2) ORDER BY lower(v.document->>'title'),e.id`,[id,menuStatus])).rows;if(id&&!rows.length)fail('not_found');return rows;},{read:true});}
+ async published(actor,{id=null,menuStatus='all'}={}){if(id)contracts.id.parse(id);z.enum(['all','on_menu','off_menu']).parse(menuStatus);return this.transaction(actor,'recipes.view',async c=>{const rows=(await c.query(`SELECT e.id,e.menu_status AS "menuStatus",v.id AS "versionId",v.document,v.published_at AS "publishedAt",EXISTS(SELECT 1 FROM wahi_v2.recipe_book_media m WHERE m.id=v.photo_id AND m.approved) AS "photoAvailable" FROM wahi_v2.recipe_book_entries e JOIN wahi_v2.recipe_book_versions v ON v.id=e.published_id WHERE NOT e.archived AND ($1::uuid IS NULL OR e.id=$1) AND ($2='all' OR e.menu_status=$2) ORDER BY lower(v.document->>'title'),e.id`,[id,menuStatus])).rows;if(id&&!rows.length)fail('not_found');return rows.map(r=>({...r,document:serviceDocument(r.document)}));},{read:true});}
  async media(actor,{id,versionId}){contracts.id.parse(id);contracts.id.parse(versionId);return this.transaction(actor,'recipes.view',async c=>{
   const current=(await c.query('SELECT role FROM wahi_v2.users WHERE id=$1',[actor.id])).rows[0];const history=can({id:actor.id,role:current.role},'recipes.edit');
   const m=(await c.query(`SELECT m.* FROM wahi_v2.recipe_book_media m JOIN wahi_v2.recipe_book_versions v ON v.photo_id=m.id JOIN wahi_v2.recipe_book_entries e ON e.id=v.entry_id WHERE m.id=$1 AND v.id=$2 AND m.approved AND (($3::boolean) OR (NOT e.archived AND e.published_id=v.id))`,[id,versionId,history])).rows[0];if(!m)fail('not_found');return m;
@@ -57,7 +61,7 @@ class RecipeBook {
    const lines=(await c.query('SELECT l.*,i.name FROM wahi_v2.recipe_lines l JOIN wahi_v2.ingredients i ON i.id=l.ingredient_id WHERE recipe_revision_id=$1 ORDER BY position',[v.id])).rows;const steps=(await c.query('SELECT instruction FROM wahi_v2.recipe_steps WHERE recipe_revision_id=$1 ORDER BY position',[v.id])).rows;const children=[];
    if(steps.length)children.push({id:randomUUID(),type:'preparation',visibleTitle:'PREPARATION',instructions:steps.map(s=>({id:randomUUID(),text:s.instruction}))});
    for(const l of lines){const nested=(await c.query('SELECT id FROM wahi_v2.recipes WHERE output_ingredient_id=$1',[l.ingredient_id])).rows[0];if(nested)children.push(await snapshot(nested.id,null,[...ancestors,rid]));}
-   return {id:randomUUID(),type:'recipe',visibleTitle:r.name,sourceRecipeId:r.id,sourceRevisionId:v.id,collapsed:true,outputQuantity:v.output_quantity,outputUnit:v.output_unit,ingredients:lines.map(l=>({id:randomUUID(),ingredientId:l.ingredient_id,name:l.name,quantity:l.quantity,unit:l.unit,notes:l.notes||''})),children};
+   return {id:randomUUID(),type:'recipe',visibleTitle:r.name,sourceRecipeId:r.id,sourceRevisionId:v.id,collapsed:true,outputQuantity:v.output_quantity,outputUnit:v.output_unit,ingredients:lines.map(l=>({id:randomUUID(),ingredientId:l.ingredient_id,name:l.name,quantity:l.quantity,unit:l.unit,sourceMeasurement:{recipeId:r.id,revisionId:v.id,lineId:l.id,quantity:l.quantity,unit:l.unit},notes:l.notes||''})),children};
   };const component=await snapshot(recipeId,revisionId);return contracts.document({schemaVersion:1,title:component.visibleTitle,components:[component]}).components[0];},{read:true});}
 }
 module.exports={RecipeBook};

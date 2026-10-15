@@ -1,0 +1,21 @@
+PASS full-width editor, optional preview and on-demand component library
+PASS top combobox searches alphabetically and supports keyboard import
+PASS service quantities override originals with drops, dashes and descriptive amounts
+PASS ingredient keyboard ordering preserves focus and every original reference
+PASS native pointer ingredient dragging reorders only its section
+PASS touch ingredient dragging uses the same stable-ID order operation
+PASS touch drops near removal controls cannot accidentally delete an ingredient
+PASS preparation and subordinate line ordering plus nested snapshots remain intact
+PASS live preview uses the shared renderer and editor reclaims collapsed preview width
+PASS entering immersive Recipe Book parks unsaved content and a selected photograph
+PASS browser Back and Forward preserve the parked unsaved Builder
+PASS full-size draft preview retains shared layout and exits without publishing
+PASS save and reload persist service quantities, line order, nested references and photo
+PASS publishing uses service measurements and menu classification remains independent
+PASS historical recovery restores display amounts and provenance without replacing current publication
+PASS responsive editor and immersive 20/45/35 columns have no outer overflow
+PASS both wells retain immersive home, published measurements and strict API boundaries
+PASS regular staff exit returns to prior authorized home and refresh restores immersive Book
+PASS logout clears parked private Builder state before a different account signs in
+PASS all source costing, inventory, waste and reporting domain records unchanged
+PASS no uncaught browser errors
