@@ -1,9 +1,14 @@
 'use strict';
 const {randomUUID}=require('node:crypto'),{z}=require('zod');
 const {authorize,can}=require('../auth'),{latest}=require('../domain/history'),contracts=require('./contracts');
-const fail=code=>{throw Object.assign(new Error(code),{code});};
+const fail=(code,recipeMessage)=>{throw Object.assign(new Error(recipeMessage||code),{code,...(recipeMessage?{recipeMessage}:{})});};
 // Costing provenance remains in management drafts and immutable history, never bartender payloads.
-function serviceDocument(input){const d=structuredClone(input);const visit=nodes=>{for(const n of nodes){for(const i of n.ingredients||[])delete i.sourceMeasurement;visit(n.children||[]);}};visit(d.components);return d;}
+function serviceDocument(input){
+ // Explicit service projection; provenance stays exclusively in drafts and history.
+ const visit=nodes=>nodes.map(n=>({id:n.id,type:n.type,visibleTitle:n.visibleTitle,collapsed:n.collapsed,
+  ingredients:n.ingredients.map(i=>({id:i.id,name:i.name,quantity:i.quantity,unit:i.unit})),instructions:[],children:visit(n.children)}));
+ return {schemaVersion:input.schemaVersion,title:input.title,photoId:input.photoId,components:visit(input.components)};
+}
 const menu=z.enum(['on_menu','off_menu']);
 class RecipeBook {
  constructor(pool,{clock=()=>new Date().toISOString()}={}){this.pool=pool;this.clock=clock;}
@@ -19,12 +24,12 @@ class RecipeBook {
  async locked(c,input){const d=contracts.command.parse(input),e=(await c.query('SELECT * FROM wahi_v2.recipe_book_entries WHERE id=$1 FOR UPDATE',[d.id])).rows[0];if(!e)fail('not_found');if(e.version!==d.expectedVersion)fail('revision_conflict');return e;}
  async bump(c,actor,e){await c.query('UPDATE wahi_v2.recipe_book_entries SET version=version+1,updated_at=$2,updated_by=$3 WHERE id=$1',[e.id,this.clock(),actor.id]);return {id:e.id,version:e.version+1};}
  async references(c,d){
-  const visit=async nodes=>{for(const n of nodes){if(n.sourceRecipeId){if(!(await c.query('SELECT id FROM wahi_v2.recipe_revisions WHERE id=$1 AND recipe_id=$2',[n.sourceRevisionId,n.sourceRecipeId])).rowCount)fail('invalid_request');}
-   for(const i of n.ingredients){if(i.ingredientId&&!(await c.query('SELECT id FROM wahi_v2.ingredients WHERE id=$1',[i.ingredientId])).rowCount)fail('invalid_request');
-    if(i.sourceMeasurement){const m=i.sourceMeasurement,row=(await c.query('SELECT l.quantity,l.unit,l.ingredient_id FROM wahi_v2.recipe_lines l JOIN wahi_v2.recipe_revisions r ON r.id=l.recipe_revision_id WHERE l.id=$1 AND r.id=$2 AND r.recipe_id=$3',[m.lineId,m.revisionId,m.recipeId])).rows[0];if(!row||row.quantity!==m.quantity||row.unit!==m.unit||row.ingredient_id!==i.ingredientId)fail('invalid_request');}}
+  const visit=async nodes=>{for(const n of nodes){if(n.sourceRecipeId){if(!(await c.query('SELECT id FROM wahi_v2.recipe_revisions WHERE id=$1 AND recipe_id=$2',[n.sourceRevisionId,n.sourceRecipeId])).rowCount)fail('invalid_request',n.visibleTitle+': the original recipe revision reference is unavailable.');}
+   for(const i of n.ingredients){if(i.ingredientId&&!(await c.query('SELECT id FROM wahi_v2.ingredients WHERE id=$1',[i.ingredientId])).rowCount)fail('invalid_request',n.visibleTitle+' → '+i.name+': the ingredient reference is unavailable.');
+    if(i.sourceMeasurement){const m=i.sourceMeasurement,row=(await c.query('SELECT l.quantity,l.unit,l.ingredient_id FROM wahi_v2.recipe_lines l JOIN wahi_v2.recipe_revisions r ON r.id=l.recipe_revision_id WHERE l.id=$1 AND r.id=$2 AND r.recipe_id=$3',[m.lineId,m.revisionId,m.recipeId])).rows[0];if(!row||row.quantity!==m.quantity||row.unit!==m.unit||row.ingredient_id!==i.ingredientId)fail('invalid_request',n.visibleTitle+' → '+i.name+': the preserved source measurement does not match its original record. Edit the service quantity, not the source snapshot.');}}
    await visit(n.children);}};
   await visit(d.components);
-  if(d.photoId&&!(await c.query('SELECT id FROM wahi_v2.recipe_book_media WHERE id=$1 AND approved=true',[d.photoId])).rowCount)fail('invalid_request');
+  if(d.photoId&&!(await c.query('SELECT id FROM wahi_v2.recipe_book_media WHERE id=$1 AND approved=true',[d.photoId])).rowCount)fail('invalid_request','The selected photograph is unavailable or unapproved. Remove it or select an approved photograph.');
  }
  async create(actor,input){const d=z.object({document:z.unknown(),menuStatus:menu,sourceRecipeId:contracts.id.nullable().default(null)}).strict().parse(input);const doc=contracts.document(d.document);
   return this.transaction(actor,'recipes.edit',async c=>{await this.references(c,doc);if(d.sourceRecipeId&&!(await c.query('SELECT id FROM wahi_v2.recipes WHERE id=$1',[d.sourceRecipeId])).rowCount)fail('invalid_request');const id=randomUUID(),now=this.clock();

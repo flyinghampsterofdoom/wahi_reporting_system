@@ -231,3 +231,67 @@ body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);
 .recipe-full-preview{border-color:var(--book-edge);box-shadow:none}
 .recipe-full-preview::backdrop{background:rgb(8 9 6 / .78)}
 :is(body.recipe-book-active,.recipe-full-preview) #recipe-list button:focus-visible{outline:2px solid var(--book-gold);outline-offset:-2px}
+
+/* Compact Recipe Book management rows. Does not affect inventory/costing editors. */
+.builder-editor .builder-card{padding:10px;margin:10px 0;background:#fff;border-color:#d6dfd9}
+.builder-editor .builder-card-toolbar{margin-bottom:8px}
+.builder-editor .builder-fold{margin-right:auto;font-size:1rem;font-weight:650}
+.builder-editor .table-scroll{margin:0;border:0}
+.builder-editor .admin-table{width:100%;min-width:0;table-layout:fixed}
+.builder-editor .admin-table th{font-size:.75rem;padding:6px;text-align:left}
+.builder-editor .admin-table th:nth-child(1){width:76px}
+.builder-editor .admin-table th:nth-child(2){width:106px}
+.builder-editor .admin-table th:nth-child(4){width:180px}
+.builder-editor .builder-ingredient{display:table-row;border:0;margin:0;padding:0}
+.builder-editor .builder-ingredient td{padding:5px 6px;vertical-align:middle;position:relative;border-bottom:1px solid #e6ebe8}
+.builder-editor .builder-ingredient input{box-sizing:border-box;min-width:0;width:100%;padding:7px 8px;font-size:.9rem;min-height:38px;margin:0}
+.builder-editor .builder-row-actions{white-space:nowrap}
+.builder-editor .builder-line-controls{display:inline-flex;gap:0}
+.builder-editor .builder-line-controls button,.builder-editor .builder-row-actions>button,.builder-editor .builder-row-notes>summary,.builder-editor .builder-line-controls [data-line-drag]{min-width:40px;min-height:40px;padding:4px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;font-size:1rem}
+.builder-editor .builder-line-controls [data-line-drag]{font-size:1.2rem}
+.builder-editor .builder-row-notes{display:inline-block;vertical-align:middle;margin:0}
+.builder-editor .builder-row-notes summary{cursor:pointer;list-style:none;border-radius:5px;color:var(--green,#23543e)}
+.builder-editor .builder-row-notes summary::-webkit-details-marker{display:none}
+.builder-editor .builder-row-notes[open]{display:block;white-space:normal}
+.builder-editor .builder-row-notes label{font-size:.8rem;white-space:normal;margin:4px 0}
+.builder-editor .builder-diagnostics,.builder-editor .builder-component-options{margin:8px 0;font-size:.8rem;color:var(--muted)}
+.builder-editor .builder-diagnostics summary,.builder-editor .builder-component-options summary{cursor:pointer}
+.builder-editor .builder-diagnostics p{font-size:.8rem;margin:8px 0;overflow-wrap:anywhere}
+.builder-editor .builder-source{overflow-wrap:anywhere}
+.builder-editor .builder-component-options label{margin:8px 0}
+.builder-editor .builder-card-actions{margin:8px 0;gap:8px}
+.builder-editor details[data-nested]{margin-top:10px;font-size:.85rem}
+.builder-editor .builder-nested{margin-top:8px;padding-left:8px}
+.builder-editor .builder-approximate{position:absolute;right:9px;top:5px;font-size:.8rem;text-decoration:none;cursor:help}
+.builder-editor td:has(.builder-approximate) input{padding-right:20px}
+.recipe-approximate{text-decoration:none;cursor:help}
+@media(max-width:1100px){
+ .builder-columns>.builder-editor{padding:12px}
+ .builder-editor .admin-table th:nth-child(1){width:62px}
+ .builder-editor .admin-table th:nth-child(2){width:98px}
+ .builder-editor .admin-table th:nth-child(4){width:180px}
+ .builder-editor .builder-line-controls{display:inline-flex;flex-direction:row}
+ .builder-editor .builder-line-controls [data-line-drag]{display:inline-flex;min-width:44px;min-height:44px}
+ .builder-editor .builder-line-controls button,.builder-editor .builder-row-actions>button,.builder-editor .builder-row-notes>summary{min-width:44px;min-height:44px}
+ .builder-editor .builder-row-notes{display:block;width:44px}
+ .builder-editor .builder-row-notes[open]{width:auto}
+ .builder-editor .builder-ingredient td{padding:4px}
+ .builder-editor .builder-ingredient input{min-height:44px;font-size:.85rem;padding:6px}
+ .builder-editor .builder-card{padding:8px}
+}
+
+.builder-editor .builder-name-field{display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:center;gap:4px}
+.builder-editor .builder-name-field .builder-row-notes{margin:0;display:block;width:40px}
+.builder-editor .builder-name-field .builder-row-notes[open]{grid-column:1/-1;width:auto}
+@media(max-width:1100px){.builder-editor .builder-name-field{grid-template-columns:minmax(0,1fr) 44px}.builder-editor .builder-name-field .builder-row-notes{width:44px}}
+
+.builder-more-actions{align-self:end;margin:0}
+.builder-more-actions>summary{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border-radius:7px;background:#e8eee8;color:#173e35;box-sizing:border-box;cursor:pointer;font-weight:600;font-size:.9rem;list-style:none}
+.builder-more-actions>summary::-webkit-details-marker{display:none}
+.builder-more-actions>summary::after{content:' ▾';margin-left:6px}
+.builder-more-actions[open]{flex-basis:100%}
+.builder-secondary-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+
+.builder-editor>h2{margin:0 0 8px;font-size:1rem}
+.builder-editor>label{margin:8px 0}
+.builder-editor>p.muted{font-size:.8rem;margin:8px 0}

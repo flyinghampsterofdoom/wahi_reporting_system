@@ -1,0 +1,93 @@
+WAHI RECIPE BOOK — COMPACT EDITOR AND INGREDIENT-ONLY PUBLICATION
+October 16, 2026. LOCAL IMPLEMENTATION AND TESTING COMPLETE. NOT DEPLOYED.
+
+Baseline: 1152dbac42339566346efbcdfcf06f039352c63e
+Local branch: codex/recipe-compact
+Worktree: /Users/justinrawlinson/.codex/worktrees/wahi-recipe-compact/Wahi_reporting_system
+
+Implemented
+- Publication requires ingredients with displayable numeric measurements and units. Preparation,
+  garnish and glassware are optional; existing instruction data remains in drafts and immutable
+  versions. Structural limits, source-reference validation, permissions, concurrency and atomic
+  historical publication remain enforced. Validation errors identify affected components/ingredients.
+- Bartender rendering contains the recipe name and ingredient quantities, units and names, with
+  expandable nested ingredient groups. Yields, instructions, ingredient notes, costing and source
+  metadata are omitted. The API service projection removes administrative/provenance fields without
+  modifying the stored publication. The same renderer handles previews and older cached documents.
+- Management uses compact four-column ingredient tables with inline edits, add/remove, keyboard,
+  pointer and touch ordering. Notes, exact original values and technical diagnostics are collapsed.
+  Nested groups start collapsed. Secondary toolbar controls remain available under More actions.
+- Decimal display removes padding and converts legacy fractions to decimals. Ambiguous long
+  zero/nine residue and nonterminating fractions use an explicit approximation marker. Exact strings
+  remain saved and available in diagnostics. Tiny nonzero values and other meaningful precision are
+  preserved. Rendering, saving unrelated edits and formatting on blur do not normalize saved values.
+  Readable unit aliases likewise do not rewrite saved units. Only explicit ingredient edits change
+  the independent service document; no unit conversion or costing operation is invoked.
+- Import remains one-way copying. Repeat imports into a populated editor require confirmation and
+  append independent copies. No existing component or publication is replaced by import. No active
+  synchronization, reverse write path, source-refresh subscription or overwrite endpoint was added.
+
+Preservation verification
+Disposable PostgreSQL tests verify both directions of isolation: service edits and publication leave
+source/domain state and exact costing results unchanged; later source ingredient/parent/nested
+recipe revisions leave saved service drafts, current publications and immutable history unchanged.
+A subsequent source import reads the new source revision without modifying an existing service
+recipe. The old service snapshot can still be saved and republished after source changes. Nested
+service edits retain original source measurements. Original-measurement tampering remains rejected.
+
+Production access was restricted to read-only inspection. Before/after row counts and content digests
+matched for 19 relevant production recipe, source, measurement and inventory tables, including all
+Recipe Book tables. Production retained its one management draft and zero publications. No write API,
+production migration, deployment, account mutation, configuration change, purchase or media upload was
+performed. Full costing/inventory/repository implementation and SQL migrations are unchanged.
+NO DATABASE MIGRATION IS REQUIRED.
+
+Test results
+Node 22.22.0; disposable local PostgreSQL; isolated Chrome profiles.
+- Existing complete backend suite: 720 passed; zero failed/skipped/cancelled.
+- Final relevant backend checks after unit-label finishing: 49 passed; zero failed/skipped.
+- Existing Builder browser suite: 21/21 passed.
+- Existing usability/ordering/station browser suite: 21/21 passed.
+- Existing Recipe Book service/security/offline browser suite: 24/24 passed.
+- New compact-editor acceptance: 9/9 passed, including approximation-save isolation and repeat-import
+  confirmation. Source, costing and inventory state comparisons passed. No uncaught browser errors.
+- Repeated offline reliability: 324/324 trials passed: 316 successful offline reloads and eight
+  expected expiry/clock-rollback rejections, plus storage-failure, reconnection and account-isolation
+  checks. Covers both wells, three viewport sizes, clock skew, previous-shell upgrades and browser
+  process restarts. Sixteen failures in the explicit older-release reproduction are expected evidence,
+  not failures of this implementation.
+- git diff --check passed. No domain, inventory, repository or migration file changes.
+
+Offline prerequisite found and corrected
+The current Google integration had added reviews.css, reviews-ui.js and google-ui.js to the shell
+without adding them to the worker's static-asset list. This caused the complete-shell readiness check
+to time out. The narrow correction adds those three dependencies, including fingerprinted names,
+and a regression test covering every current shell script/stylesheet. APIs/images still do not enter
+shared shell caching; published data remains account-scoped with the existing lease/expiry behavior.
+No authentication, cache-retention or authorization policy was relaxed.
+
+Visual review
+Captured and inspected at desktop 1440x1000, tablet landscape 1024x768 and tablet portrait 768x1024.
+Ingredient rows measured 52–53 px on desktop and 54–55 px on tablets, with no outer horizontal
+overflow. Tablet movement/removal targets retain at least 44 px height. Unit fields accommodate
+readable labels; notes and diagnostics remain collapsed; nested ingredient editing was exercised.
+Screenshots use explicitly synthetic recipes and ingredients, not production content.
+Full pages and ingredient-area captures:
+.recipe-private/compact/editor/desktop.png
+.recipe-private/compact/editor/desktop-ingredients.png
+.recipe-private/compact/editor/tablet-landscape.png
+.recipe-private/compact/editor/tablet-landscape-ingredients.png
+.recipe-private/compact/editor/tablet-portrait.png
+.recipe-private/compact/editor/tablet-portrait-ingredients.png
+.recipe-private/compact/editor/tablet-nested.png
+Geometry and browser results are alongside the images. Backend logs and production read-only
+fingerprints are in .recipe-private/compact/. Confidential source fixtures remain ignored.
+
+Remaining limitations / recommendation
+No known functional test failures remain. Legacy descriptive quantities are preserved in drafts but
+require numeric service measurements and units before publication under the decimal-only requirement.
+Approximation is explicit; it does not claim to recover an unknown intended measurement. Physical
+Safari/iPad acceptance is still an owner/device review, beyond the emulated tablet checks.
+Recommend owner review of the screenshots followed by a controlled exact-commit deployment only after
+separate owner authorization and the ordinary fresh deployment preflight. No deployment is authorized
+or performed by this work order.

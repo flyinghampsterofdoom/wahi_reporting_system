@@ -258,7 +258,10 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
       if(/^review_[a-z_]+$/.test(e.code||'')&&!Object.hasOwn(messages,e.code))messages[e.code]='Review Intelligence: '+e.code.replace(/^review_/, '').replaceAll('_',' ')+'.';
       const publicCode=Object.hasOwn(messages,e.code)?e.code:'invalid_request';
       const measurementError=e.name==='ZodError'&&e.issues?.some(i=>i.path.some(p=>['measurement','fromQuantity','toQuantity','fromUnit','toUnit'].includes(p)));
-      const safe=measurementError?'Could not save measurement. Supply both positive decimal quantities and valid units (for example, 1 and 0.00113636); enter units in the unit selectors.':e.name==='ZodError'?'Check the required fields, quantities, units and dates.':messages[e.code]??'Could not save. Check references and effective dates; existing facts may require an explicit correction.';
+      const recipeError=new URL(req.url,'http://localhost').pathname.startsWith('/api/recipe-book/');
+      const recipeField=e.name==='ZodError'&&recipeError?e.issues?.[0]?.path:null;
+      const recipeProblem=recipeField?('Check recipe field '+recipeField.map(x=>typeof x==='number'?x+1:x).join(' → ')+'. Supply a valid '+(recipeField.at(-1)==='quantity'?'quantity':recipeField.at(-1)==='unit'?'unit':'value')+'.'):null;
+      const safe=recipeError&&e.recipeMessage?e.recipeMessage:recipeProblem|| (measurementError?'Could not save measurement. Supply both positive decimal quantities and valid units (for example, 1 and 0.00113636); enter units in the unit selectors.':e.name==='ZodError'?'Check the required fields, quantities, units and dates.':messages[e.code]??'Could not save. Check references and effective dates; existing facts may require an explicit correction.');
       send(status,{error:safe,code:publicCode});
     }
   });
