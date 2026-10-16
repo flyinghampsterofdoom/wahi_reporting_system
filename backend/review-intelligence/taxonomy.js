@@ -1,0 +1,5 @@
+'use strict';
+const groups={Food:['Food quality','Food temperature','Food presentation','Food value','Menu selection'],Drinks:['Drink quality','Drink presentation','Drink value','Drink selection'],Service:['Staff friendliness','Staff attentiveness','Service speed','Order accuracy'],Atmosphere:['Ambience','Music','Lighting','Cleanliness','Decor/theme','Noise'],Experience:['Overall satisfaction','Perceived value','Special occasions','Wait times','Return intent']};
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
+const initial=Object.entries(groups).flatMap(([parent,children])=>[{id:slug(parent),parent_id:null,label:parent,definition:`Explicit observations about ${parent.toLowerCase()}.`},...children.map(label=>({id:slug(label),parent_id:slug(parent),label,definition:label==='Service speed'?'Speed after ordering, not waiting for a table.':label==='Wait times'?'Waiting for a table or admission, not order delivery.':`Only explicit evidence concerning ${label.toLowerCase()}; do not infer from rating alone.`}))]);
+module.exports={initial,slug};
