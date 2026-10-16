@@ -262,9 +262,6 @@ body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);
 .builder-editor .builder-card-actions{margin:8px 0;gap:8px}
 .builder-editor details[data-nested]{margin-top:10px;font-size:.85rem}
 .builder-editor .builder-nested{margin-top:8px;padding-left:8px}
-.builder-editor .builder-approximate{position:absolute;right:9px;top:5px;font-size:.8rem;text-decoration:none;cursor:help}
-.builder-editor td:has(.builder-approximate) input{padding-right:20px}
-.recipe-approximate{text-decoration:none;cursor:help}
 @media(max-width:1100px){
  .builder-columns>.builder-editor{padding:12px}
  .builder-editor .admin-table th:nth-child(1){width:62px}
@@ -295,3 +292,20 @@ body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);
 .builder-editor>h2{margin:0 0 8px;font-size:1rem}
 .builder-editor>label{margin:8px 0}
 .builder-editor>p.muted{font-size:.8rem;margin:8px 0}
+
+/* Final ingredient-row polish: 36px visible faces inside 44px touch targets. */
+.builder-editor .builder-ingredient td{padding:4px 6px;vertical-align:middle}
+.builder-editor .builder-ingredient input{min-height:44px}
+.builder-editor .builder-name-field>input{font-size:.95rem;font-weight:500;color:var(--ink)}
+.builder-editor .builder-ingredient-actions{display:flex;align-items:center;justify-content:flex-start;gap:0}
+.builder-editor .builder-ingredient-actions .builder-line-controls{display:flex;gap:0;align-items:center}
+.builder-editor .builder-ingredient-actions button{width:44px;height:44px;min-width:44px;min-height:44px;padding:4px;border:0;background:transparent;box-shadow:none;display:flex;align-items:center;justify-content:center;vertical-align:middle;color:#245345}
+.builder-editor .builder-ingredient-actions .builder-control-face{display:flex;width:36px;height:36px;box-sizing:border-box;align-items:center;justify-content:center;border:1px solid #cfdbd3;border-radius:5px;background:#eef3ef;font-size:16px;line-height:1}
+.builder-editor .builder-ingredient-actions [data-do=remove-ingredient] .builder-control-face{background:#fff2ee;border-color:#e4c8c0;color:#9a3428}
+.builder-editor .builder-ingredient-actions button:hover:not(:disabled) .builder-control-face{background:#dce9df}
+.builder-editor .builder-ingredient-actions [data-do=remove-ingredient]:hover:not(:disabled) .builder-control-face{background:#f8ddd5}
+.builder-editor .builder-ingredient-actions button:disabled{opacity:1;cursor:default}
+.builder-editor .builder-ingredient-actions button:disabled .builder-control-face{background:#f3f4f2;border-color:#e2e7e2;color:#a2aca5}
+.builder-editor .builder-ingredient-actions [data-line-drag]{display:flex;min-width:44px;min-height:44px;width:44px;height:44px;padding:4px;color:#61786b;background:transparent;font-size:18px}
+.builder-editor .builder-ingredient input[aria-invalid=true]{border-color:#a84c36}
+@media(max-width:1100px){.builder-editor .builder-ingredient td{padding:4px}.builder-editor .builder-name-field>input{font-size:.92rem}}

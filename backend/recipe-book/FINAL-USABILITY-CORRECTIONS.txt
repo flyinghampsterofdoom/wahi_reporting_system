@@ -1,0 +1,105 @@
+WAHI RECIPE BOOK — FINAL USABILITY CORRECTIONS
+October 16, 2026. LOCAL IMPLEMENTATION AND TESTING COMPLETE. NOT DEPLOYED.
+Branch: codex/recipe-compact. Baseline: 0e26c3b21ad85bcf2d242aea9b1cd6714b3c746d.
+This work supersedes the earlier explicitly approximate display policy. The approved table and
+underlying Recipe Book document structure are unchanged.
+
+A. Implementation and changed files
+backend/review/public/quantity.js
+- Replaces broad approximate rounding with an explicit allowlist of reviewed artifact lexemes:
+  the two owner-supplied examples and four source-workbook residues observed in the investigation.
+  No blanket precision limit, binary-float conversion, generic epsilon or accounting change.
+- Removes trailing decimal padding exactly; converts terminating legacy fractions to exact decimals.
+- Unrecognized residue-like values and nonterminating fractions require management resolution.
+  Tiny nonzero measurements and other meaningful decimal precision remain exact.
+backend/recipe-book/contracts.js
+- Blocks publication of unresolved measurements with an ingredient-specific explanation. All other
+  structural, nesting, provenance, concurrency, authorization and history validation remains intact.
+backend/review/public/recipe-builder.js
+- Removes approximation badges. Unresolved imported quantities have an empty input with a Review
+  placeholder and a useful field/status explanation. Exact values remain in collapsed diagnostics.
+- Formatting on render or blur changes only the display. Saving other edits retains exact raw strings.
+  Management explicitly entering a corrected quantity changes only the independent service document.
+- Adds small visible faces to the existing ingredient buttons; preserves actions, drag IDs and handlers.
+backend/review/public/recipe-renderer.js
+- Removes approximation markup. Recipe content remains ingredient names, decimal quantities, units,
+  recipe identity and expandable nested ingredients. Notes, yields, instructions and metadata stay out.
+backend/review/public/style.css
+- Ingredient buttons use 36x36 px visible faces within 44x44 px interactive targets. Movement controls
+  are subdued; removal has a distinct muted red treatment; disabled movement states remain clear.
+- Aligns row controls and inputs, keeps spacing tight and increases ingredient-name prominence.
+  Notes, diagnostics, component settings and nested recipes remain collapsed by default.
+Tests updated in backend/test/quantity-display.test.js, backend/test/recipe-book.test.js and the
+existing backend/recipe-book/test-support/compact-browser.cjs. No new test infrastructure or dependency.
+
+B. Decimal display verification
+Original saved string          Display              Saved string after formatting/unrelated save
+0.5000000000000001              0.5                  unchanged
+1.5000000000000002              1.5                  unchanged
+2.0                             2                    unchanged
+0.125                           0.125                unchanged
+0.012500000000000001             0.0125               unchanged
+0.3333333                       0.3333333            unchanged
+0.000000000000000001             0.000000000000000001 unchanged
+0.50000000001                   Review required      unchanged; publication blocked
+
+No approximation symbols or fractional quantities appear in ordinary management/bartender displays.
+Recognized values normalize only for presentation. An unresolved measurement is never guessed.
+The browser test verifies that the exact saved service quantity and original source measurement both
+remain 0.5000000000000001 when the input displays 0.5. A second test saves 0.50000000001 exactly,
+rejects publication, and then explicitly corrects the service quantity to 0.5 while retaining the
+original sourceMeasurement. Exact raw values remain available only in collapsed management diagnostics.
+Finite legacy fraction strings remain saved exactly while displaying their exact decimal equivalents.
+
+C. Screenshots and visual inspection
+All screenshots contain synthetic disposable fixtures, not production recipe content.
+Desktop 1440x1000: .recipe-private/final-usability/editor/desktop.png
+Tablet portrait 768x1024: .recipe-private/final-usability/editor/tablet-portrait.png
+Tablet landscape 1024x768: .recipe-private/final-usability/editor/tablet-landscape.png
+Bartender recipe: .recipe-private/final-usability/editor/bartender.png
+Focused captures: desktop-ingredients.png, tablet-portrait-ingredients.png,
+tablet-landscape-ingredients.png and bartender-ingredients.png in the same directory.
+Inspected all three editor sizes and the bartender view with expanded nested ingredients.
+Every measured ingredient row is 53 px high across all three sizes, with no horizontal page overflow.
+Visible button faces measure 36x36 px; interactive targets measure 44x44 px. Ingredient names remain
+readable and prominent. The approved compact table structure and all collapsed options are preserved.
+
+D. Regression results
+Node 22.22.0, disposable PostgreSQL, isolated Chrome profiles.
+Complete backend suite: 722 passed; zero failures/skips/cancellations.
+Builder browser: 21/21 passed.
+Usability/keyboard/pointer/touch ordering and station boundaries: 21/21 passed.
+Recipe Book service/security/offline/browser: 24/24 passed.
+Updated compact-editor acceptance: 10/10 passed.
+Total browser checks: 76 passed; zero failed; no uncaught browser exceptions.
+Checks cover exact-string preservation, ambiguity rejection/resolution, nested measurements, valid
+ingredient-only publication, invalid measurements, add/remove/edit/order, touch drag, stale writes,
+immutable publication/history, source isolation, photographs and station access controls.
+Current offline checks cover reload, cached content, reconnection, account switching/logout,
+lease expiry and revocation. The cache worker, lease/session implementation and retention policies
+are unchanged from 0e26c3b. The previous 324-trial reliability result is retained as prior evidence,
+not represented as newly rerun in this correction pass.
+git diff --check: passed.
+
+E. Integrity and production boundaries
+One-way import remains Inventory & Costing -> independent Recipe Book copy. Existing bidirectional
+and nested isolation tests pass. Later source changes/reimports do not modify saved service content;
+service edits, removals and publications do not write source quantities, relationships, inventory or
+costing. Ambiguous publication rejection retains the selected publication and all immutable versions;
+explicit resolution creates a new publication without rewriting older versions.
+No changes to the domain costing engine, inventory/repository implementation, SQL migrations or
+underlying JSON document structure. No database migration is required.
+Read-only production verification matched the recorded row counts/content digests of all 19 inspected
+source/recipe/measurement/inventory tables, including Recipe Book tables: zero differences. Evidence:
+.recipe-private/final-usability/production-verification.json.
+No production write endpoints, production migration, recipe mutation, deployment or infrastructure
+change was performed. Production retains its one service draft and zero publications.
+
+F. Recommendation and remaining concerns
+GO for a controlled deployment after owner approval: all requested local acceptance and regression
+checks pass, the approved layout is retained, and no migration or costing changes are involved.
+Unrecognized ambiguous measurements intentionally require management correction; the allowlist is
+limited rather than attempting to infer every possible intended value. Legacy cached/published
+ambiguous quantities display Review quantity instead of an invented measurement; stored publications
+are never rewritten. Physical iPad/Safari acceptance remains an owner/device review beyond the emulated
+tablet checks. No known functional failures remain. DO NOT DEPLOY without explicit authorization.

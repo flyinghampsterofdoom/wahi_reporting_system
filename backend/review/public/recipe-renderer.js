@@ -7,7 +7,7 @@
  const quantities=typeof module!=='undefined'?require('./quantity'):root.WahiQuantity;
  function component(c){
   const children=(c.children||[]).map(component).join('');
-  const rows=(c.ingredients||[]).map(i=>{const q=quantities.service(i.quantity);return `<p class="recipe-subordinate"><strong>${q.approximate?'<abbr class="recipe-approximate" title="Approximate display; the exact saved quantity is retained in management diagnostics." aria-label="approximately">≈</abbr> ':''}${escape(q.text)} ${escape(unit(i.unit||''))}</strong> ${escape(i.name)}</p>`;}).join('');
+  const rows=(c.ingredients||[]).map(i=>{const q=quantities.service(i.quantity);return `<p class="recipe-subordinate"><strong>${escape(q.text)} ${escape(unit(i.unit||''))}</strong> ${escape(i.name)}</p>`;}).join('');
   if(!rows&&!children)return '';
   const content=(rows?`<section><h3>${escape(c.type==='ingredients'?(c.visibleTitle||'INGREDIENTS'):'INGREDIENTS')}</h3>${rows}</section>`:'')+children;
   if(c.type==='recipe')return `<details class="recipe-component"${c.collapsed?'':' open'}><summary><strong>${escape(c.visibleTitle)}</strong></summary>${content}</details>`;
