@@ -1,0 +1,32 @@
+name: Review browser activation gates
+on:
+  push:
+    branches: [codex/google-review-weekly]
+    paths:
+      - .github/workflows/review-browser-gates.yml
+      - backend/review-intelligence/gates/**
+      - backend/test/review-browser-gates.test.js
+permissions:
+  contents: read
+concurrency:
+  group: review-browser-gates
+  cancel-in-progress: false
+jobs:
+  hosted-gates:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Probe failure-path tests
+        run: node --test backend/test/review-browser-gates.test.js
+      - name: Install pinned browser runtime in isolated runner
+        run: |
+          npm install --prefix "$RUNNER_TEMP/wahi-gate" --save-exact playwright@1.64.1
+          "$RUNNER_TEMP/wahi-gate/node_modules/.bin/playwright" install --with-deps chromium --only-shell
+      - name: Signed-out headless Google gate
+        run: |
+          export WAHI_GATE_PLAYWRIGHT="$RUNNER_TEMP/wahi-gate/node_modules/playwright"
+          export WAHI_GATE_OUTPUT="$RUNNER_TEMP/wahi-gate-result.json"
+          node backend/review-intelligence/gates/browser-probe.cjs
