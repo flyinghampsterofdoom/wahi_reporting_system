@@ -1,0 +1,49 @@
+Wahi Recipe Builder instruction editor — local review
+October 20, 2026 (Pacific)
+
+Status: implemented locally; NOT deployed.
+Branch: codex/compact-instructions, based on d052b69 (approved ingredient controls).
+Workspace: /Users/justinrawlinson/.codex/worktrees/compact-instructions/Wahi_reporting_system
+
+Changes
+- backend/review/public/recipe-builder.js: shared numbered instruction rows for Preparation, Garnish, Glassware, Service Notes and instructions in recipe/nested blocks. Fields start at one line, grow/shrink with content and reflow on resize/reveal. Compact drag/move/delete controls retain accessible names and boundary disabling. Add instruction creates an empty focused row at the end. Delete retains focus in the list and removes only the selected instruction.
+- backend/review/public/style.css: scoped instruction layout, 44px action targets with 30px visible faces, 45px desktop rows, mobile controls below the text. Less-used settings and empty nesting controls share a collapsed Block options footer; existing nested recipe sections retain their original fold/reorder behavior.
+- backend/test/recipe-instructions.browser.cjs: repeatable browser acceptance using actual application routes and a disposable local PostgreSQL database. Baseline screenshots use exact d052b69 assets against the same fixture.
+
+Measurements (entire Preparation card, five supplied example steps)
+Viewport | Before card | After card | Row heights | Horizontal overflow
+1440 px  | 965 px      | 349 px     | 45 px       | None
+1024 px  | --          | 349 px     | 45 px       | None
+768 px   | --          | 349 px     | 45 px       | None
+390 px   | 1293 px     | 633 px     | 87–109 px   | None
+320 px   | --          | 735 px     | 87–109 px   | None
+PNG raster dimensions round fractional bounds upward (e.g. 349px card produces 350px PNG).
+Desktop reduction: approximately 64%. Short desktop instructions remain one line with 36px field interiors. On phones, text wraps naturally and controls occupy a separate row so all four actions retain 44px touch targets. The block toolbar can wrap on narrow screens.
+
+Verification
+PASS 47 tests, 0 failures, 0 skips:
+  node --test --test-concurrency=1 test/recipe-book.test.js test/recipe-service.test.js test/recipe-builder.test.js test/recipe-usability.test.js test/recipe-release.test.js
+  (run from backend)
+PASS browser acceptance:
+  NODE_PATH=/Users/justinrawlinson/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules node backend/test/recipe-instructions.browser.cjs
+  Google Chrome / Playwright, headless macOS; mouse, keyboard, mobile tap and CDP touch-input emulation. Physical touch hardware was not tested.
+  All requested widths; no horizontal overflow or clipped fields; long multiline growth and shrink; automatic focus on add; keyboard move; boundary disabling; instruction-only deletion; HTML mouse drag; emulated touch drag; nested reveal/edit/add; fold/reveal; shared instruction types; saved ordering after reload; ingredient-row markup unchanged; protected data/publications unchanged; no browser JavaScript errors.
+PASS JavaScript syntax checks and git diff --check.
+
+Data preservation
+The only application changes are browser presentation and interactions. No schema, API, repository, source import, costing, inventory, persistence contract, published renderer, history or synchronization code changed. Existing ingredient table markup and CSS rules are unchanged. The unchanged Recipe Book APIs save independent service drafts; no write-back or synchronization was introduced. Existing regression tests verify source measurements, provenance, nested data, publication/history isolation, and unchanged costing/protected domain records. All new writes during verification were to disposable synthetic local fixtures, which were removed. No production database or production API was accessed for this task.
+
+Review artifacts (relative to workspace)
+.recipe-private/instruction-review/before-desktop.png
+.recipe-private/instruction-review/after-1440.png
+.recipe-private/instruction-review/before-mobile.png
+.recipe-private/instruction-review/after-390.png
+.recipe-private/instruction-review/after-1024.png
+.recipe-private/instruction-review/after-768.png
+.recipe-private/instruction-review/after-320.png
+.recipe-private/instruction-review/editor-1440.png
+.recipe-private/instruction-review/editor-390.png
+.recipe-private/instruction-review/long-instruction.png
+.recipe-private/instruction-review/browser-results.json
+.recipe-private/instruction-review/browser-environment.json
+.recipe-private/instruction-review/regression-tests.txt
