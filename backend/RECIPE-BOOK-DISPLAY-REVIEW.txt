@@ -1,0 +1,54 @@
+Wahi Recipe Book display corrections — owner review
+October 21, 2026 (Pacific)
+
+Status: IMPLEMENTED LOCALLY. Awaiting owner review before deployment.
+Branch: codex/recipe-book-display, based on deployed b5d670a.
+Workspace: /Users/justinrawlinson/.codex/worktrees/compact-instructions/Wahi_reporting_system
+
+Findings
+151 Swizzle has four preparation steps in BOTH its saved bartender draft and its immutable published version, plus garnish “Cinnamon Stick & Sprinkle of Nutmeg” and glassware “Swizzle Cup”. The missing instructions are a presentation problem, not missing saved recipe data.
+Two separate omissions caused it: serviceDocument() replaced all instruction arrays with empty arrays in the published response; recipe-renderer.js ignored instructions entirely. The current production response has zero instruction rows although its saved publication contains six (four preparation, one garnish, one glassware).
+Simple Syrup is a 0.5 oz ingredient in the drink's saved ingredient list. A separate child recipe component stores its copied underlying formula. The renderer recursively displayed that child as a details/summary element, producing the unwanted collapsible Simple Syrup section.
+
+Changes
+backend/recipe-book/service.js: read-only published-document projection now includes saved instruction IDs and text. Administrative note instructions remain outside the bartender response as before. Provenance remains in management drafts/history; no write path changed.
+backend/review/public/recipe-renderer.js: shows the drink's own ingredients, then ordered preparation, garnish and glassware. Child recipe formulas are omitted from the visual output while remaining in the saved graph and management editor. Recipe content contains no details, summary or expansion controls. Missing instruction arrays produce no invented content. Text is escaped, and saved newlines are preserved.
+backend/review/public/style.css: adds instruction-list spacing using the existing dark theme. Desktop retains the existing 20/45/35 three-column proportions. Phones retain all three columns but use 20/60/20 and tighter spacing to make directions readable.
+Associated tests update obsolete ingredient-only/collapsible-display expectations and add nested-formula, sequence, escaping, missing-instruction and real saved-document browser coverage.
+
+151 Swizzle acceptance
+PASS Simple Syrup remains one ingredient at 0.5 oz; its underlying ingredient recipe is not displayed.
+PASS All four saved preparation directions appear in their exact saved order.
+PASS Saved garnish follows preparation; saved Swizzle Cup glassware appears afterward.
+PASS No expand/collapse controls in the bartender recipe content.
+PASS Dark theme preserved; desktop three-column layout retained.
+PASS 1440, 1024, 768, 390 and 320 px browser checks; no horizontal page overflow.
+PASS Exact saved published document and photograph copied read-only into disposable local test database. Actual authenticated published HTTP endpoint and station Recipe Book UI exercised. Comparison screenshots use the previous renderer, response projection and stylesheet.
+PASS Saved local draft/publication documents unchanged by display requests; production 151 draft, version and published record match the initial read-only snapshot.
+
+Regression results
+51 automated tests passed; zero failures or skips:
+node --test --test-concurrency=1 backend/test/recipe-display.test.js backend/test/recipe-book.test.js backend/test/recipe-service.test.js backend/test/recipe-builder.test.js backend/test/recipe-usability.test.js backend/test/recipe-release.test.js
+151 Swizzle browser acceptance passed at all five widths:
+NODE_PATH=/Users/justinrawlinson/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules node backend/test/recipe-display.browser.cjs
+Existing recipe-instructions.browser.cjs also passed, including compact editor density, add/edit/delete, mouse drag, keyboard, touch emulation, save/reload and nested editing.
+JavaScript syntax checks and git diff --check pass.
+Browser checks use Chromium desktop/mobile emulation, not physical touch hardware. The baseline comparison disables the service worker so the old and new assets can be selected deterministically; offline behavior is covered by the unchanged service/cache regression tests.
+
+Preservation and release boundaries
+No production writes, publishing, migrations or deployment performed. Production database access was read-only; authenticated production API access was GET-only. Local fixture databases were removed after testing.
+Recipe Builder editing code, contracts, source import, save/publish/recover functions, source relationships, inventory and financial calculations are unchanged. No saved document rewrite or synchronization is introduced. Existing protected-domain/costing/history/isolation regressions pass.
+A later deployment will require an online page reload/refresh to obtain the updated renderer and complete published payload. Existing offline caches cannot supply instructions previously omitted by the production API until refreshed online.
+
+Screenshots and evidence (relative to workspace)
+.recipe-private/recipe-book-display/before-desktop.png
+.recipe-private/recipe-book-display/after-1440.png
+.recipe-private/recipe-book-display/before-mobile.png
+.recipe-private/recipe-book-display/after-390.png
+.recipe-private/recipe-book-display/after-1024.png
+.recipe-private/recipe-book-display/after-768.png
+.recipe-private/recipe-book-display/after-320.png
+.recipe-private/recipe-book-display/browser-results.json
+.recipe-private/recipe-book-display/regression-tests.txt
+.recipe-private/recipe-book-display/editor-regression.txt
+.recipe-private/recipe-book-display/read-only-verification.json

@@ -341,3 +341,17 @@ body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);
  .builder-editor .builder-instruction-number{align-self:start;padding-top:8px}
  .builder-editor .builder-instruction textarea{align-self:start}
 }
+
+/* Saved service directions share the existing dark Recipe Book typography. */
+.service-recipe .recipe-instructions{margin:8px 0;padding-inline-start:2.5rem}
+.service-recipe .recipe-instructions li{margin-block:8px;padding-inline-start:.25rem;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+@media(max-width:620px){
+ :is(body.recipe-book-active,.recipe-full-preview) .recipe-columns{grid-template-columns:minmax(0,20fr) minmax(0,60fr) minmax(0,20fr)}
+ :is(body.recipe-book-active,.recipe-full-preview) #recipe-detail{padding:12px 8px}
+ :is(body.recipe-book-active,.recipe-full-preview) #recipe-detail .recipe-subordinate{margin-inline-start:.5rem}
+ :is(body.recipe-book-active,.recipe-full-preview) .recipe-instructions{padding-inline-start:1.75rem}
+ :is(body.recipe-book-active,.recipe-full-preview) .recipe-search-controls{padding:8px 5px}
+ :is(body.recipe-book-active,.recipe-full-preview) .recipe-search-controls :is(input,select){padding:6px 3px}
+ :is(body.recipe-book-active,.recipe-full-preview) #recipe-list{padding:4px}
+ :is(body.recipe-book-active,.recipe-full-preview) #recipe-list button{padding:6px 3px;font-size:12px}
+}
