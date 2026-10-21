@@ -6,7 +6,7 @@ const fail=(code,recipeMessage)=>{throw Object.assign(new Error(recipeMessage||c
 function serviceDocument(input){
  // Explicit service projection; provenance stays exclusively in drafts and history.
  const visit=nodes=>nodes.map(n=>({id:n.id,type:n.type,visibleTitle:n.visibleTitle,collapsed:n.collapsed,
-  ingredients:n.ingredients.map(i=>({id:i.id,name:i.name,quantity:i.quantity,unit:i.unit})),instructions:n.type==='notes'?[]:n.instructions.map(r=>({id:r.id,text:r.text})),children:visit(n.children)}));
+  ingredients:n.ingredients.map(i=>({id:i.id,name:i.name,quantity:i.quantity,unit:i.unit})),instructions:n.instructions.map(r=>({id:r.id,text:r.text})),children:visit(n.children)}));
  return {schemaVersion:input.schemaVersion,title:input.title,photoId:input.photoId,components:visit(input.components)};
 }
 const menu=z.enum(['on_menu','off_menu']);

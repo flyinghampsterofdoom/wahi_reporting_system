@@ -1,0 +1,71 @@
+Wahi Recipe Book production rendering discrepancy
+October 21, 2026 (Pacific)
+
+Outcome
+The exact owner-session discrepancy was reproduced and explained. The owner's existing Brave tab now renders correctly after one normal page reload, using the ALREADY deployed daed17904dd4a24d90a0c23baf3818818e53b60e. No new deployment, recipe save, publication, content repair, migration or media change was performed.
+Preventive implementation is local on codex/recipe-book-session-consistency, awaiting review.
+
+Direct evidence from the owner's real browser
+Route: https://wahi-reporting-system.onrender.com/#recipe-book
+Account: owner, role ADMIN. Menu filter: On Menu. 151 Swizzle selected.
+Brave DevTools reported performance.timeOrigin = 2026-10-21T15:22:09.205Z (8:22:09 AM PDT).
+The tab loaded recipe-renderer.f52f25a2bb5de976.js. Its live render function was the prior recursive implementation, d.components.map(component), which ignores all instructions and produces details/summary elements.
+The same tab's recipeBookState already contained FOUR preparation instructions for 151 Swizzle. Its screen nevertheless contained two disclosure elements and no directions. Expanding Simple Syrup exposed “4 cups White Sugar”, reproducing the owner's exact reported behavior.
+The tab's Connected / Last refreshed timestamp advanced at 11:22–11:25 AM. That refreshed the data and image, not the JavaScript already executing in the page.
+The current deployment was created at 8:37:16 AM PDT and completed at 8:38:12 AM PDT, after the owner's document had opened. Its correct renderer is recipe-renderer.dc7c39497f3b209e.js.
+Before reloading, DevTools confirmed unsavedBuilderChanges:false. A normal reload of that SAME tab, account and route displayed six ingredients, all four directions, Cinnamon Stick & Sprinkle of Nutmeg, Swizzle Cup, and the same large transparent photo, with no disclosure controls or nested syrup formula.
+These observations were made through native Brave UI / DevTools. The owner's before/after screenshots and accessibility output are in this chat's tool record; the diagnostic facts are also recorded in .recipe-private/recipe-book-discrepancy/owner-session-evidence.json.
+
+Specific root cause
+An application-version consistency gap in long-lived tabs. The old renderer remained in memory across a server deployment. Recipe Book Refresh and its 30-second refresh timer fetch current published documents but do not replace the renderer or check the loaded bundle version. Hash navigation between Builder and Book also retains that JavaScript context.
+This is not an inference based solely on the word “cache”. The old script URL and old render function were inspected directly, with current instruction-bearing data present in the same failing session. A fresh screenshot did not correspond to a new document load.
+There is no evidence that the service worker delivered an obsolete document on the owner's reload. The observed tab loaded before deployment; the ordinary reload immediately loaded the correct production rendering without clearing browser caches or storage.
+
+Deployment, API and path investigation
+Render still reports deployment dep-dbcdob0n74is73877db0 / commit daed179 live. Public HTML references the corrected renderer, and fetched renderer/foundation/builder/worker bytes match that commit.
+The published API returns 151 Swizzle's six ingredient rows, four preparation instructions, garnish and glassware. Its saved publication and draft contain those instructions. There is no missing-data repair to perform.
+Book selection, Book data refresh, menu filtering and full-size builder preview all use the shared WahiRecipeRenderer. There is no alternate role-specific renderer for On Menu. The old and new implementations coexisted in separate browser documents, not as a menu-status branch in the deployed code.
+The repository's legacy /recipe-books application is separate from the deployed /#recipe-book route and did not produce this screen.
+Menu status filters membership in the recipe list; it does not change a recipe document or the renderer. Publication state does not explain the stale arrows: the current published document was already present in the failing tab.
+
+Why the previous acceptance test passed
+The prior production test launched a new isolated Chromium context, injected the authorized owner session and navigated to /#recipe-book AFTER deployment. That correctly downloaded dc7c39497f3b209e and passed the visible assertions. The account permissions and route matched; the browser document lifetime did not.
+That test covered the then-published 151 Swizzle via All (it was Off Menu at the time). The owner subsequently published/classified additional recipes, bringing the current On Menu count to 23. Those membership changes do not select a different render path.
+The test did NOT preserve a pre-deployment application document across deployment, then use its data-only Refresh. It therefore missed the actual warm-session failure. Earlier local comparison screenshots also deliberately disabled service-worker interception to choose before/after assets deterministically; those were not an upgrade-lifecycle test.
+The earlier report was accurate for a fresh session but incomplete as a guarantee for existing sessions.
+
+Verification performed now
+PASS actual owner Brave session: reproduced disclosures, missing steps and nested sugar; repaired it with one normal reload and verified the corrected content and photograph in place.
+PASS production owner/ADMIN /#recipe-book: 69 selections across On Menu, Off Menu, All and On Menu again, checking every one of the 23 current publications. Off Menu correctly contained no current publications. Returning to On Menu/All preserved the full rendering of eligible recipes.
+PASS additional multi-block recipes, including Hawaiian Slushee, Hurricane and Navy Grog: four saved preparation rows each, garnish and glassware, no recipe disclosures. Hawaiian Slushee also exercises instructions authored on recipe components alongside separate preparation blocks.
+PASS desktop 1440px and mobile 390/320px production screenshots, with no horizontal page overflow. Large transparent photography, dark theme and three-column layout remain intact.
+PASS 55 local regressions, zero failures or skips.
+PASS local persistent-context warm-upgrade browser test WITH service workers enabled. It reproduces old renderer + four steps already in the API + nested sugar, replaces the server release while retaining the page, then verifies a clean Book session reloads to the corrected bundle. No recipe-specific branch is used.
+PASS dirty Recipe Builder and parked dirty Builder draft checks: the preventive update mechanism preserves local unsaved edits and leaves saved documents/history unchanged.
+PASS existing 151 Swizzle display browser regression at all five widths, JavaScript syntax checks and git diff --check.
+
+Local preventive correction — NOT DEPLOYED
+- server.js publishes a no-store application-version manifest derived from asset fingerprints and the release identity, and embeds the matching version in HTML.
+- app-version.js checks that version on focus, visibility/online changes, navigation, Book Refresh and a 30-second interval. A clean Book reloads after a version mismatch. Dirty/parked Builder drafts and other working pages get an update notice; dirty Builder drafts cannot be discarded by its reload button. A session marker prevents repeated automatic reloads for the same target version.
+- The new bootstrap script participates in the existing fingerprinted assets and offline shell dependency set. Authentication, offline leases and account-scoped cached recipe data are unchanged.
+- The all-content-bearing-block requirement also exposed a separate blanket omission of notes-type instructions in the current projection/renderer. The local patch includes saved note text as service-note sections, rather than discarding every notes block by type. This was not the cause of 151 Swizzle's reported discrepancy, whose publication has no notes block. No saved note or recipe text was edited.
+- The renderer continues to omit underlying child recipe formulas while retaining those relationships in the saved graph and management editor. No name-specific logic or 151 Swizzle workaround is introduced.
+
+Preservation and current status
+No production recipe mutation requests were performed by the verification script; all non-GET Recipe Book requests were blocked there. Production SQL access used default_transaction_read_only=on. Native UI actions inspected diagnostics, expanded one obsolete disclosure for reproduction, and reloaded a clean Book; no save/publish controls were used.
+The saved 151 Swizzle draft, publication identity, content and source relationships match the initial investigation snapshot. Source/costing/inventory/history write paths, contracts, migration files and Builder editing code are unchanged. Existing isolation/history/costing regressions pass; disposable test databases were removed.
+Production remains daed179. Other legacy documents opened before that deployment need one normal reload. The new version guard can prevent recurrence after its own initial rollout, but cannot execute inside an already-loaded legacy document until that document reloads.
+
+Evidence (workspace relative)
+.recipe-private/recipe-book-discrepancy/owner-session-evidence.json
+.recipe-private/recipe-book-discrepancy/assets.json
+.recipe-private/recipe-book-discrepancy/summary.json
+.recipe-private/recipe-book-discrepancy/production-filter-results.json
+.recipe-private/recipe-book-discrepancy/production-filter-1440.png
+.recipe-private/recipe-book-discrepancy/production-filter-390.png
+.recipe-private/recipe-book-discrepancy/production-filter-320.png
+.recipe-private/recipe-book-discrepancy/warm-session-before.png
+.recipe-private/recipe-book-discrepancy/warm-session-after.png
+.recipe-private/recipe-book-discrepancy/warm-upgrade-results.json
+.recipe-private/recipe-book-discrepancy/regression-tests.txt
+.recipe-private/recipe-book-discrepancy/final-read-only-verification.json

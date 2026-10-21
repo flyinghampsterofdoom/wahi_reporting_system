@@ -355,3 +355,7 @@ body.recipe-book-active #notice{background:var(--book-control);color:var(--ink);
  :is(body.recipe-book-active,.recipe-full-preview) #recipe-list{padding:4px}
  :is(body.recipe-book-active,.recipe-full-preview) #recipe-list button{padding:6px 3px;font-size:12px}
 }
+
+/* Version notice appears only when a page cannot safely reload automatically. */
+.app-update-notice{position:fixed;z-index:100;right:16px;bottom:16px;max-width:calc(100vw - 32px);display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);box-shadow:0 2px 12px #0004}
+.app-update-notice button{font-size:14px;min-height:44px}
