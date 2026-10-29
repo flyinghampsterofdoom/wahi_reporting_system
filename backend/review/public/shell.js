@@ -1,6 +1,8 @@
 'use strict';
 let shellState={collapsed:false,drawer:false};
 function renderShell(){
+ if(typeof refreshGoogleConnectionNotice==='function')void refreshGoogleConnectionNotice();
+ if(me?.role!=='ADMIN')$('google-connection-notice')?.remove();
  renderOperationalControl();$('workspace').classList.toggle('operational',bohView());
  if(bohView()){$('nav').innerHTML='';$('area-nav').innerHTML='';$('nav-toggle').hidden=true;document.querySelector('.content-shell').inert=false;$('account').inert=false;return;}
 

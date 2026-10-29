@@ -13,13 +13,15 @@ class ProviderHTTP {
   for(let attempt=0;attempt<maxAttempts;attempt++){
    await guard();let response;
    try{response=await this.fetchImpl(target.toString(),{...options,redirect:'error',signal:AbortSignal.timeout(this.timeoutMs)});}catch{throw fail(options.method==='POST'&&target.hostname==='api.openai.com'?'review_dispatch_uncertain':'review_provider_transport');}
+   let text;try{if(response.body?.getReader){const reader=response.body.getReader(),chunks=[];let size=0;for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>2000000){await reader.cancel();throw new Error();}chunks.push(Buffer.from(value));}text=Buffer.concat(chunks).toString('utf8');}else{text=await response.text();if(Buffer.byteLength(text)>2000000)throw new Error();}}catch{throw fail('review_provider_invalid_response');}
+   let body;try{body=text?JSON.parse(text):{};if(!body||typeof body!=='object'||Array.isArray(body))throw new Error();}catch{if(![429,500,502,503,504].includes(response.status)||attempt+1>=maxAttempts)throw fail('review_provider_invalid_response');body={};}
+   // Zero GBP quota requires Google's project approval; retries and consent cannot fix it.
+   if(response.status===429&&target.hostname.startsWith('mybusiness')&&Array.isArray(body.error?.details)&&body.error.details.some(d=>d?.reason==='RATE_LIMIT_EXCEEDED'&&d.metadata?.quota_limit_value==='0'))throw fail('review_google_api_access_unapproved');
    if([429,500,502,503,504].includes(response.status)&&attempt+1<maxAttempts){
     const value=response.headers.get('retry-after');const delay=value?(/^\d+(\.\d+)?$/.test(value)?Number(value)*1000:Date.parse(value)-this.clock()):250*2**attempt*(0.5+this.random());
     if(!Number.isFinite(delay)||delay>30000)throw Object.assign(fail('review_provider_rate_limited'),{retryAfterMs:Number.isFinite(delay)?Math.max(0,delay):60000});
-    await response.body?.cancel();await this.sleep(Math.max(0,delay));continue;
+    await this.sleep(Math.max(0,delay));continue;
    }
-   let text;try{if(response.body?.getReader){const reader=response.body.getReader(),chunks=[];let size=0;for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>2000000){await reader.cancel();throw new Error();}chunks.push(Buffer.from(value));}text=Buffer.concat(chunks).toString('utf8');}else{text=await response.text();if(Buffer.byteLength(text)>2000000)throw new Error();}}catch{throw fail('review_provider_invalid_response');}
-   let body;try{body=text?JSON.parse(text):{};if(!body||typeof body!=='object'||Array.isArray(body))throw new Error();}catch{throw fail('review_provider_invalid_response');}
    const retryHeader=response.headers.get('retry-after'),retryDelay=retryHeader?(/^\d+(\.\d+)?$/.test(retryHeader)?Number(retryHeader)*1000:Date.parse(retryHeader)-this.clock()):0;return {retryAfterMs:Number.isFinite(retryDelay)&&retryDelay>=0&&retryDelay<8640000000000000-this.clock()?retryDelay:60000,status:response.status,body,requestId:(response.headers.get('x-request-id')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,200),retryAfter:response.headers.get('retry-after')};
   }
   throw fail('review_provider_attempts_exhausted');

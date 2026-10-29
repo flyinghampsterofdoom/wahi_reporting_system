@@ -100,7 +100,7 @@ Budget reservations persist before dispatch. Pending/uncertain reservations cont
 
 Run `node backend/review-intelligence/persistent.js` from the repository root, then open `http://127.0.0.1:4318/#admin/google`. This creates/opens its own owner-private `backend/.google-local` PostgreSQL cluster and stable key. It does not use `WAHI_DATABASE_URL`, `backend/review/.runtime`, or a disposable acceptance database. Private local login instructions are in `.google-local/ACCESS.md`; never paste credentials into chat. All state survives normal shutdown/restart; Ctrl+C stops the runner/database without deleting them. Another process on port 4318 is never replaced. Stop the disposable synthetic runner before using this default port.
 
-The Admin form saves project number, Client ID, Client Secret and the exact callback `http://127.0.0.1:4318/api/reporting/reviews/oauth/callback`. Connect Google authorizes OAuth and business metadata for 30 days and requires the owner to complete consent. After callback success, explicitly load/select an account, load locations, and confirm the intended business name/address. Confirmation preserves authorization. Configuration changes involving OAuth client/project/secret/redirect and Reconnect require fresh consent and invalidate prior identity discovery/mapping. Disconnect removes tokens/state/discovery/mapping but retains encrypted client credentials for reconnection. Missing encryption keys are not silently replaced when ciphertext exists.
+The Admin form saves project number, Client ID, Client Secret and the exact callback `http://127.0.0.1:4318/api/reporting/reviews/oauth/callback`. Connect Google authorizes OAuth and business metadata until disconnect or Google invalidation and requires the owner to complete consent. Access tokens renew on demand using the encrypted refresh token; no periodic manual consent is required by Wahi. After callback success, explicitly load/select an account, load locations, and confirm the intended business name/address. Confirmation preserves authorization. Configuration changes involving OAuth client/project/secret/redirect and Reconnect require fresh consent and invalidate prior identity discovery/mapping. Disconnect removes tokens/state/discovery/mapping but retains encrypted client credentials for reconnection. Missing encryption keys are not silently replaced when ciphertext exists.
 
 The persistent transport permits only OAuth token POSTs and account/location metadata GETs. Content rights remain separate and unknown; this runtime blocks review ingestion, OpenAI and Business Profile modifications regardless of saved credentials or mappings. It has no scheduled Google polling. The synthetic runner retains its default network denial and existing fixture workflow. Connection credential entry is blocked in a disposable synthetic runner.
 
@@ -110,7 +110,7 @@ Admin API under `/api/reporting/reviews/connection`:
 | --- | --- |
 | GET base | Sanitized connection state, public client configuration, confirmed mapping and audit |
 | POST `/configure` | `{expectedVersion,projectNumber,clientId,clientSecret?,redirectUri}` |
-| POST `/authorize` | `{reference,expiresAt}`; OAuth/metadata authorization only |
+| POST `/authorize` | `{reference,callbackRegistered?}`; persistent OAuth/metadata authorization only (production requires callback acknowledgment) |
 | POST `/refresh` | Verify locally stored token state/refresh expired token; no review access |
 | POST `/accounts` | `{cursor?}`; account names/IDs/types/roles/status, discovery ID and next cursor |
 | POST `/locations` | `{accountId,cursor?}`; requires current discovered account |
@@ -130,3 +130,13 @@ The production callback is `https://wahi-reporting-system.onrender.com/api/repor
 Hosted operation remains connection-only: token exchange/refresh and account/location metadata discovery are allowed after explicit Admin authorization; review ingestion, content approval/retention changes, category discovery, reprocessing and OpenAI calls are blocked. Outbound transport independently rejects review/OpenAI/modification URLs. No review scheduler is started. Manager can view the empty/published report interface and Staff/Recipe-only accounts cannot access Review Intelligence.
 
 Migration 030 is necessary alongside 028/029 to preserve Phase 3B's independent connection authorization, discovery provenance and identity generation. The production release retains existing 031/032 Recipe Book migrations and excludes unrelated undeployed migrations 021 and 024–027. Recovery instructions and private backup evidence are recorded in the owner-local Phase 3C deployment report; never commit database dumps, credentials or private fixtures.
+
+## Persistent authorization update — October 29, 2026
+
+Migration `033_google_persistent_authorization.sql` removes fixed deadlines from still-active enabled grants, with an audit record retaining the previous deadline. It does not revive expired/disabled grants, replace credentials, change the confirmed mapping, or grant content rights. Existing explicit finite authorizations remain guarded until this migration; new UI authorizations have no deadline. All previous migrations are unchanged.
+
+Connection status exposes sanitized `hasRefreshToken`, `reauthorizationRequired` and `notification` fields. Expired access tokens renew automatically on demand; manual status refresh validates the refresh grant with Google. A confirmed `invalid_grant` disconnects and creates an Admin alert. Transient failures and rejected application credentials preserve the grant. API/quota failures do not request consent. The Admin shell shows detected reauthorization alerts on navigation (cached up to one minute); there is no email sender, background health monitor, ingestion scheduler or AI processing. Connection health does not itself prove Business Profile API access.
+
+Google can still invalidate refresh tokens, including for apps in Testing status. Confirm the actual OAuth client's publishing status and project quota in Google Cloud. The user-visible client configuration must not be changed merely to fix a quota error: doing so invalidates identity-bound connection state.
+
+This persistence correction requires the normal production backup, recovery rehearsal and owner deployment authorization.
