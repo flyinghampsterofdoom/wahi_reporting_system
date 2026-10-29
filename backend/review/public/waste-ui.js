@@ -5,7 +5,7 @@ const bohView=()=>me?.role==='BOH'||(me?.role==='ADMIN'&&operationalPreview==='B
 function renderOperationalControl(){
  let control=$('operational-view');if(!control){control=document.createElement('button');control.id='operational-view';control.className='secondary';document.querySelector('header').append(control);}
  control.hidden=me?.role!=='ADMIN';control.textContent=bohView()?'Exit BOH View':'BOH View';
- control.onclick=()=>{operationalPreview=bohView()?null:'BOH';location.hash=operationalPreview?'waste':'admin';route();};
+ control.onclick=()=>{operationalPreview=bohView()?null:'BOH';const next='#'+(operationalPreview?'waste':'admin');if(location.hash===next)route();else location.hash=next;};
  document.querySelector('header').classList.toggle('operational-header',bohView());
  document.querySelector('#account a')?.toggleAttribute('hidden',bohView());
  document.querySelector('.brand span').textContent=bohView()?'BOH':me?.hosted?'Management':'Owner review';
