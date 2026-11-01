@@ -115,6 +115,7 @@ function createReviewServer({service,users,integrations,runtime={hosted:false,en
         if(req.method==='POST'&&['addCommon','duplicate','create','save','publish','classify','archive','recover'].includes(action)){send(200,await recipes[action](actor,await body(req)));return;}
         throw error('not_found','Unknown recipe operation');
       }
+      if(p.startsWith('/api/waste/')){send(503,{error:'Waste Tracking is temporarily unavailable during release recovery. Existing records are preserved.'});return;}
       if(p==='/api/waste/catalog'&&req.method==='GET'){send(200,await waste.catalog(actor));return;}
       if(p==='/api/waste/events'&&req.method==='POST'){send(200,await waste.log(actor,await body(req),{sessionId:tokenHash('waste:'+cookie)}));return;}
       if(p==='/api/waste/history'&&req.method==='GET'){send(200,await waste.history(actor,Object.fromEntries(u.searchParams)));return;}
