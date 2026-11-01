@@ -51,3 +51,13 @@ for(const reread of [true,false])test(`real source retention: ${reread?'successf
  assert.equal(after.id,before.id);assert.equal(after.head_id,before.head_id);assert.equal(after.result_id,before.result_id);assert.equal(p.calls,1);
  assert.equal(after.output!==null,reread);assert.equal(after.payload!==null,reread);
 });
+test('real API terminal inventory reports advertised-count differences without inventing or dropping returned reviews',async()=>{
+ const f=await setup(2),a=await f.googleReady();await pool.query('UPDATE wahi_v2.review_locations SET synthetic=FALSE WHERE id=$1',[f.s.locationId]);
+ await f.s.recordSourceRights(admin,{expectedVersion:2,rawDays:30,derivedDays:30,aggregateSurvival:true,purgeMissing:false,eraseIdentity:false,reason:'Mock inventory coverage test',reference:'Mock-only approved source',validUntil:'2030-01-01T00:00:00Z'});
+ f.setHandler(async()=>response({reviews:f.rows,totalReviewCount:3}));assert.equal((await f.scan(a)).distinct,2);
+ const scan=(await f.s.status(admin)).syncs[0];assert.equal(scan.status,'complete');assert.equal(scan.expected_count,3);assert.equal(scan.distinct_count,2);
+ assert.equal((await pool.query("SELECT count(*)::int AS n FROM wahi_v2.review_audit WHERE location_id=$1 AND event='inventory_source_count_discrepancy'",[f.s.locationId])).rows[0].n,1);
+ f.setHandler(async()=>response({reviews:[f.rows[0],f.rows[0]],totalReviewCount:2}));await assert.rejects(f.scan(a),/review_count_mismatch/);
+ f.setHandler(async()=>response({reviews:[],totalReviewCount:3}));await assert.rejects(f.scan(a),/review_count_mismatch/);
+ assert.equal((await pool.query('SELECT count(*)::int AS n FROM wahi_v2.review_records WHERE location_id=$1',[f.s.locationId])).rows[0].n,2);
+});

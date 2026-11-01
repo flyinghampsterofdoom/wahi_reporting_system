@@ -27,7 +27,7 @@ module.exports={
     return await this.repository.transaction(async c=>{
      await this.assertIngestionAdapter(adapter,c);const {policy}=await this.eligible(c),config=await this.config(c),pages=(await c.query('SELECT * FROM wahi_v2.review_sync_pages WHERE run_id=$1 ORDER BY ordinal',[runId])).rows,distinct=new Map();
      for(const p of pages){if(!p.payload||new Date(p.expires_at)<=this.now())throw fail('review_staged_page_expired');for(const r of p.payload){if(distinct.has(r.reviewId)&&hash(distinct.get(r.reviewId))!==hash(r))throw fail('review_conflicting_duplicate');distinct.set(r.reviewId,r);}}
-     if(distinct.size!==run.expected_count)throw fail('review_count_mismatch');
+     if(distinct.size!==run.expected_count){if(location.synthetic||!distinct.size||pages.reduce((n,p)=>n+p.payload.length,0)!==distinct.size)throw fail('review_count_mismatch');await this.audit(c,actor,'inventory_source_count_discrepancy',{runId,advertised:run.expected_count,retrieved:distinct.size,terminalCursorReached:run.traversal_done});}
      for(const r of distinct.values()){
       let record=(await c.query('SELECT r.*,v.source_updated_at FROM wahi_v2.review_records r LEFT JOIN wahi_v2.review_source_versions v ON v.id=r.head_id WHERE r.location_id=$1 AND r.source_id=$2',[this.locationId,r.reviewId])).rows[0];
       if(record?.source_updated_at&&new Date(r.updateTime)<new Date(record.source_updated_at))throw fail('review_stale_source_version');
