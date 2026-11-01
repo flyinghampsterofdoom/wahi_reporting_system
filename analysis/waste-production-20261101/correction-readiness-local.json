@@ -1,0 +1,16 @@
+{
+  "before": {
+    "submitHandlerInstalled": true,
+    "saveDisabled": true,
+    "valid": true,
+    "invalid": [],
+    "url": "http://127.0.0.1:4321/#waste/history"
+  },
+  "after": {
+    "submitHandlerInstalled": true,
+    "saveDisabled": false,
+    "valid": true,
+    "invalid": [],
+    "url": "http://127.0.0.1:4321/#waste/history"
+  }
+}
