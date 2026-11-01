@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "priceVersion": "2026-11-01",
+  "inputUSDPerMillion": 0.1,
+  "outputUSDPerMillion": 0.5,
+  "requestBudgetUSD": 0.05,
+  "monthlyBudgetUSD": 10,
+  "scenarios": [
+    {
+      "days": 30,
+      "records": 17,
+      "payloadBytes": 35116,
+      "promptAndSchemaAllowanceTokens": 2000,
+      "inputTokensLow": 7853,
+      "inputTokensHigh": 19558,
+      "outputTokens": 2400,
+      "estimateLowUSD": 0.0013853,
+      "estimateHighUSD": 0.0031557999999999994,
+      "planningReserveUSD": 0.007461499999999999
+    },
+    {
+      "days": 90,
+      "records": 48,
+      "payloadBytes": 91467,
+      "promptAndSchemaAllowanceTokens": 2000,
+      "inputTokensLow": 17245,
+      "inputTokensHigh": 47734,
+      "outputTokens": 2400,
+      "estimateLowUSD": 0.0023244999999999997,
+      "estimateHighUSD": 0.005973399999999999,
+      "planningReserveUSD": 0.014505375
+    },
+    {
+      "days": 365,
+      "records": 172,
+      "payloadBytes": 358497,
+      "promptAndSchemaAllowanceTokens": 2000,
+      "inputTokensLow": 61750,
+      "inputTokensHigh": 181249,
+      "outputTokens": 2400,
+      "estimateLowUSD": 0.006775,
+      "estimateHighUSD": 0.0193249,
+      "planningReserveUSD": 0.047884125
+    }
+  ],
+  "monthlyDailyThreeWindowsLowUSD": 0.314544,
+  "monthlyDailyThreeWindowsHighUSD": 0.8536229999999999,
+  "monthlyPlanningReserveUSD": 2.09553,
+  "targetedCorrections": 4,
+  "correctionsReserveUSD": 0.014166999999999999,
+  "actualAdditionalSpendUSD": 0,
+  "notes": "Planning estimates from configured dated prices and UTF-8 payload size (2–6 bytes per input token), not a measured token count or invoice. Includes a 2,000-input-token planning allowance for prompt/schema framing. Output assumption 1,200–2,400 tokens; planning reserve uses data bytes plus an 8,192-byte framing allowance and the configured output cap. The unpruned 12-month pack approaches the request ceiling; actual token counting, context checks and bounded/chunked packs are required before activation. Final request framing, retries and actual usage can change cost. No cache discount assumed; no-change cached findings need no repeat call. Synthesis and existing classification share the unchanged monthly budget. No API call made."
+}

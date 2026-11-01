@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "test": "Concern citations contain five negative sources, no positive fallback; Escape restores focus",
+      "passed": true
+    },
+    {
+      "test": "Previous-period normalized comparison links to its own five sources and correct dates",
+      "passed": true
+    },
+    {
+      "test": "Proposed audit overlay changes only local interpretation; original source analysis remains intact",
+      "passed": true
+    },
+    {
+      "test": "Complete audit filters show four error cases and nine rating-only records",
+      "passed": true
+    },
+    {
+      "test": "Authenticated preview rejects processing/publication writes and reports zero API spend",
+      "passed": true
+    },
+    {
+      "test": "Standalone private audit contains all thirty records and original analyses",
+      "passed": true
+    }
+  ],
+  "count": 6,
+  "snapshotFileUnchanged": true,
+  "additionalOpenAICalls": 0
+}

@@ -1,0 +1,42 @@
+{
+  "status": "Ready for owner review; not deployed",
+  "regression": {
+    "tests": 821,
+    "passed": 821,
+    "failed": 0,
+    "skipped": 0,
+    "newTests": 15
+  },
+  "browser": {
+    "views": 21,
+    "pageErrors": 0,
+    "cspErrors": 0,
+    "horizontalPageOverflow": false,
+    "scopedAccessibilityViolations": 0
+  },
+  "interactiveWorkflows": 6,
+  "audit": {
+    "population": 30,
+    "textReviews": 21,
+    "ratingOnly": 9,
+    "confirmedReviewLevelIssues": 4,
+    "categoryPeriodReconciliations": 90
+  },
+  "production": {
+    "readOnly": true,
+    "reviewTablesUnchanged": 11,
+    "writes": 0,
+    "deployments": 0,
+    "additionalProviderCalls": 0,
+    "additionalOpenAICostUSD": 0,
+    "dailySchedule": "10:00 America/Los_Angeles"
+  },
+  "ownerApprovalRequired": [
+    "Interpretation corrections and accuracy-evaluation scope",
+    "Dashboard integration, labels and evidence/trend gates",
+    "Comparison-window semantics",
+    "Optional model synthesis cadence and budget allocation",
+    "Any taxonomy/alias/staff mapping changes",
+    "Production deployment"
+  ]
+}

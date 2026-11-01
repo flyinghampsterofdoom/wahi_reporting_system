@@ -1,0 +1,123 @@
+{
+  "snapshotAt": "2026-11-01T21:40:01.007Z",
+  "transactionReadOnly": "on",
+  "classificationPopulation": 30,
+  "textClassificationsReviewed": 21,
+  "ratingOnlyReviewed": 9,
+  "confirmedReviewLevelErrorCases": [
+    "R07",
+    "R14",
+    "R16",
+    "R21"
+  ],
+  "structurallyValidTextResults": 21,
+  "metricCategoryPeriodComparisons": 90,
+  "periods": {
+    "30": {
+      "start": "2026-10-03",
+      "end": "2026-11-01",
+      "reviews": 10,
+      "textReviews": 7,
+      "assessed": 7,
+      "ratingOnly": 3,
+      "publishedMutuallyExclusiveSentiment": {
+        "positive": 5,
+        "negative": 0,
+        "mixed": 2,
+        "neutral": 0
+      },
+      "explicitAspectSentiment": {
+        "praise": 7,
+        "concerns": 2
+      },
+      "food": {
+        "parent": 7,
+        "quality": 6,
+        "overlap": 6
+      },
+      "drinks": {
+        "parent": 5,
+        "quality": 4,
+        "overlap": 4
+      },
+      "allEvidenceWithinPeriod": true,
+      "newKnowledgeTrends": 0
+    },
+    "90": {
+      "start": "2026-08-04",
+      "end": "2026-11-01",
+      "reviews": 30,
+      "textReviews": 21,
+      "assessed": 21,
+      "ratingOnly": 9,
+      "publishedMutuallyExclusiveSentiment": {
+        "positive": 14,
+        "negative": 1,
+        "mixed": 6,
+        "neutral": 0
+      },
+      "explicitAspectSentiment": {
+        "praise": 20,
+        "concerns": 7
+      },
+      "food": {
+        "parent": 17,
+        "quality": 14,
+        "overlap": 14
+      },
+      "drinks": {
+        "parent": 14,
+        "quality": 8,
+        "overlap": 8
+      },
+      "allEvidenceWithinPeriod": true,
+      "newKnowledgeTrends": 0
+    },
+    "365": {
+      "start": "2025-11-02",
+      "end": "2026-11-01",
+      "reviews": 119,
+      "textReviews": 92,
+      "assessed": 92,
+      "ratingOnly": 27,
+      "publishedMutuallyExclusiveSentiment": {
+        "positive": 56,
+        "negative": 8,
+        "mixed": 28,
+        "neutral": 0
+      },
+      "explicitAspectSentiment": {
+        "praise": 83,
+        "concerns": 28
+      },
+      "food": {
+        "parent": 73,
+        "quality": 55,
+        "overlap": 55
+      },
+      "drinks": {
+        "parent": 61,
+        "quality": 31,
+        "overlap": 31
+      },
+      "allEvidenceWithinPeriod": true,
+      "newKnowledgeTrends": 0
+    }
+  },
+  "contradiction": {
+    "modelSentiment": "positive",
+    "requestedCardSentiment": "negative",
+    "shortlistHasNegative": false,
+    "fallbackUsesPositive": true,
+    "cause": "Cross-polarity rendering fallback after unbalanced recent-three shortlist; raw classification is positive."
+  },
+  "currentSchedule": {
+    "sync_enabled": true,
+    "analysis_enabled": true,
+    "timezone": "America/Los_Angeles",
+    "daily_time": "10:00:00",
+    "next_due_at": "2026-11-02T18:00:00.000Z",
+    "last_success_at": "2026-11-01T18:00:15.094Z",
+    "error_code": null
+  }
+}

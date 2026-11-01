@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-11-01T22:09:33.951Z",
+  "readOnly": "on",
+  "productionReviewTablesUnchanged": 11,
+  "changes": [],
+  "selectedPeriodTopicCountsUnchanged": true,
+  "negativeEvidenceNowCorrectlySelected": true,
+  "boundedQuotesPerTopic": 3,
+  "productionDeployment": false,
+  "additionalOpenAICalls": 0
+}
