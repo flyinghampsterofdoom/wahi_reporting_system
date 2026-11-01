@@ -5,17 +5,18 @@ const {migrate}=require('../migrate'),{ReviewRepository}=require('./repository')
 const bin=process.env.WAHI_TEST_PG_BIN||'/opt/homebrew/opt/postgresql@16/bin';
 async function start({port=4318}={}){
  if(!Number.isInteger(port)||port<1024||port>65535)throw new Error('Invalid local port');
- const root=await fs.mkdtemp(path.join(os.tmpdir(),'wahi-review-intelligence-'));await fs.chmod(root,0o700);let pool,server,retentionTimer,retentionWork,started=false;
+ const root=await fs.mkdtemp(path.join(os.tmpdir(),'wahi-review-intelligence-'));await fs.chmod(root,0o700);let pool,server,retentionTimer,retentionWork,worker,started=false;
  const pg=(command,args)=>execFileSync(path.join(bin,command),args,{stdio:'pipe'});
- async function stop(){clearInterval(retentionTimer);await retentionWork;if(server){server.closeAllConnections();await new Promise(r=>server.close(r));server=null;}await pool?.end();if(started){pg('pg_ctl',['-D',root+'/data','-m','immediate','-w','stop']);started=false;}await fs.rm(root,{recursive:true,force:true});}
+ async function stop(){await worker?.stop();clearInterval(retentionTimer);await retentionWork;if(server){server.closeAllConnections();await new Promise(r=>server.close(r));server=null;}await pool?.end();if(started){pg('pg_ctl',['-D',root+'/data','-m','immediate','-w','stop']);started=false;}await fs.rm(root,{recursive:true,force:true});}
  try{
   pg('initdb',['-D',root+'/data','--auth=trust','--username=wahi_review_synthetic','--no-locale','-E','UTF8']);pg('pg_ctl',['-D',root+'/data','-l',root+'/postgres.log','-o',`-F -k ${root} -h '' -p 55452`,'-w','start']);started=true;
   pool=new Pool({host:root,port:55452,user:'wahi_review_synthetic',database:'postgres',max:5});await migrate(pool);
   const users=[];for(const role of ['ADMIN','MANAGER','STAFF'])users.push(await createUser(role.toLowerCase(),role,'Synthetic-Local-Review-Only-2026!'));
   const actor={id:users[0].id,role:'ADMIN'},reviews=new ReviewIntelligence(new ReviewRepository(pool,{environment:'local-review'}));await reviews.initialize(actor);await reviews.configureRetention(actor,{expectedVersion:1,rawDays:30,derivedDays:30,aggregateSurvival:false,purgeMissing:true,reason:'Authorized synthetic local engineering'});
   reviews.providers=new (require('./integrations').ReviewIntegrations)(reviews,{key:require('node:crypto').randomBytes(32).toString('base64'),callbackOrigin:'http://127.0.0.1:'+port});
-  const resource=(await pool.query('SELECT resource FROM wahi_v2.review_locations WHERE id=$1',[reviews.locationId])).rows[0].resource,adapter=adapterFor(fixtureReviews(resource));await reviews.ingest(actor,await reviews.startScan(actor,adapter),adapter);await reviews.classify(actor,new MockOpenAIProvider());await reviews.publish(actor);await reviews.discover(actor);
+  const resource=(await pool.query('SELECT resource FROM wahi_v2.review_locations WHERE id=$1',[reviews.locationId])).rows[0].resource,adapter=adapterFor(fixtureReviews(resource).map((r,i)=>i%7===1?{...r,comment:r.comment+' The mango margarita and kalua pork were excellent. Bartender Sam was wonderful. Please add a vegetarian option.'}:r));await reviews.ingest(actor,await reviews.startScan(actor,adapter),adapter);await reviews.classify(actor,new MockOpenAIProvider());await reviews.publish(actor);await reviews.discover(actor);
   server=createReviewServer({service:new DomainService(new PostgresRepository(pool)),users,reviews,runtime:{hosted:false,environment:'local-review'}});await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',resolve);});
+  worker=require('./worker').startReviewWorker(reviews,{adapter,provider:new MockOpenAIProvider(),allowSync:true,allowAnalysis:true,intervalMs:1000});
   retentionTimer=setInterval(()=>{if(!retentionWork)retentionWork=reviews.purge(actor).catch(()=>console.error('Synthetic retention reconciliation failed; read expiry remains enforced.')).finally(()=>{retentionWork=null;});},60000);retentionTimer.unref();
   await fs.writeFile(root+'/README.txt','Disposable synthetic Google review development database. No live integrations. Removed on normal shutdown.\n',{mode:0o600});
   return {root,url:'http://127.0.0.1:'+port,pool,reviews,server,stop};

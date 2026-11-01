@@ -19,7 +19,7 @@ module.exports={
       await this.assertIngestionAdapter(adapter,c);const {policy}=await this.eligible(c);if(run.expected_count!==null&&page.totalReviewCount!==run.expected_count)throw fail('review_source_count_changed');
       if(page.nextPageToken&&(page.nextPageToken===token||(await c.query('SELECT 1 FROM wahi_v2.review_sync_pages WHERE run_id=$1 AND cursor=$2',[runId,page.nextPageToken])).rowCount))throw fail('review_pagination_loop');
       await c.query('INSERT INTO wahi_v2.review_sync_pages VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[runId,run.next_page,token,page.nextPageToken,JSON.stringify(page.reviews),new Date(Math.min(+this.now()+policy.raw_days*dayMs,policy.valid_until?+new Date(policy.valid_until):Infinity)),page.totalReviewCount,this.now()]);
-      await c.query('UPDATE wahi_v2.review_sync_runs SET next_cursor=$2,next_page=next_page+1,traversal_done=$3,expected_count=COALESCE(expected_count,$4) WHERE id=$1',[runId,page.nextPageToken,!page.nextPageToken,page.totalReviewCount]);
+      await c.query('UPDATE wahi_v2.review_sync_runs SET next_cursor=$2,next_page=next_page+1,traversal_done=$3,expected_count=COALESCE(expected_count,$4),source_average_rating=COALESCE(source_average_rating,$5) WHERE id=$1',[runId,page.nextPageToken,!page.nextPageToken,page.totalReviewCount,page.averageRating]);
      });
      // Simulates process interruption AFTER its durable checkpoint, never before.
      await adapter.afterPage({runId,page:run.next_page});run=(await this.pool.query('SELECT * FROM wahi_v2.review_sync_runs WHERE id=$1',[runId])).rows[0];
@@ -37,7 +37,8 @@ module.exports={
       if(version.id!==record.head_id||record.availability!=='present')await c.query('INSERT INTO wahi_v2.review_changes(review_id,run_id,previous_id,next_id,kind,recorded_at) VALUES($1,$2,$3,$4,$5,$6)',[record.id,runId,record.head_id,version.id,!record.head_id?'first_seen':record.availability!=='present'?'reappeared':'changed',this.now()]);
       await c.query("UPDATE wahi_v2.review_records SET head_id=$2,availability='present',missing_count=0,last_seen=$3 WHERE id=$1",[record.id,version.id,this.now()]);await this.enqueue(c,version.id,config);
      }
-     const missing=(await c.query("SELECT * FROM wahi_v2.review_records WHERE location_id=$1 AND NOT(source_id=ANY($2::text[])) AND availability<>'expired'",[this.locationId,[...distinct.keys()]])).rows;
+     // An API inventory omission is not evidence of deletion. Real source history only expires under its approved retention policy.
+     const missing=location.synthetic?(await c.query("SELECT * FROM wahi_v2.review_records WHERE location_id=$1 AND NOT(source_id=ANY($2::text[])) AND availability<>'expired'",[this.locationId,[...distinct.keys()]])).rows:[];
      for(const r of missing){const availability=r.missing_count>=1?'missing':'missing_pending';await c.query('UPDATE wahi_v2.review_records SET missing_count=missing_count+1,availability=$2 WHERE id=$1',[r.id,availability]);if(availability!==r.availability)await c.query('INSERT INTO wahi_v2.review_changes(review_id,run_id,previous_id,kind,recorded_at) VALUES($1,$2,$3,$4,$5)',[r.id,runId,r.head_id,availability,this.now()]);}
      await c.query("UPDATE wahi_v2.review_sync_runs SET status='complete',distinct_count=$2,error_code=NULL,completed_at=$3 WHERE id=$1",[runId,distinct.size,this.now()]);await this.audit(c,actor,'inventory_reconciled',{runId,distinct:distinct.size,missing:missing.length});return {id:runId,status:'complete',distinct:distinct.size};
     });

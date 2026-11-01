@@ -1,0 +1,74 @@
+{
+  "scope": "Three local warm route transitions against 70 synthetic reviews. Not production latency, a load test, or a p95 measurement.",
+  "samples": [
+    {
+      "milliseconds": 78,
+      "requests": [
+        "/api/reporting/reviews/status",
+        "/api/reporting/reviews",
+        "/api/reporting/reviews/overview"
+      ],
+      "domNodes": 420
+    },
+    {
+      "milliseconds": 25,
+      "requests": [
+        "/api/reporting/reviews/status",
+        "/api/reporting/reviews",
+        "/api/reporting/reviews/overview"
+      ],
+      "domNodes": 420
+    },
+    {
+      "milliseconds": 24,
+      "requests": [
+        "/api/reporting/reviews/status",
+        "/api/reporting/reviews",
+        "/api/reporting/reviews/overview"
+      ],
+      "domNodes": 420
+    }
+  ],
+  "sidebarManualReview": [
+    {
+      "visibleLabel": "Overview",
+      "accessibleLabel": "Overview",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Recipe Book",
+      "accessibleLabel": "Recipe Book",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Inventory & Costing",
+      "accessibleLabel": "Inventory & Costing",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Time Management",
+      "accessibleLabel": "Time Management",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Food Safety",
+      "accessibleLabel": "Food Safety",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Waste",
+      "accessibleLabel": "Waste",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Reporting",
+      "accessibleLabel": "Reporting",
+      "decorativeIconHidden": "true"
+    },
+    {
+      "visibleLabel": "Administration",
+      "accessibleLabel": "Administration",
+      "decorativeIconHidden": "true"
+    }
+  ]
+}

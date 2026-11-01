@@ -1,8 +1,8 @@
-# Local Google Review Intelligence — Phase 3B
+# Google Reviews Intelligence — implementation and activation gates
 
-This is the Google-only foundation and Phase 3A provider preparation inside the Wahi Backend. It uses the existing CommonJS Node runtime, PostgreSQL migrations, authenticated HTTP server and management shell. There is no first-party survey or alternative-provider platform.
+This module uses Wahi's existing CommonJS runtime, PostgreSQL storage, authenticated server and management shell. The November 1 implementation continues from the completed UI release on `codex/reviews-intelligence`. It adds the dashboard/explorer and dedicated OpenAI administration without reconnecting Google or enabling customer-content processing.
 
-Production-protocol Google and OpenAI HTTP adapters now reuse the original workers. Tests inject mocked HTTP responses; the local runner still uses synthetic Google fixtures and mock classification. Network access defaults to disabled, independently of credentials, rights records and activation. The repository remains local Unix-socket only, and the hosted server does not mount this module. No live credentials or accounts were connected.
+The synthetic runner denies external network access. The hosted connection remains restricted to its verified Google OAuth/metadata capability; OpenAI diagnostics have a separate owner-triggered transport. Migration 034 and all new UI changes remain local and undeployed. Source rights, provider activation, background-worker composition and deployment require separate decisions. The historical phase documentation below describes the foundation; see the November 1 section for current additions and limits.
 
 ## Run the isolated local preview
 
@@ -140,3 +140,17 @@ Connection status exposes sanitized `hasRefreshToken`, `reauthorizationRequired`
 Google can still invalidate refresh tokens, including for apps in Testing status. Confirm the actual OAuth client's publishing status and project quota in Google Cloud. The user-visible client configuration must not be changed merely to fix a quota error: doing so invalidates identity-bound connection state.
 
 This persistence correction requires the normal production backup, recovery rehearsal and owner deployment authorization.
+
+## November 1 implementation
+
+Continue from the deployed UI baseline on `codex/reviews-intelligence`, not the older dirty primary checkout. `034_review_controls.sql` is additive and must receive normal backup/recovery review and explicit deployment approval. It has only been applied to disposable local databases.
+
+Reporting → Review Intelligence now has separate Overview and Review Explorer views. Explorer performs intersected filters, deterministic sorting, total count and pagination in PostgreSQL, capped at 50 per response. Detail reads enforce location, role and retention before exposing original content, existing replies and current-config AI evidence. AI output v2 adds evidence-validated dishes, drinks, staff mentions and suggestions; v1 results remain readable. Explicit historical reanalysis creates a new immutable configuration instead of deleting or replacing old interpretations.
+
+Administration → Integrations → OpenAI stores credentials through existing environment-bound authenticated encryption. Key values never return in status/configuration/audit responses. A metadata-only connection check lists account-available models; a separate, explicitly confirmed synthetic structured-output probe verifies the chosen model without customer content. The probe reserves against both per-request and monthly limits; uncertain dispatches retain reservations. Model identifiers are account-selected, not hardcoded. Prices are administrator-entered dated estimates, not live invoice reconciliation.
+
+`reviewAdminHTTP` is separately constrained to OpenAI diagnostic endpoints. Hosted composition permits owner-triggered diagnostics after deployment; the synthetic preview denies all external requests. This does not broaden the verified Google OAuth transport. Production `connectionOnly` remains true, so review collection and actual AI processing remain blocked.
+
+`work.js` stores idempotent manual work requests. `worker.js` runs bounded background batches only when a trusted runtime independently grants capabilities. `automation.js` persists disabled-by-default intervals and checks provider/source gates on dispatch. The synthetic local runner enables manual fixture work; no production worker is started. Source API failures preserve raw history; real-location absence alone does not mark historical records for deletion. Source expiry remains enforced by approved retention policy.
+
+Owner activation decisions are separate: verify permitted retention/AI processing (including third-party transfer and identity handling), agree finite retention and approved pricing/model/budgets, explicitly authorize each collection/analysis/scheduling capability, and separately authorize deployment. No browser collector or response publisher is included. Reviewer identity remains excluded pending a source policy allowing it.

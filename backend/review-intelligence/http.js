@@ -9,6 +9,7 @@ class ProviderHTTP {
  authorized(){if(this.mode==='live'&&!this.allowNetwork)throw fail('review_network_disabled');}
  async request(url,options={}, {maxAttempts=3,guard=async()=>{}}={}){
   this.authorized();const target=new URL(url);if(target.protocol!=='https:'||target.username||target.password||target.port||!allowedHosts.has(target.hostname))throw fail('review_provider_url_denied');
+  if(this.scope==='openai-diagnostics'&&!(target.hostname==='api.openai.com'&&((target.pathname==='/v1/models'&&(!options.method||options.method==='GET'))||(target.pathname==='/v1/responses'&&options.method==='POST'))))throw fail('review_provider_url_denied');
   if(this.scope==='google-connection'&&!((target.hostname==='oauth2.googleapis.com'&&target.pathname==='/token'&&options.method==='POST')||(target.hostname==='mybusinessaccountmanagement.googleapis.com'&&target.pathname==='/v1/accounts'&&(!options.method||options.method==='GET'))||(target.hostname==='mybusinessbusinessinformation.googleapis.com'&&/^\/v1\/accounts\/[a-zA-Z0-9_-]+\/locations$/.test(target.pathname)&&(!options.method||options.method==='GET'))))throw fail('review_content_processing_disabled');
   for(let attempt=0;attempt<maxAttempts;attempt++){
    await guard();let response;

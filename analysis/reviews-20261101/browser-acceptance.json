@@ -1,0 +1,384 @@
+{
+  "views": [
+    {
+      "name": "desktop",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#admin\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 17
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "view": "explorer",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#admin\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 10
+        },
+        {
+          "id": "color-contrast",
+          "count": 10
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "view": "detail",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "view": "openai",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Administration\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 18
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "view": "explorer",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 10
+        },
+        {
+          "id": "color-contrast",
+          "count": 11
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "view": "detail",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "view": "openai",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 1
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 18
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "view": "explorer",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 10
+        },
+        {
+          "id": "color-contrast",
+          "count": 11
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "mobile",
+      "view": "detail",
+      "overflow": false,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "name": "mobile",
+      "view": "openai",
+      "overflow": false,
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "count": 1
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "name": "desktop",
+      "combinedFilterSort": true,
+      "detailEscapeAndFocus": true
+    },
+    {
+      "name": "desktop",
+      "encryptedConfigurationUI": true,
+      "networkDenied": true,
+      "removeKey": true
+    },
+    {
+      "name": "tablet",
+      "combinedFilterSort": true,
+      "detailEscapeAndFocus": true
+    },
+    {
+      "name": "mobile",
+      "combinedFilterSort": true,
+      "detailEscapeAndFocus": true
+    },
+    {
+      "role": "manager",
+      "access": true
+    },
+    {
+      "role": "staff",
+      "access": true
+    }
+  ],
+  "errors": []
+}

@@ -12,7 +12,7 @@ function normalize(value,resource){
  // Allowlist projection intentionally drops reviewer identity, media and links.
  return {reviewId:x.reviewId,starRating:x.starRating,rating:['ONE','TWO','THREE','FOUR','FIVE'].indexOf(x.starRating)+1,comment:x.comment,createTime:x.createTime,updateTime:x.updateTime,reviewReply:x.reviewReply||null};
 }
-function normalizePage(value,resource){let x;try{x=page.parse(value);}catch{throw fail('review_invalid_page');}return {reviews:x.reviews.map(r=>normalize(r,resource)),totalReviewCount:x.totalReviewCount,nextPageToken:x.nextPageToken||null};}
+function normalizePage(value,resource){let x;try{x=page.parse(value);}catch{throw fail('review_invalid_page');}return {reviews:x.reviews.map(r=>normalize(r,resource)),totalReviewCount:x.totalReviewCount,averageRating:x.averageRating??null,nextPageToken:x.nextPageToken||null};}
 class SyntheticGoogleAdapter {
  constructor(pages,{failures={},afterPage=async()=>{}}={}){this.pages=structuredClone(pages);this.fingerprint=hash(pages);this.failures={...failures};this.afterPage=afterPage;this.calls=0;}
  async fetchPage(cursor){this.calls++;const key=cursor||'';if(this.failures[key]>0){this.failures[key]--;throw fail('review_transient');}if(!Object.hasOwn(this.pages,key))throw fail('review_invalid_cursor');return structuredClone(this.pages[key]);}
