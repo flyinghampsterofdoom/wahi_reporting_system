@@ -105,3 +105,7 @@ email changes remain Admin-managed. All password changes revoke sessions and
 outstanding password-reset credentials transactionally with security audit.
 
 Provider API: https://resend.com/docs/api-reference/emails/send-email
+
+## Reviews deployment compatibility rollback — November 1, 2026
+
+This artifact retains the previously live UI application at 60cbd01 and adds only the forward migration files 034/035 so startup accepts the expanded migration ledger. It leaves review records, encrypted credentials, budgets and analysis history intact. Its original connection-only review runtime does not start content processing, even if review activation environment flags remain present. Use an explicitly pinned deployment of this artifact for application rollback; do not delete ledger entries, drop review tables, restore the entire database, or change the stable integration encryption key as routine rollback. Recheck application health, owner authentication, operational reads and the preserved Google connection after recovery. A database restore requires a separately coordinated recovery decision with a fresh backup of subsequent writes.
