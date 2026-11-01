@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "test": "touch double tap, immediate confirmation, stable Undo focus and auditable Undo",
+      "passed": true,
+      "confirmationMs": 36
+    },
+    {
+      "test": "lost committed response survives reload and retries without duplication",
+      "passed": true
+    },
+    {
+      "test": "fractional manager correction, original attribution/cost/audit, Escape/focus",
+      "passed": true
+    },
+    {
+      "test": "shared server sorting and pagination",
+      "passed": true
+    },
+    {
+      "test": "unmapped menu is loggable with unknown cost",
+      "passed": true
+    }
+  ],
+  "pageErrors": 0
+}

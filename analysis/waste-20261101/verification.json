@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-01",
+  "status": "Ready for owner review; not deployed",
+  "automatedRegression": {
+    "command": "npm --prefix backend test",
+    "tests": 806,
+    "passed": 806,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "layoutViews": 15,
+    "workflowChecks": 5,
+    "pageErrors": 0,
+    "horizontalPageOverflow": false
+  },
+  "accessibility": {
+    "views": 15,
+    "violations": 0,
+    "scope": "Waste main content and correction dialog; axe WCAG 2 A/AA and 2.1 A/AA; not a complete manual accessibility certification"
+  },
+  "productionChanges": false,
+  "googleReviewsSourceChanges": false,
+  "migrations": "036 and 037 only; existing migration files unchanged"
+}

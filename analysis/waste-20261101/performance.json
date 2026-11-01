@@ -1,0 +1,37 @@
+{
+  "kind": "Synthetic in-memory domain benchmark on local development machine; excludes HTTP and database latency",
+  "catalogItems": 1000,
+  "events": 5000,
+  "measurements": [
+    {
+      "name": "catalog",
+      "milliseconds": [
+        48.2,
+        38,
+        37.9,
+        35.3,
+        34.7
+      ]
+    },
+    {
+      "name": "historySorted",
+      "milliseconds": [
+        69.3,
+        56.3,
+        57.6,
+        56.5,
+        55.6
+      ]
+    },
+    {
+      "name": "dashboard30Days",
+      "milliseconds": [
+        69.8,
+        67.8,
+        65.5,
+        64.9,
+        59.8
+      ]
+    }
+  ]
+}

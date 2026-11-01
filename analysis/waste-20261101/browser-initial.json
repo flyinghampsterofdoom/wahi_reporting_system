@@ -1,0 +1,107 @@
+[
+  {
+    "label": "desktop",
+    "role": "STAFF",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "desktop",
+    "role": "STAFF",
+    "screen": "entry",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "desktop",
+    "role": "MANAGER",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "desktop",
+    "role": "MANAGER",
+    "screen": "history",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "desktop",
+    "role": "MANAGER",
+    "screen": "dashboard",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "tablet",
+    "role": "STAFF",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "tablet",
+    "role": "STAFF",
+    "screen": "entry",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "tablet",
+    "role": "MANAGER",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "tablet",
+    "role": "MANAGER",
+    "screen": "history",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "tablet",
+    "role": "MANAGER",
+    "screen": "dashboard",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "phone",
+    "role": "STAFF",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "phone",
+    "role": "STAFF",
+    "screen": "entry",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "phone",
+    "role": "MANAGER",
+    "screen": "log",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "phone",
+    "role": "MANAGER",
+    "screen": "history",
+    "noOverflow": true,
+    "pageErrors": 0
+  },
+  {
+    "label": "phone",
+    "role": "MANAGER",
+    "screen": "dashboard",
+    "noOverflow": true,
+    "pageErrors": 0
+  }
+]

@@ -12,7 +12,7 @@ test('waste: purchased and prepared identities, batches, exact normalization, co
  await w.log(boh,entry(recipe.output,{quantity:'0.5',unit:'batch',reason:'Other',note:'End of service'}));
  const s=await f.repository.read(),r=s.wasteEvents.find(e=>e.kind==='recipe');assert.equal(r.recipeId,recipe.id);assert.equal(r.snapshot.recipeRevisionId,recipe.revision);assert.equal(r.baseQuantity,'500.000000000000');assert.equal(r.snapshot.cost.amount,'1.500000000000');assert.equal(r.note,'End of service');assert.equal(s.audit.filter(a=>a.entityType==='wasteEvents').length,2);
  assert.equal(s.wasteEvents[0].baseQuantity,'250.000000000000');assert.equal((await w.history(manager,{kind:'recipe',reason:'Other'})).total,1);
- await assert.rejects(w.history(boh),{code:'forbidden'});await assert.rejects(w.catalog(staff),{code:'forbidden'});
+ await assert.rejects(w.history(boh),{code:'forbidden'});assert.ok((await w.catalog(staff)).items.length);
 });
 test('waste: concurrent retries are durable and payload conflicts are rejected',async()=>{
  const f=fixture(),id=await f.ingredient('No inventory setup'),w=new WasteService(f.repository),data=entry(id);
@@ -31,14 +31,10 @@ test('waste: history survives rename, archive and price changes; optional notes 
  const history=await w.history(admin,{q:'Old name'});assert.equal(history.events[0].name,'Old name');assert.equal(history.events[0].note,'');assert.equal(history.events[0].cost.amount,'6.000000000000');
  assert.equal((await w.history(admin,{from:'2030-01-01'})).total,0);
 });
-test('waste: four frequency-driven items stable during a week, scoped by location',async()=>{
- const f=fixture(),ids=[];for(const n of ['A','B','C','D','E'])ids.push(await f.ingredient(n));
- let now='2026-09-20T12:00:00.000Z';const w=new WasteService(f.repository,{clock:()=>now,context:{locationId:'kitchen-a'}});
- for(let n=0;n<5;n++)await w.log(boh,entry(ids[4]));
- now='2026-09-23T12:00:00.000Z';const first=await w.catalog(boh);assert.equal(first.common.length,4);assert.equal(first.common[0].id,ids[4]);
- for(let n=0;n<10;n++)await w.log(boh,entry(ids[3]));assert.deepEqual((await w.catalog(boh)).common,first.common);
- const other=new WasteService(f.repository,{clock:()=>now,context:{locationId:'kitchen-b'}});assert.equal((await other.catalog(boh)).common[0].id,ids[0]);
- now='2026-09-28T12:00:00.000Z';assert.equal((await w.catalog(boh)).common[0].id,ids[3]);
+test('waste: six rolling 90-day favorites update immediately and count events rather than quantities',async()=>{
+ const f=fixture(),ids=[];for(const n of ['A','B','C','D','E','F','G'])ids.push(await f.ingredient(n));let now='2026-08-01T12:00:00.000Z';const w=new WasteService(f.repository,{clock:()=>now,context:{locationId:'kitchen-a'}});
+ await w.log(boh,entry(ids[0],{quantity:'10000'}));now='2026-09-01T12:00:00.000Z';for(let i=0;i<3;i++)await w.log(boh,entry(ids[6]));assert.equal((await w.catalog(boh)).common.length,6);assert.equal((await w.catalog(boh)).common[0].id,ids[6]);
+ for(let i=0;i<4;i++)await w.log(boh,entry(ids[5]));assert.equal((await w.catalog(boh)).common[0].id,ids[5]);now='2026-12-02T12:00:00.000Z';assert.ok((await w.catalog(boh)).common.every(i=>i.frequency===0));assert.equal((await f.repository.read()).wasteCommonSets.length,0);
 });
 test('waste: unresolved conversions and costs do not stop operational entry',async()=>{
  const f=fixture(),i=await f.bought('Ginger','2','1','g');await f.service.inventory.execute(admin,'configureItem',{ingredientId:i.id,baseUnit:'g'});await f.run('addMeasurement',{ingredientId:i.id,fromQuantity:'1',fromUnit:'op:scoop',toQuantity:'1',toUnit:'cup_us'});

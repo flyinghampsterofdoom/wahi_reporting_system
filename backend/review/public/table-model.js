@@ -95,3 +95,10 @@
  const observer=new MutationObserver(records=>{if(!records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches('table')||n.querySelector('table')))))return;if(queued)return;queued=true;queueMicrotask(()=>{queued=false;document.querySelectorAll('#main table').forEach(enhance);});});
  observer.observe(document,{childList:true,subtree:true});
 })(typeof window==='undefined'?globalThis:window);
+
+// Shared controls for bounded server-side tables: sort the full filtered set,
+// then request a page. The ordinary in-memory enhancer skips these tables.
+(function(root){if(typeof document==='undefined')return;root.WahiTable.remote=function(table,{columns,sort,direction,total,offset,limit,onChange}){
+ table.dataset.tableStatic='';[...table.querySelectorAll('thead th')].forEach((th,i)=>{const key=columns[i];if(!key)return;const label=th.textContent;th.scope='col';th.setAttribute('aria-sort',key===sort?(direction==='asc'?'ascending':'descending'):'none');const button=document.createElement('button');button.type='button';button.className='table-sort';button.textContent=label;button.setAttribute('aria-label','Sort by '+label);button.onclick=()=>onChange({sort:key,direction:key===sort&&direction==='asc'?'desc':'asc',offset:0});th.replaceChildren(button);});
+ const controls=document.createElement('div');controls.className='table-tools waste-pagination';const prev=document.createElement('button'),next=document.createElement('button'),status=document.createElement('span');for(const b of [prev,next]){b.type='button';b.className='secondary';}prev.textContent='Previous';prev.disabled=offset===0;next.textContent='Next';next.disabled=offset+limit>=total;prev.onclick=()=>onChange({offset:Math.max(0,offset-limit)});next.onclick=()=>onChange({offset:offset+limit});status.setAttribute('role','status');status.textContent=total?(offset+1)+'–'+Math.min(offset+limit,total)+' of '+total+' events':'No events';controls.append(prev,status,next);(table.closest('.table-scroll')||table).after(controls);
+};})(typeof window==='undefined'?globalThis:window);

@@ -1,0 +1,77 @@
+[
+  {
+    "label": "desktop",
+    "screen": "log",
+    "violations": []
+  },
+  {
+    "label": "desktop",
+    "screen": "entry",
+    "violations": []
+  },
+  {
+    "label": "desktop",
+    "screen": "history",
+    "violations": []
+  },
+  {
+    "label": "desktop",
+    "screen": "detail",
+    "violations": []
+  },
+  {
+    "label": "desktop",
+    "screen": "dashboard",
+    "violations": []
+  },
+  {
+    "label": "tablet",
+    "screen": "log",
+    "violations": []
+  },
+  {
+    "label": "tablet",
+    "screen": "entry",
+    "violations": []
+  },
+  {
+    "label": "tablet",
+    "screen": "history",
+    "violations": []
+  },
+  {
+    "label": "tablet",
+    "screen": "detail",
+    "violations": []
+  },
+  {
+    "label": "tablet",
+    "screen": "dashboard",
+    "violations": []
+  },
+  {
+    "label": "phone",
+    "screen": "log",
+    "violations": []
+  },
+  {
+    "label": "phone",
+    "screen": "entry",
+    "violations": []
+  },
+  {
+    "label": "phone",
+    "screen": "history",
+    "violations": []
+  },
+  {
+    "label": "phone",
+    "screen": "detail",
+    "violations": []
+  },
+  {
+    "label": "phone",
+    "screen": "dashboard",
+    "violations": []
+  }
+]

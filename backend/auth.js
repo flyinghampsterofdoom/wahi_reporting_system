@@ -1,8 +1,8 @@
 'use strict';
 const inventoryManagement=['inventory.configure','inventory.count','inventory.history','inventory.correct'];
 const CAPABILITIES = Object.freeze({
-  ADMIN:['recipes.view','recipes.edit','recipes.publish','recipes.archive','waste.log','waste.history','reporting.read','reporting.refresh','reporting.configure','labor.read','labor.refresh','labor.configure','administration.access','integrations.manage',...inventoryManagement,'internal_cost.read','internal_cost.write','users.manage','domain.write','history.backdate','labor_rates.manage'],
-  MANAGER:['recipes.view','recipes.edit','recipes.publish','waste.log','waste.history','reporting.read','reporting.refresh','labor.read','labor.refresh',...inventoryManagement,'internal_cost.read','internal_cost.write','domain.write','history.backdate'], BOH:['waste.log'], LEAD:['recipes.view','inventory.count'], STAFF:['recipes.view','inventory.count'], RECIPE_ONLY:['recipes.view']
+  ADMIN:['recipes.view','recipes.edit','recipes.publish','recipes.archive','waste.log','waste.history','waste.correct','reporting.read','reporting.refresh','reporting.configure','labor.read','labor.refresh','labor.configure','administration.access','integrations.manage',...inventoryManagement,'internal_cost.read','internal_cost.write','users.manage','domain.write','history.backdate','labor_rates.manage'],
+  MANAGER:['recipes.view','recipes.edit','recipes.publish','waste.log','waste.history','waste.correct','reporting.read','reporting.refresh','labor.read','labor.refresh',...inventoryManagement,'internal_cost.read','internal_cost.write','domain.write','history.backdate'], BOH:['waste.log'], LEAD:['recipes.view','inventory.count','waste.log'], STAFF:['recipes.view','inventory.count','waste.log'], RECIPE_ONLY:['recipes.view']
 });
 function authorize(actor,capability) {
   if(!actor || typeof actor.id!=='string' || !actor.id.trim() || !Object.hasOwn(CAPABILITIES,actor.role)) {const e=new Error('Authenticated principal required');e.code='unauthenticated';throw e;}

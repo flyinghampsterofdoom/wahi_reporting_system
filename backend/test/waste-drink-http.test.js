@@ -18,7 +18,7 @@ test('HTTP BOH Drink exclusion: catalog/search, direct IDs, Admin BOH View, and 
    vm.runInContext(require('node:fs').readFileSync(require('node:path').join(__dirname,'../review/public/waste-ui.js'),'utf8'),context);
    vm.runInContext('wasteCatalog='+JSON.stringify(catalog.body)+";operationalPreview='BOH';wasteLanding();",context);
    assert.ok(!node('main').innerHTML.includes('Neutral'));vm.runInContext('wasteSearch()',context);
-   node('waste-search').value='Neutral';node('waste-search').oninput();assert.match(node('waste-results').innerHTML,/No matching items/);
+   node('waste-search').value='Neutral';node('waste-search').oninput();assert.match(node('waste-results').innerHTML,/No matches/);
    node('waste-search').value='Drink';node('waste-search').oninput();assert.match(node('waste-results').innerHTML,/Drink in name only/);
   }
   for(const id of [recipe.output,item.id]){for(const list of ['items','common'])assert.ok(!catalog.body[list].some(i=>i.id===id));const rejected=await request('waste/events',auth,{...input(id)});assert.equal(rejected.status,400);assert.equal(rejected.body.code,'boh_category_excluded');assert.equal(rejected.body.error,'Drink-category items are not available for BOH waste entry.');}

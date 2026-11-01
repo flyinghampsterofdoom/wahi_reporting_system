@@ -84,7 +84,7 @@ test('review HTTP: item form saves associated records; new detail endpoint enfor
 });
 test('waste HTTP: BOH allowlist, CSRF, no costs, durable duplicate requests, Admin role unchanged by preview',async()=>{
  const {randomUUID}=require('node:crypto');const auth=await login('BOH');
- const c=await request('waste/catalog',{auth});assert.equal(c.status,200);assert.equal(c.body.common.length,4);
+ const c=await request('waste/catalog',{auth});assert.equal(c.status,200);assert.equal(c.body.common.length,Math.min(6,c.body.items.length));
  const serialized=JSON.stringify(c.body);for(const key of ['cost','price','supplier','purchaseOption','provenance'])assert.ok(!serialized.includes(key),key);
  const i=c.body.items[0],payload={requestId:randomUUID(),ingredientId:i.id,quantity:'0.5',unit:i.units[0],reason:'Other',note:'HTTP fixture'};
  assert.equal((await request('waste/events',{auth,body:payload,headers:{'X-CSRF-Token':'bad'}})).status,403);
