@@ -1,5 +1,7 @@
 # Waste Tracking — owner review
 
+**Production update:** Waste Tracking was subsequently authorized, deployed and verified. See the [production deployment report](../waste-production-20261101/deployment-report.md). The notes below preserve the original pre-deployment review.
+
 Implemented on `codex/waste-tracking`, based on `c31fd71`. **Ready for owner review; not deployed.** All screenshots and preview records are synthetic. The original workspace and deployed Reviews integration were not changed.
 
 ## Try the employee experience

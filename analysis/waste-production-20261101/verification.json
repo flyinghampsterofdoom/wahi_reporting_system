@@ -1,0 +1,169 @@
+{
+  "status": "deployed and verified",
+  "productionURL": "https://wahi-reporting-system.onrender.com/#waste",
+  "deploymentId": "dep-dbjpltcs728c738fjmmg",
+  "deployedCommit": "dc13c034714563b671a0bc45fb5f9d063e6efcbf",
+  "regression": {
+    "tests": 806,
+    "passed": 806,
+    "failed": 0,
+    "skipped": 0,
+    "scope": "Final code; isolated fixtures and PostgreSQL regression suite"
+  },
+  "liveWorkflow": {
+    "checks": 6,
+    "allPassed": true,
+    "checksDetail": [
+      {
+        "test": "Touch search, fractional quantity, item units, seven reasons, double-tap safety and audited Undo",
+        "passed": true
+      },
+      {
+        "test": "Authenticated attribution, server timestamp and actual 30-second Undo expiry",
+        "passed": true
+      },
+      {
+        "test": "Delayed-catalog Save/Enter guard; successful manager correction retains original employee, timestamp and exact frozen cost",
+        "passed": true
+      },
+      {
+        "test": "History search, reason/employee/area/status filters and full-result numeric sorting",
+        "passed": true
+      },
+      {
+        "test": "Durable duplicate request returns the existing corrected event without another record",
+        "passed": true
+      },
+      {
+        "test": "Audited void retains correction chain and restores zero operational waste/cost totals",
+        "passed": true
+      }
+    ]
+  },
+  "liveRoleChecks": {
+    "roles": 5,
+    "allPassed": true,
+    "results": [
+      {
+        "role": "STAFF",
+        "login": true,
+        "logging": "allowed",
+        "management": "denied",
+        "userAdministration": "denied",
+        "attributionAndValidation": true,
+        "undoOrCorrection": true
+      },
+      {
+        "role": "LEAD",
+        "login": true,
+        "logging": "allowed",
+        "management": "denied",
+        "userAdministration": "denied",
+        "attributionAndValidation": true,
+        "undoOrCorrection": true
+      },
+      {
+        "role": "BOH",
+        "login": true,
+        "logging": "allowed",
+        "management": "denied",
+        "userAdministration": "denied",
+        "attributionAndValidation": true,
+        "undoOrCorrection": true
+      },
+      {
+        "role": "MANAGER",
+        "login": true,
+        "logging": "allowed",
+        "management": "allowed",
+        "userAdministration": "denied",
+        "attributionAndValidation": true,
+        "undoOrCorrection": true
+      },
+      {
+        "role": "RECIPE_ONLY",
+        "login": true,
+        "logging": "denied",
+        "management": "denied",
+        "userAdministration": "denied",
+        "attributionAndValidation": false,
+        "undoOrCorrection": false
+      }
+    ],
+    "temporaryAccountsDisabled": 5
+  },
+  "responsiveViews": 21,
+  "browserErrors": 0,
+  "horizontalPageOverflow": false,
+  "wasteAccessibilityViews": 15,
+  "wasteAccessibilityViolations": 0,
+  "backup": {
+    "createdAt": "2026-11-01T19:52:18.215Z",
+    "bytes": 12849133,
+    "sha256": "484df88bae6573b4bb9e981090026cbf71b9b9776ba4d2263674a010b45f61a0",
+    "archiveEntries": 824,
+    "verifiedTables": 130,
+    "restoredMatches": true
+  },
+  "mediaBackup": {
+    "bytes": 26774638,
+    "sha256": "20fa707028b674880d48c6b665ea6e502d4b05dd82d46b88f7abb03fa377248d",
+    "verifiedDatabaseMedia": 40,
+    "restoredVerified": true
+  },
+  "mediaPreservation": {
+    "files": 120,
+    "allBytesUnchanged": true
+  },
+  "preservation": {
+    "schemaVerified": true,
+    "originalTablesChecked": 129,
+    "unchangedTables": 120,
+    "expectedChangedTables": [
+      "wahi_v2.audit",
+      "wahi_v2.auth_credentials",
+      "wahi_v2.login_limits",
+      "wahi_v2.review_audit",
+      "wahi_v2.user_security_audit",
+      "wahi_v2.user_setup_tokens",
+      "wahi_v2.users",
+      "wahi_v2.waste_events",
+      "wahi_v2.web_sessions"
+    ],
+    "originalUserProfilesPreserved": 44,
+    "originalCredentialRecordsPreserved": 44,
+    "onlyOriginalUserFieldException": "Normal owner last_login_at from authenticated smoke tests",
+    "temporaryVerificationAccounts": 5,
+    "allTemporaryAccountsDisabled": true,
+    "temporarySessionsRevoked": true,
+    "allEnvironmentValuesPreserved": true,
+    "googleOAuthAndOpenAISettingsPreserved": true,
+    "reviewsRecordsResultsAndSpendingUnchanged": true,
+    "reviewSchedule": {
+      "sync_enabled": true,
+      "analysis_enabled": true,
+      "timezone": "America/Los_Angeles",
+      "daily_time": "10:00:00",
+      "next_due_at": "2026-11-02T18:00:00.000Z",
+      "last_success_at": "2026-11-01T18:00:15.094Z",
+      "error_code": null
+    },
+    "verificationEvents": 6,
+    "verificationRevisions": 8,
+    "verificationAuditEntries": 14,
+    "allVerificationEventsVoided": true,
+    "noInventoryChanges": true
+  },
+  "migrations": [
+    "036_waste_history.sql",
+    "037_waste_menu_items.sql"
+  ],
+  "rollback": {
+    "commit": "fd5daa9",
+    "branch": "codex/waste-rollback-20261101",
+    "upgradedSchemaAndLoginVerified": true,
+    "wastePausedDuringRecovery": true,
+    "deployed": false
+  },
+  "outstandingDeploymentIssues": []
+}
