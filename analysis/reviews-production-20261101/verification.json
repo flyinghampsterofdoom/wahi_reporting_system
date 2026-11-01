@@ -1,0 +1,69 @@
+{
+  "release": "9d374accc2a3043031e958e511562ff36a5f6924",
+  "health": 200,
+  "regression": {
+    "passed": 791,
+    "failed": 0
+  },
+  "source": {
+    "listingTotal": 566,
+    "retrieved": 565,
+    "text": 440,
+    "ratingOnly": 125
+  },
+  "analysis": {
+    "assessed": 440,
+    "allStoredResultsRevalidated": true,
+    "models": {
+      "gpt-6-luna": 440
+    },
+    "observations": 2518,
+    "quoteCount": 4023,
+    "awaiting": 0,
+    "failed": 0
+  },
+  "fullHistory": {
+    "reviews": 565,
+    "text_eligible": 440,
+    "analyzed": 440,
+    "coverage": 1
+  },
+  "schedule": {
+    "enabled": true,
+    "analysis": true,
+    "time": "10:00",
+    "timezone": "America/Los_Angeles",
+    "nextDue": "2026-11-01T18:00:00.000Z"
+  },
+  "cost": {
+    "estimatedAndReservedMicros": "134220",
+    "monthlyBudgetMicros": 10000000,
+    "requestBudgetMicros": 50000,
+    "reservations": [
+      {
+        "state": "settled",
+        "count": 463,
+        "micros": "116614"
+      },
+      {
+        "state": "uncertain",
+        "count": 5,
+        "micros": "17606"
+      }
+    ]
+  },
+  "recovery": {
+    "previousValidResultsPreserved": 431,
+    "noAdditionalAttemptsForValidReviews": true,
+    "recovered": 9,
+    "remaining": 0
+  },
+  "dashboardRefresh": {
+    "publicationChanged": true,
+    "noDocumentReload": true,
+    "documentNavigations": 1,
+    "sameDocumentNavigationEvents": 2,
+    "pageErrors": 0,
+    "reportReads": 2
+  }
+}
