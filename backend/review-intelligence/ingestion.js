@@ -35,7 +35,7 @@ module.exports={
       const digest=hash(r);let version=(await c.query('SELECT * FROM wahi_v2.review_source_versions WHERE review_id=$1 AND content_hash=$2',[record.id,digest])).rows[0];
       if(!version){version={id:uuid()};await c.query('INSERT INTO wahi_v2.review_source_versions VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NULL)',[version.id,record.id,digest,hash(r.comment),r,r.rating,r.createTime,r.updateTime,this.now(),new Date(Math.min(+this.now()+policy.raw_days*dayMs,policy.valid_until?+new Date(policy.valid_until):Infinity))]);}
       if(version.id!==record.head_id||record.availability!=='present')await c.query('INSERT INTO wahi_v2.review_changes(review_id,run_id,previous_id,next_id,kind,recorded_at) VALUES($1,$2,$3,$4,$5,$6)',[record.id,runId,record.head_id,version.id,!record.head_id?'first_seen':record.availability!=='present'?'reappeared':'changed',this.now()]);
-      await c.query("UPDATE wahi_v2.review_records SET head_id=$2,availability='present',missing_count=0,last_seen=$3 WHERE id=$1",[record.id,version.id,this.now()]);await this.enqueue(c,version.id,config);
+      await c.query("UPDATE wahi_v2.review_records SET head_id=$2,availability='present',missing_count=0,last_seen=$3 WHERE id=$1",[record.id,version.id,this.now()]);if(version.id!==record.head_id||record.availability!=='present')await this.enqueue(c,version.id,config);
      }
      // An API inventory omission is not evidence of deletion. Real source history only expires under its approved retention policy.
      const missing=location.synthetic?(await c.query("SELECT * FROM wahi_v2.review_records WHERE location_id=$1 AND NOT(source_id=ANY($2::text[])) AND availability<>'expired'",[this.locationId,[...distinct.keys()]])).rows:[];

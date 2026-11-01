@@ -1,0 +1,101 @@
+[
+  {
+    "status": "completed",
+    "model": "gpt-6-luna",
+    "output": [
+      {
+        "id": "msg_013e41fe6dd2f9f0016ae754010b5c87d08c037af61d1f3d73",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"analyzable\":true,\"observations\":[{\"category_id\":\"food-quality\",\"sentiment\":\"positive\",\"strength\":0.9,\"confidence\":0.99,\"excerpt\":\"The kalua pork was delicious\",\"start\":0,\"end\":29},{\"category_id\":\"drink-quality\",\"sentiment\":\"positive\",\"strength\":0.9,\"confidence\":0.99,\"excerpt\":\"the mango margarita was excellent\",\"start\":34,\"end\":68},{\"category_id\":\"staff-friendliness\",\"sentiment\":\"positive\",\"strength\":0.8,\"confidence\":0.99,\"excerpt\":\"Bartender Sam was friendly\",\"start\":70,\"end\":96},{\"category_id\":\"service\",\"sentiment\":\"positive\",\"strength\":0.7,\"confidence\":0.98,\"excerpt\":\"Bartender Sam was friendly and helpful\",\"start\":70,\"end\":107}],\"themes\":[],\"feedback\":[{\"kind\":\"dish\",\"subject\":\"kalua pork\",\"excerpt\":\"The kalua pork was delicious\",\"start\":0,\"end\":29},{\"kind\":\"drink\",\"subject\":\"mango margarita\",\"excerpt\":\"the mango margarita was excellent\",\"start\":34,\"end\":68},{\"kind\":\"staff\",\"subject\":\"Bartender Sam\",\"excerpt\":\"Bartender Sam was friendly and helpful\",\"start\":70,\"end\":107}]}"
+          }
+        ],
+        "phase": "final_answer",
+        "role": "assistant"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1266,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 1263
+      },
+      "output_tokens": 274,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1540
+    }
+  },
+  {
+    "status": "completed",
+    "model": "gpt-6-luna",
+    "output": [
+      {
+        "id": "msg_05c9bc85894891bd016ae75403ff6487d089169c623397955e",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"analyzable\":true,\"observations\":[{\"category_id\":\"drink-quality\",\"sentiment\":\"positive\",\"strength\":0.9,\"confidence\":0.98,\"excerpt\":\"The drinks were fantastic\",\"start\":0,\"end\":25},{\"category_id\":\"service-speed\",\"sentiment\":\"negative\",\"strength\":0.8,\"confidence\":0.96,\"excerpt\":\"we waited 25 minutes to order\",\"start\":35,\"end\":65},{\"category_id\":\"menu-selection\",\"sentiment\":\"negative\",\"strength\":0.7,\"confidence\":0.97,\"excerpt\":\"Please add a vegetarian option\",\"start\":67,\"end\":97}],\"themes\":[],\"feedback\":[{\"kind\":\"compliment\",\"subject\":\"drinks\",\"excerpt\":\"The drinks were fantastic\",\"start\":0,\"end\":25},{\"kind\":\"operational_problem\",\"subject\":\"ordering delay\",\"excerpt\":\"we waited 25 minutes to order\",\"start\":35,\"end\":65},{\"kind\":\"suggestion\",\"subject\":\"vegetarian option\",\"excerpt\":\"Please add a vegetarian option\",\"start\":67,\"end\":97}]}"
+          }
+        ],
+        "phase": "final_answer",
+        "role": "assistant"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1264,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 1261
+      },
+      "output_tokens": 229,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1493
+    }
+  },
+  {
+    "status": "completed",
+    "model": "gpt-6-luna",
+    "output": [
+      {
+        "id": "msg_01b9b0ebd207bc69016ae7540696ec87d09dfa877cbd14800e",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"analyzable\":true,\"observations\":[{\"category_id\":\"food-temperature\",\"sentiment\":\"negative\",\"strength\":0.9,\"confidence\":0.99,\"excerpt\":\"The food was cold\",\"start\":0,\"end\":19},{\"category_id\":\"cleanliness\",\"sentiment\":\"negative\",\"strength\":0.85,\"confidence\":0.98,\"excerpt\":\"the tables were sticky\",\"start\":24,\"end\":47},{\"category_id\":\"music\",\"sentiment\":\"negative\",\"strength\":0.8,\"confidence\":0.99,\"excerpt\":\"The music was too loud for conversation\",\"start\":49,\"end\":88}],\"themes\":[],\"feedback\":[{\"kind\":\"complaint\",\"subject\":\"food temperature\",\"excerpt\":\"The food was cold\",\"start\":0,\"end\":19},{\"kind\":\"complaint\",\"subject\":\"sticky tables\",\"excerpt\":\"the tables were sticky\",\"start\":24,\"end\":47},{\"kind\":\"complaint\",\"subject\":\"loud music\",\"excerpt\":\"The music was too loud for conversation\",\"start\":49,\"end\":88}]}"
+          }
+        ],
+        "phase": "final_answer",
+        "role": "assistant"
+      }
+    ],
+    "usage": {
+      "input_tokens": 1262,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 1259
+      },
+      "output_tokens": 225,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1487
+    }
+  }
+]

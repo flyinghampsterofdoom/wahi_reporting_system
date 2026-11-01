@@ -1,0 +1,183 @@
+{
+  "selectedModel": "gpt-6-luna",
+  "syntheticOnly": true,
+  "estimate": {
+    "pending": 2,
+    "cached": 63,
+    "upperBoundMicros": "3217",
+    "estimateLabel": "Conservative processing bound: $0.0032. Actual usage may be lower; budget checks apply before each request."
+  },
+  "work": {
+    "id": "098ff56f-d032-414d-9f79-4b56f1e122e9",
+    "state": "pending"
+  },
+  "result": {
+    "status": "complete",
+    "id": "098ff56f-d032-414d-9f79-4b56f1e122e9"
+  },
+  "records": [
+    {
+      "source_id": "live-historical-insufficient",
+      "original": "Visited.",
+      "model": "gpt-6-luna",
+      "output": {
+        "themes": [],
+        "feedback": [],
+        "analyzable": false,
+        "observations": []
+      },
+      "state": "no_analyzable_text"
+    },
+    {
+      "source_id": "live-historical-suggestion",
+      "original": "We loved the patio atmosphere, but please add more shaded seating.",
+      "model": "gpt-6-luna",
+      "output": {
+        "themes": [],
+        "feedback": [
+          {
+            "end": 65,
+            "kind": "suggestion",
+            "start": 35,
+            "excerpt": "please add more shaded seating",
+            "subject": "shaded seating"
+          }
+        ],
+        "analyzable": true,
+        "observations": [
+          {
+            "end": 29,
+            "start": 0,
+            "excerpt": "We loved the patio atmosphere",
+            "strength": 0.8,
+            "sentiment": "positive",
+            "confidence": 0.99,
+            "category_id": "atmosphere"
+          }
+        ]
+      },
+      "state": "succeeded"
+    }
+  ],
+  "remaining": 0,
+  "totalAcceptanceSpendMicros": "1055",
+  "status": {
+    "lastSyncAt": "2026-11-01T15:10:41.939Z",
+    "lastAnalysisAt": "2026-11-01T15:10:49.094Z",
+    "counts": {
+      "analyzed": 65,
+      "awaiting": 0,
+      "failed": 0,
+      "new_reviews": 2,
+      "updated_reviews": 0
+    },
+    "work": [
+      {
+        "id": "098ff56f-d032-414d-9f79-4b56f1e122e9",
+        "parent_id": null,
+        "kind": "analyze",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "total": 2,
+          "failed": 0,
+          "analyzed": 2,
+          "awaiting": 0,
+          "rating_only": 0
+        },
+        "created_at": "2026-11-01T15:10:42.060Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      },
+      {
+        "id": "0156b7d6-2c23-4ac1-afbb-892b86aaa1d0",
+        "parent_id": null,
+        "kind": "sync",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "syncId": "b96a5762-7383-4398-9353-4a520175a2cc",
+          "newReviews": 2,
+          "updatedReviews": 0
+        },
+        "created_at": "2026-11-01T15:10:41.908Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      },
+      {
+        "id": "d3a34de6-09b5-4553-a7cd-23aa0fe22120",
+        "parent_id": "c9f7410d-a7bb-42a3-8dd3-8ea70a0068db",
+        "kind": "analyze",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "total": 0,
+          "failed": 0,
+          "analyzed": 0,
+          "awaiting": 0,
+          "rating_only": 0
+        },
+        "created_at": "2026-11-01T15:00:24.416Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      },
+      {
+        "id": "c9f7410d-a7bb-42a3-8dd3-8ea70a0068db",
+        "parent_id": null,
+        "kind": "sync",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "syncId": "80cfa0d4-b39c-47da-8615-f9daefcd8366",
+          "newReviews": 0,
+          "updatedReviews": 0,
+          "analysisRequestId": "d3a34de6-09b5-4553-a7cd-23aa0fe22120"
+        },
+        "created_at": "2026-11-01T15:00:16.088Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      },
+      {
+        "id": "20209666-5cb5-4273-af33-6afed721bfb2",
+        "parent_id": "1f06a9ef-9769-4293-8cc9-9e067834f072",
+        "kind": "analyze",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "total": 3,
+          "failed": 0,
+          "analyzed": 3,
+          "awaiting": 0,
+          "rating_only": 0
+        },
+        "created_at": "2026-11-01T14:58:02.617Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      },
+      {
+        "id": "1f06a9ef-9769-4293-8cc9-9e067834f072",
+        "parent_id": null,
+        "kind": "sync",
+        "state": "complete",
+        "error_code": null,
+        "result": {
+          "syncId": "4576bacd-f628-4aff-a876-097d69017898",
+          "newReviews": 3,
+          "updatedReviews": 0,
+          "analysisRequestId": "20209666-5cb5-4273-af33-6afed721bfb2"
+        },
+        "created_at": "2026-11-01T14:58:02.574Z",
+        "next_attempt_at": null,
+        "pause_requested": false
+      }
+    ],
+    "schedule": {
+      "timezone": "America/Los_Angeles",
+      "time": "10:00",
+      "enabled": false,
+      "nextDueAt": null,
+      "error": null
+    },
+    "releaseId": "4c717a5d-5d9d-4082-ae99-2485fd5f5c16"
+  }
+}

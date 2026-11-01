@@ -1,0 +1,294 @@
+{
+  "views": [
+    {
+      "name": "desktop",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#admin\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "view": "historical-estimate",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "desktop",
+      "view": "explorer",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#admin\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "view": "detail",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "desktop",
+      "view": "openai",
+      "overflow": false,
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "nodes": [
+            {
+              "target": [
+                "a[title=\"Overview\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#recipe-book\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#inventory-area\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#time\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#food-safety\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#waste\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[href$=\"#reporting\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            },
+            {
+              "target": [
+                "a[title=\"Administration\"]"
+              ],
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "tablet",
+      "view": "historical-estimate",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "tablet",
+      "view": "explorer",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "tablet",
+      "view": "detail",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "tablet",
+      "view": "openai",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "mobile",
+      "view": "dashboard",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "mobile",
+      "view": "historical-estimate",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "mobile",
+      "view": "explorer",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "mobile",
+      "view": "detail",
+      "overflow": false,
+      "violations": []
+    },
+    {
+      "name": "mobile",
+      "view": "openai",
+      "overflow": false,
+      "violations": []
+    }
+  ],
+  "interactions": [
+    {
+      "name": "desktop",
+      "manualSyncAndAutomaticRefresh": true,
+      "unchangedReviewsNoAdditionalCost": true,
+      "historicalEstimateAndCancel": true,
+      "realModelDetail": true,
+      "dailyScheduleShown": true,
+      "noFullReload": true
+    },
+    {
+      "name": "tablet",
+      "manualSyncAndAutomaticRefresh": true,
+      "unchangedReviewsNoAdditionalCost": true,
+      "historicalEstimateAndCancel": true,
+      "realModelDetail": true,
+      "dailyScheduleShown": true,
+      "noFullReload": true
+    },
+    {
+      "name": "mobile",
+      "manualSyncAndAutomaticRefresh": true,
+      "unchangedReviewsNoAdditionalCost": true,
+      "historicalEstimateAndCancel": true,
+      "realModelDetail": true,
+      "dailyScheduleShown": true,
+      "noFullReload": true
+    },
+    {
+      "role": "MANAGER",
+      "permissions": true
+    },
+    {
+      "role": "STAFF",
+      "permissions": true
+    }
+  ],
+  "errors": []
+}

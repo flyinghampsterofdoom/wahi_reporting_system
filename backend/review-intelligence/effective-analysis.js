@@ -1,0 +1,4 @@
+'use strict';
+// Current source content keeps its last successful interpretation when a model changes.
+function effectiveJob(config,now){return `LEFT JOIN LATERAL (SELECT candidate.* FROM wahi_v2.review_classification_jobs candidate LEFT JOIN wahi_v2.review_results retained ON retained.id=candidate.result_id WHERE candidate.version_id=v.id AND (candidate.config_id=${config} OR candidate.state='no_text' OR candidate.state IN ('succeeded','no_analyzable_text') AND retained.output IS NOT NULL AND retained.expires_at>${now}) ORDER BY (candidate.state='no_text' OR candidate.state IN ('succeeded','no_analyzable_text') AND retained.output IS NOT NULL AND retained.expires_at>${now}) DESC,(candidate.config_id=${config}) DESC,candidate.created_at DESC,candidate.id LIMIT 1) j ON TRUE`;}
+module.exports={effectiveJob};

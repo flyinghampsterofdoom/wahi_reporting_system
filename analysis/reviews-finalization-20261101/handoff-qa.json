@@ -1,0 +1,26 @@
+[
+  {
+    "name": "desktop",
+    "overflow": false,
+    "images": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "mobile",
+    "overflow": false,
+    "images": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+]

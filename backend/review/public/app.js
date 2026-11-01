@@ -46,7 +46,7 @@ function acceptReturnDestination(){
 acceptReturnDestination();
 const featureRequests=new Map();
 async function loadRouteFeatures(page,id){
- const group=page==='time'?['leadership-summary.js','labor-allotments.js','labor-ui.js']:page==='reporting'?(id==='reviews'?['review-explorer-ui.js','reviews-ui.js']:['cogs-model.js','cogs-ui.js','mapping-ui.js','composite-ui.js','variant-ui.js']):page==='admin'&&id==='integrations'&&location.hash.split('/')[2]==='openai'?['openai-ui.js']:page==='admin'&&id==='reports'?['leadership-summary.js','reports-ui.js']:page==='recipe-builder'?['recipe-builder.js']:[];
+ const group=page==='time'?['leadership-summary.js','labor-allotments.js','labor-ui.js']:page==='reporting'?(id==='reviews'?['review-explorer-ui.js','review-workflow-ui.js','reviews-ui.js']:['cogs-model.js','cogs-ui.js','mapping-ui.js','composite-ui.js','variant-ui.js']):page==='admin'&&id==='integrations'&&location.hash.split('/')[2]==='openai'?['openai-ui.js']:page==='admin'&&id==='reports'?['leadership-summary.js','reports-ui.js']:page==='recipe-builder'?['recipe-builder.js']:[];
  await Promise.all(group.map(name=>{
   if(featureRequests.has(name))return featureRequests.get(name);
   const asset=[...document.querySelectorAll('link[rel="wahi-feature"]')].find(link=>link.getAttribute('href').replace(/\.[a-f0-9]{16}(?=\.js$)/,'')==='/'+name);
