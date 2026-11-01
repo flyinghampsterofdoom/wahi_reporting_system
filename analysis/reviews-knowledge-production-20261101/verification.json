@@ -1,0 +1,279 @@
+{
+  "verifiedAt": "2026-11-01T23:04:57.565Z",
+  "productionUrl": "https://wahi-reporting-system.onrender.com/reviews/knowledge",
+  "deploymentId": "dep-dbjs94rbc2fs73dnrqkg",
+  "commit": "56074c6cd0e753158dc21c715e3c55a228a39a5b",
+  "status": "live",
+  "health": 200,
+  "regression": {
+    "passed": 829,
+    "failed": 0,
+    "skipped": 0
+  },
+  "responsive": {
+    "views": 21,
+    "results": [
+      {
+        "label": "desktop",
+        "screen": "90",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "30",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "365",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "evidence",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "audit",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "detail",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "desktop",
+        "screen": "proposal",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "90",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "30",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "365",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "evidence",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "audit",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "detail",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "tablet",
+        "screen": "proposal",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "90",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "30",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "365",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "evidence",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "audit",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "detail",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      },
+      {
+        "label": "phone",
+        "screen": "proposal",
+        "noOverflow": true,
+        "accessibilityViolations": 0
+      }
+    ],
+    "pageErrors": 0,
+    "cspErrors": 0,
+    "noOverflow": true
+  },
+  "workflows": {
+    "checks": [
+      "Five negative Food Quality citations have negative supporting evidence",
+      "Comparison sources use correct prior period",
+      "Four approved corrections overlay retained original results",
+      "Audit filters preserve all thirty reviewed records",
+      "Classic explorer remains available with proportional SVG bars",
+      "Optional synthesis disabled and configured processing limits retained"
+    ],
+    "passed": true,
+    "additionalOpenAICalls": 0
+  },
+  "roleVerification": {
+    "checks": 5,
+    "passed": true,
+    "temporaryAccountsDisabled": true,
+    "sessionsRevoked": true
+  },
+  "evidence": {
+    "checks": [
+      {
+        "days": 30,
+        "reviews": 10,
+        "positiveEvidence": 17,
+        "negativeEvidence": 5,
+        "allEvidenceMatches": true
+      },
+      {
+        "days": 90,
+        "reviews": 30,
+        "positiveEvidence": 41,
+        "negativeEvidence": 11,
+        "allEvidenceMatches": true
+      },
+      {
+        "days": 365,
+        "reviews": 119,
+        "positiveEvidence": 218,
+        "negativeEvidence": 36,
+        "allEvidenceMatches": true
+      }
+    ],
+    "allPassed": true
+  },
+  "preservation": {
+    "schemaVerified": true,
+    "originalTablesChecked": 131,
+    "unchangedTables": 124,
+    "expectedChangedTables": [
+      "wahi_v2.auth_credentials",
+      "wahi_v2.login_limits",
+      "wahi_v2.review_audit",
+      "wahi_v2.schema_migrations",
+      "wahi_v2.user_security_audit",
+      "wahi_v2.user_setup_tokens",
+      "wahi_v2.users"
+    ],
+    "originalUserProfilesPreserved": 49,
+    "originalCredentialsPreserved": true,
+    "normalOwnerLoginTimestampOnly": true,
+    "temporaryAccounts": 5,
+    "temporaryAccountsDisabled": true,
+    "temporarySessionsRevoked": true,
+    "allEnvironmentValuesPreserved": true,
+    "googleOAuthAndOpenAISettingsPreserved": true,
+    "originalReviewDataAndAnalysisUnchanged": true,
+    "processingAndSpendingUnchanged": true,
+    "counts": {
+      "reviews": 565,
+      "results": 440,
+      "audits": 30,
+      "corrected": 4
+    },
+    "schedule": {
+      "sync_enabled": true,
+      "analysis_enabled": true,
+      "timezone": "America/Los_Angeles",
+      "daily_time": "10:00:00",
+      "next_due_at": "2026-11-02T18:00:00.000Z",
+      "last_success_at": "2026-11-01T18:00:15.094Z",
+      "error_code": null
+    },
+    "optionalSynthesisEnabled": false
+  },
+  "backup": {
+    "createdAt": "2026-11-01T22:45:21.728Z",
+    "bytes": 12867697,
+    "sha256": "a1cf226eee0f8ad1f652622ff1c26a54267586c3ec91c34a563572a789f6a60f",
+    "tables": 131,
+    "archiveEntries": 835,
+    "restoredMatches": true,
+    "durableCopyVerified": true,
+    "encryptionKeySeparated": true
+  },
+  "media": {
+    "bytes": 26774638,
+    "sha256": "20fa707028b674880d48c6b665ea6e502d4b05dd82d46b88f7abb03fa377248d",
+    "databaseObjects": 40,
+    "restoredVerified": true,
+    "files": 120,
+    "allBytesUnchanged": true
+  },
+  "migration": {
+    "newMigration": "038_review_interpretations.sql",
+    "originalTablesPreserved": 129,
+    "originalReviewRecords": 565,
+    "originalResults": 440,
+    "approvedAuditRecords": 30,
+    "approvedCorrections": 4,
+    "retryIdempotent": true,
+    "conflictRejected": true,
+    "repeatMigrationNoOp": true,
+    "paidSynthesisEnabled": false
+  },
+  "rollback": {
+    "commit": "c4a3310",
+    "branch": "codex/reviews-knowledge-rollback-20261101",
+    "schemaCompatible": true,
+    "ownerLogin": true,
+    "wasteAvailable": true,
+    "recipesAvailable": true,
+    "reviewsAvailable": true,
+    "restoredCopyOnly": true
+  },
+  "synthesis": {
+    "deterministicKnowledgeEnabled": true,
+    "optionalPaidSynthesisEnabled": false,
+    "historicalReprocessing": false,
+    "additionalOpenAICalls": 0,
+    "additionalSpendUSD": 0
+  },
+  "outstandingIssues": []
+}
