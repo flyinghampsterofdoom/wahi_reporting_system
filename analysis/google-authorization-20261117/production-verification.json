@@ -1,0 +1,64 @@
+{
+  "verifiedAt": "2026-11-18T14:30:26.345Z",
+  "authorization": "Owner chat November18: Deploy the fix please",
+  "deploymentId": "dep-dburbsm8bjmc739mv63g",
+  "commit": "69d730812d551c19728945881b92536bc2422bf2",
+  "status": "live",
+  "finishedAt": "2026-11-18T14:29:12.131646Z",
+  "productionUrl": "https://wahi-reporting-system.onrender.com",
+  "scope": "Google authorization warning placement only",
+  "databaseMigrations": 0,
+  "previousReleaseForRollback": "56074c6cd0e753158dc21c715e3c55a228a39a5b",
+  "focusedRegressionPassed": 42,
+  "liveBrowser": {
+    "passed": true,
+    "checks": 16,
+    "results": [
+      "desktop: direct Recipe Book has no Google warning/status request",
+      "desktop: Recipe Book refresh stays free of Google warning",
+      "desktop: standard Reviews navigation shows page-local authorization warning and reconnect link",
+      "desktop: Reviews filters and reload preserve warning",
+      "desktop: reconnect navigation opens existing enabled control without activating it",
+      "desktop: leaving Google settings for Recipe Book removes Google warning on navigation and refresh",
+      "desktop: classic Reviews owns warning through back navigation",
+      "desktop: unrelated Items module has no Google warning",
+      "mobile: direct Recipe Book has no Google warning/status request",
+      "mobile: Recipe Book refresh stays free of Google warning",
+      "mobile: standard Reviews navigation shows page-local authorization warning and reconnect link",
+      "mobile: Reviews filters and reload preserve warning",
+      "mobile: reconnect navigation opens existing enabled control without activating it",
+      "mobile: leaving Google settings for Recipe Book removes Google warning on navigation and refresh",
+      "mobile: classic Reviews owns warning through back navigation",
+      "mobile: unrelated Items module has no Google warning"
+    ],
+    "pageErrors": 0,
+    "googleRequests": 0,
+    "connectionOrProcessingWrites": 0,
+    "viewports": [
+      "1440x900",
+      "390x844"
+    ]
+  },
+  "health": 200,
+  "testedAssetsMatch": true,
+  "reviewRecords": 565,
+  "analyticalRecords": 440,
+  "reviewAndAnalysisFingerprintsUnchanged": true,
+  "providerSettingsUnchanged": true,
+  "credentialsUnchanged": true,
+  "environmentUnchanged": true,
+  "scheduleUnchanged": [
+    {
+      "sync_enabled": true,
+      "analysis_enabled": true,
+      "timezone": "America/Los_Angeles",
+      "daily_time": "10:00:00"
+    }
+  ],
+  "connectionOrProcessingActions": 0,
+  "googleProviderCalls": 0,
+  "authorizationRemainsDisconnected": true,
+  "backendRecoveryRecommendationsApplied": false,
+  "automaticDeploymentEnabled": false,
+  "outstandingUiDeploymentIssues": []
+}
