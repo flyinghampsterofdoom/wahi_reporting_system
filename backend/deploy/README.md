@@ -105,3 +105,36 @@ email changes remain Admin-managed. All password changes revoke sessions and
 outstanding password-reset credentials transactionally with security audit.
 
 Provider API: https://resend.com/docs/api-reference/emails/send-email
+
+## Operational accounts
+
+Account type is separate from access level. Migration 039 preserves all existing
+accounts as named; usernames and missing emails never imply an Operational type.
+Operational accounts use unique usernames, no email, and passwords managed by
+Admins. Their access level can be Staff, Lead, Manager, BOH or Recipe Only, but never Admin.
+
+Users & Access offers Operational during creation. An Admin enters and confirms
+a 12–128 character initial password. The profile of an existing non-Admin named
+account offers Convert to Operational and requires a new password. Conversion
+preserves the account ID, username, role and history; removes email and
+verification; signs out that account; and invalidates its setup and recovery
+tokens. No existing production account is converted automatically.
+
+An Operational profile has Set / Reset password. Only salted password hashes
+are stored. Saved passwords are never displayed or returned. Each replacement
+revokes that account's sessions, rotates its credential generation, invalidates
+tokens and records the Admin actor in security history without password material.
+Operational accounts cannot use manual setup codes, email recovery/verification
+or self-service password changes, including direct API calls. Named accounts,
+including those without email, retain their existing password workflows.
+
+The existing authenticated Admin and CSRF checks protect:
+- POST /api/admin/users/create: existing profile fields plus accountType
+  operational, email null, sendSetupEmail false and initialPassword.
+- POST /api/admin/users/convert-operational: id, expectedVersion, password.
+- POST /api/admin/users/set-password: id, expectedVersion, password.
+
+Ordinary profile updates do not change account type. New password actions
+require the current account version; Admin accounts cannot be converted.
+Apply migration 039 through the existing deployment migration procedure before
+starting this version.
