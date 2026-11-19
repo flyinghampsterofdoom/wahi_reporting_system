@@ -10,7 +10,7 @@ function authorize(actor,capability) {
 }
 function can(actor,capability) {authorize(actor);return CAPABILITIES[actor.role].includes(capability);}
 // Allowlist projections intentionally never spread a stored domain record.
-function ingredientView(i) {return {id:i.id,name:i.name,description:i.description,category:i.category,tags:[...i.tags],active:i.active,createdAt:i.createdAt,updatedAt:i.updatedAt};}
+function ingredientView(i) {return {id:i.id,name:i.name,description:i.description,category:i.category,tags:[...i.tags],allergens:[...(i.allergens||[])],active:i.active,createdAt:i.createdAt,updatedAt:i.updatedAt};}
 function recipeView(r,revision) {return {id:r.id,name:r.name,outputIngredientId:r.outputIngredientId,
   revision:revision?{id:revision.id,outputQuantity:revision.outputQuantity,outputUnit:revision.outputUnit,
     lines:revision.lines.map(l=>({id:l.id,ingredientId:l.ingredientId,quantity:l.quantity,unit:l.unit,...(l.notes?{notes:l.notes}:{})})),steps:revision.steps.map(s=>({id:s.id,position:s.position,instruction:s.instruction}))}:null};}

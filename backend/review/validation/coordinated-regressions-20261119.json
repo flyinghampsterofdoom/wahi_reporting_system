@@ -1,0 +1,143 @@
+{
+  "date": "2026-11-19",
+  "baseline": "e49745ef3f0d99e2618fc72c3d1d660b4e8b0e76",
+  "status": "PASS",
+  "passed": 243,
+  "failed": 0,
+  "skipped": 0,
+  "files": 16,
+  "groups": [
+    {
+      "files": [
+        "postgres",
+        "domain"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 83",
+        "\u2139 pass 83",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 4080.318208"
+      ]
+    },
+    {
+      "files": [
+        "recipe-display",
+        "review-items"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 15",
+        "\u2139 pass 15",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 143.173417"
+      ]
+    },
+    {
+      "files": [
+        "shell",
+        "shell-http"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 8",
+        "\u2139 pass 8",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 337.311042"
+      ]
+    },
+    {
+      "files": [
+        "allergens",
+        "sidebar-navigation"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 9",
+        "\u2139 pass 9",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 1764.040583"
+      ]
+    },
+    {
+      "files": [
+        "adversarial",
+        "recipe-workflow"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 62",
+        "\u2139 pass 62",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 160.066833"
+      ]
+    },
+    {
+      "files": [
+        "coordinated-browser",
+        "recipe-book"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 21",
+        "\u2139 pass 21",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 8549.245417"
+      ]
+    },
+    {
+      "files": [
+        "ingredient-swap",
+        "recipe-usability"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 25",
+        "\u2139 pass 25",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 1891.999416"
+      ]
+    },
+    {
+      "files": [
+        "recipe-service",
+        "recipe-builder"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "\u2139 tests 20",
+        "\u2139 pass 20",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 2758.65675"
+      ]
+    }
+  ],
+  "browser": "Playwright-managed Chromium headless; disposable context; desktop1440,tablet768,mobile390; single-process inside original confinement",
+  "limits": {
+    "heapMiB": 512,
+    "nurseryMiB": 16,
+    "maximumFileConcurrency": 2,
+    "aggregateRSSLimitMiB": 1536
+  },
+  "resolvedValidationSetup": [
+    "Confined PostgreSQL fixture names shortened for macOS socket limit",
+    "Existing protected private fixtures linked read-only",
+    "Managed Chromium uses single-process launch inside unchanged confinement"
+  ]
+}

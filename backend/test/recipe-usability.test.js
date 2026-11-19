@@ -8,3 +8,57 @@ test('service display uses decimals and units; descriptive drafts remain editabl
 test('overrides, reordered lines, publication and historical recovery preserve costing and source snapshots',async()=>{const d=document('Synthetic usability acceptance');d.components[0]=structuredClone(snapshot);d.components[0].collapsed=false;d.components[0].ingredients[0].quantity='3';d.components[0].ingredients[0].unit='drops';d.components[0].ingredients.reverse();d.components[1].instructions.push({id:require('crypto').randomUUID(),text:'Synthetic second step'});d.components[1].instructions.reverse();const costBefore=await costing.cost(source.output,'1','each',{at,knownAt:at});let e=await f.book.create(f.admin,{document:d,menuStatus:'off_menu',sourceRecipeId:source.id});e=await f.book.save(f.admin,{...command(e),document:d});let loaded=await f.book.draft(f.admin,e.id);assert.deepEqual(loaded.document.components[0].ingredients,d.components[0].ingredients.map(i=>({...i,notes:i.notes||''})));const first=await f.book.publish(f.admin,{...command(e),confirmed:true});const well={id:f.users['well.one'].id,role:'RECIPE_ONLY'},published=(await f.book.published(well))[0];assert.equal(published.menuStatus,'off_menu');assert.equal(published.document.components[0].ingredients[1].quantity,'3');assert.equal(published.document.components[0].ingredients[1].unit,'drops');assert.equal(published.document.components[0].ingredients[1].sourceMeasurement,undefined);assert.match(renderer.render(published.document),/<strong>3 drops<\/strong> Synthetic bitters/);const later=structuredClone(loaded.document);later.components[0].ingredients[1].quantity='4';later.components[0].ingredients[1].unit='dashes';e=await f.book.save(f.admin,{id:e.id,expectedVersion:first.version,document:later});assert.equal((await f.book.published(well))[0].document.components[0].ingredients[1].quantity,'3');e=await f.book.publish(f.admin,{...command(e),confirmed:true});await f.book.recover(f.admin,{...command(e),versionId:first.publishedId});loaded=await f.book.draft(f.admin,e.id);assert.equal(loaded.document.components[0].ingredients[1].quantity,'3');assert.deepEqual(loaded.document.components[0].ingredients[1].sourceMeasurement,snapshot.ingredients[0].sourceMeasurement);assert.equal((await f.book.published(well))[0].document.components[0].ingredients[1].quantity,'4');assert.deepEqual(await repo.read(),beforeState);assert.deepEqual(await costing.cost(source.output,'1','each',{at,knownAt:at}),costBefore);});
 test('forged original measurements are rejected without altering source or costing',async()=>{const d=document('Forged provenance');d.components[0]=structuredClone(snapshot);d.components[0].ingredients[0].sourceMeasurement.quantity='999';await assert.rejects(f.book.create(f.admin,{document:d,menuStatus:'off_menu'}),{code:'invalid_request'});assert.deepEqual(await repo.read(),beforeState);});
 test('legacy service documents remain valid without new metadata',()=>{const d=contracts.document(document('Existing schema version one'),{publish:true});assert.equal(d.schemaVersion,1);assert.equal(d.components[0].ingredients[0].sourceMeasurement,undefined);});
+
+
+test('new service recipes contain four independent empty components and blank oz ingredient rows',()=>{
+ const vm=require('node:vm'),fs=require('node:fs'),crypto=require('node:crypto'),context={crypto,structuredClone,Set,WahiQuantity:require('../review/public/quantity'),WahiRecipeRenderer:renderer,esc:String,unitLabel:x=>x,compactTable:(headers,rows)=>'<table>'+rows.join('')+'</table>'};
+ vm.createContext(context);vm.runInContext(fs.readFileSync(require.resolve('../review/public/recipe-builder'),'utf8'),context);
+ const first=context.builderDocument(),second=context.builderDocument(),row=context.builderIngredient();
+ assert.deepEqual(Array.from(first.components,c=>c.type),['ingredients','preparation','garnish','glassware']);
+ assert.equal(new Set([...first.components,...second.components].map(c=>c.id)).size,8);
+ assert.ok(first.components.every(c=>c.ingredients.length===0&&c.instructions.length===0));
+ assert.equal(row.name,'');assert.equal(row.quantity,null);assert.equal(row.unit,'oz');assert.equal(row.ingredientId,null);row.ingredientId='linked-id';context.builderIngredientName(row,'Changed custom name');assert.equal(row.ingredientId,null);const imported={ingredientId:'preserved-id',sourceMeasurement:{lineId:'original-line'}};context.builderIngredientName(imported,'Display-only name');assert.equal(imported.ingredientId,'preserved-id');assert.equal(imported.sourceMeasurement.lineId,'original-line');
+ const state={folded:new Set(),nestedFolded:new Set(),blockOptions:new Set()};
+ for(const rows of [[],[row]]){
+  const html=context.builderCard({...first.components[0],ingredients:rows},state),options=html.indexOf('<summary>Block options</summary>');
+  assert.ok(html.indexOf('data-do="add-ingredient"')>0&&html.indexOf('data-do="add-ingredient"')<options);
+  assert.equal((html.match(/data-do="add-ingredient"/g)||[]).length,1);assert.ok(!html.includes('data-do="add-instruction"'));
+ }
+ assert.ok(context.builderCard(first.components[1],state).includes('data-do="add-instruction"'));
+ assert.equal(context.builderHasContent(first),false);first.components[0].ingredients.push(row);assert.equal(context.builderHasContent(first),true);
+});
+
+test('incomplete new ingredient rows survive draft save and reload but cannot publish',async()=>{
+ const d=document('Incomplete ingredient draft');d.components[0].ingredients=[{id:require('node:crypto').randomUUID(),ingredientId:null,name:'',quantity:null,unit:'oz',notes:''}];
+ let entry=await f.book.create(f.admin,{document:d,menuStatus:'on_menu'});entry=await f.book.save(f.admin,{...command(entry),document:d});
+ const loaded=await f.book.draft(f.admin,entry.id),row=loaded.document.components[0].ingredients[0];assert.equal(row.name,'');assert.equal(row.quantity,null);assert.equal(row.unit,'oz');
+ await assert.rejects(f.book.publish(f.admin,{...command(entry),confirmed:true}),e=>e.recipeMessage.includes('enter an ingredient name'));
+ assert.equal((await f.book.history(f.admin,entry.id)).versions.length,0);
+ row.name='Named ingredient';await assert.rejects(f.book.publish(f.admin,{...command(await f.book.save(f.admin,{...command(entry),document:loaded.document})),confirmed:true}),e=>e.recipeMessage.includes('enter a quantity'));
+ assert.deepEqual(await repo.read(),beforeState);
+});
+
+test('Recipe Book exposes ordered categories and filters each while retaining legacy recipes in All',async()=>{
+ const {recipeRows,recipeMenuOptions,recipeBookMarkup}=require('../review/public/recipe-foundation');
+ assert.deepEqual(recipeMenuOptions.map(([id,label])=>label),['Cocktails','Shareables','Mocktails','The Dive','Specials','Old Specials']);
+ const markup=recipeBookMarkup({preview:true}),options=[...markup.matchAll(/<option value="([^"]+)">([^<]+)<\/option>/g)].map(m=>[m[1],m[2]]);
+ assert.deepEqual(options,[['all','All'],...recipeMenuOptions]);assert.ok(!markup.includes('Off Menu'));assert.ok(!markup.includes('On Menu'));
+ const legacy=await f.book.create(f.admin,{document:document('Legacy off-menu recipe'),menuStatus:'off_menu'}),legacyPublication=await f.book.publish(f.admin,{...command(legacy),confirmed:true});
+ const historyBefore=(await f.book.history(f.admin,legacy.id)).versions;
+ const ids=[];for(const [menuStatus,label]of recipeMenuOptions){const entry=await f.book.create(f.admin,{document:document('Category '+label),menuStatus});await f.book.publish(f.admin,{...command(entry),confirmed:true});ids.push(entry.id);}
+ const rows=await f.book.published(f.admin),allIds=recipeRows(rows).map(r=>r.id);assert.ok(allIds.includes(legacy.id));
+ for(const [i,[menuStatus,label]]of recipeMenuOptions.entries()){
+  const server=await f.book.published(f.admin,{menuStatus}),client=recipeRows(rows,'Category '+label,menuStatus);assert.ok(server.some(r=>r.id===ids[i]));assert.equal(client.length,1);assert.equal(client[0].id,ids[i]);assert.ok(!server.some(r=>r.id===legacy.id));
+ }
+ const classified=await f.book.classify(f.admin,{id:legacy.id,expectedVersion:legacyPublication.version,menuStatus:'old_specials'});
+ const after=await f.book.draft(f.admin,legacy.id);assert.equal(after.published_id,legacyPublication.publishedId);assert.equal(after.version,classified.version);assert.deepEqual((await f.book.history(f.admin,legacy.id)).versions,historyBefore);
+ assert.ok((await f.book.published(f.admin,{menuStatus:'old_specials'})).some(r=>r.id===legacy.id));assert.deepEqual(await repo.read(),beforeState);
+});
+
+
+test('new service rows bind only unique exact catalog names and retain imported measurement identities',async()=>{
+ const milk=await costing.bought('Exact catalog dairy');await costing.run('updateIngredient',{ingredientId:milk.id,name:'Exact catalog dairy',active:true,allergens:['Milk']});await costing.ingredient('Ambiguous catalog name');await costing.ingredient('Ambiguous catalog name');
+ const id=()=>require('node:crypto').randomUUID(),line=name=>({id:id(),ingredientId:null,name,quantity:'1',unit:'oz',notes:''}),d={schemaVersion:1,title:'New authored rows',components:[{id:id(),type:'ingredients',visibleTitle:'INGREDIENTS',ingredients:[line('Exact catalog dairy'),line('Ambiguous catalog name'),line('Freeform service ingredient')]},structuredClone(snapshot)]};
+ let entry=await f.book.create(f.admin,{document:d,menuStatus:'on_menu'}),saved=await f.book.draft(f.admin,entry.id);assert.equal(saved.document.components[0].ingredients[0].ingredientId,milk.id);assert.equal(saved.document.components[0].ingredients[1].ingredientId,null);assert.equal(saved.document.components[0].ingredients[2].ingredientId,null);assert.deepEqual(saved.allergens,['Milk']);assert.deepEqual(saved.document.components[1].ingredients,snapshot.ingredients);
+ const draft=saved.document;draft.components[0].ingredients[0].name='Another freeform ingredient';draft.components[0].ingredients[0].ingredientId=null;entry=await f.book.save(f.admin,{...command(entry),document:draft});saved=await f.book.draft(f.admin,entry.id);assert.equal(saved.document.components[0].ingredients[0].ingredientId,null);assert.deepEqual(saved.allergens,[]);assert.deepEqual(saved.document.components[1].ingredients,snapshot.ingredients);assert.equal((await f.book.history(f.admin,entry.id)).versions.length,0);
+});

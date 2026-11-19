@@ -7,6 +7,8 @@ const {timestamp,latest}=require('./domain/history');
 const {costIngredient,assertAcyclic}=require('./domain/costing');
 const {authorize,can,ingredientView,recipeView,costView}=require('./auth');
 
+const {BIG_8,resolver:allergenResolver,unique:uniqueAllergens}=require("./domain/allergens");
+const allergenTags=z.array(z.enum(BIG_8)).max(8).transform(uniqueAllergens);
 const id=z.string().uuid();
 const text=z.string().trim().min(1).max(500);
 const decimal=z.string().max(100).refine(v=>{try{return E.of(v).nonnegative();}catch{return false;}},'Expected nonnegative decimal string');
@@ -22,8 +24,8 @@ const schemas={
   updateRecipeCategory:z.object({...record,categoryId:id,name:text,sortOrder:z.number().int(),active:z.boolean()}).strict(),
   setRecipeCategory:z.object({...common,recipeId:id,categoryId:id.nullable()}).strict(),
   setArchived:z.object({...record,collection:z.enum(['ingredients','suppliers','purchaseOptions','recipes','menuItems']),entityId:id,archived:z.boolean()}).strict(),
-  createIngredient:z.object({...record,name:text,description:z.string().max(4000).default(''),category:z.string().max(100).default(''),tags:z.array(text).max(50).default([])}).strict(),
-  updateIngredient:z.object({...record,ingredientId:id,name:text,description:z.string().max(4000).default(''),category:z.string().max(100).default(''),tags:z.array(text).max(50).default([]),active:z.boolean()}).strict(),
+  createIngredient:z.object({...record,name:text,description:z.string().max(4000).default(''),category:z.string().max(100).default(''),tags:z.array(text).max(50).default([]),allergens:allergenTags.default([])}).strict(),
+  updateIngredient:z.object({...record,ingredientId:id,name:text,description:z.string().max(4000).default(''),category:z.string().max(100).default(''),tags:z.array(text).max(50).default([]),allergens:allergenTags.optional(),active:z.boolean()}).strict(),
   createSupplier:z.object({...record,name:text,contact:z.string().max(2000).default('')}).strict(),
   createPurchaseOption:z.object({...record,ingredientId:id,supplierId:id.nullable().default(null),sku:z.string().max(200).default(''),label:text,contentQuantity:positive,contentUnit:measure}).strict(),
   createRecipe:z.object({...record,name:text,outputIngredientId:id}).strict(),
@@ -89,10 +91,10 @@ class DomainService {
       } else if(command==='setArchived') {
         const old=must(data.collection,data.entityId,true),previous=structuredClone(old);
         Object.assign(old,{active:!data.archived,updatedAt:now});audit(data.collection,previous,old);result=old;
-      } else if(command==='createIngredient') result=identity('ingredients',{name:data.name,description:data.description,category:data.category,tags:data.tags,active:true});
+      } else if(command==='createIngredient') result=identity('ingredients',{name:data.name,description:data.description,category:data.category,tags:data.tags,allergens:data.allergens,active:true});
       else if(command==='updateIngredient') {
         const old=must('ingredients',data.ingredientId,true),previous=structuredClone(old);
-        Object.assign(old,{name:data.name,description:data.description,category:data.category,tags:data.tags,active:data.active,updatedAt:now});audit('ingredients',previous,old);result=old;
+        Object.assign(old,{name:data.name,description:data.description,category:data.category,tags:data.tags,allergens:data.allergens??old.allergens??[],active:data.active,updatedAt:now});audit('ingredients',previous,old);result=old;
       } else if(command==='createSupplier')result=identity('suppliers',{name:data.name,contact:data.contact,active:true});
       else if(command==='createPurchaseOption') {
         must('ingredients',data.ingredientId);if(data.supplierId)must('suppliers',data.supplierId);
@@ -148,8 +150,8 @@ class DomainService {
     });
   }
   context(input={}) {return {at:timestamp(input.at||this.clock()),knownAt:timestamp(input.knownAt||this.clock()),currency:currency.parse(input.currency||'USD')};}
-  async ingredient(actor,ingredientId) {authorize(actor);const s=await this.repository.read();const i=s.ingredients.find(i=>i.id===ingredientId);return i?ingredientView(i):null;}
-  async recipe(actor,recipeId,input={}) {authorize(actor);const s=await this.repository.read(),c=this.context(input),r=s.recipes.find(r=>r.id===recipeId);return r?recipeView(r,latest(s.recipeRevisions.filter(v=>v.recipeId===r.id),c.at,c.knownAt)):null;}
+  async ingredient(actor,ingredientId) {authorize(actor);const s=await this.repository.read();const i=s.ingredients.find(i=>i.id===ingredientId);return i?{...ingredientView(i),inheritedAllergens:allergenResolver(s,this.context()).ingredient(i.id)}:null;}
+  async recipe(actor,recipeId,input={}) {authorize(actor);const s=await this.repository.read(),c=this.context(input),r=s.recipes.find(r=>r.id===recipeId);return r?{...recipeView(r,latest(s.recipeRevisions.filter(v=>v.recipeId===r.id),c.at,c.knownAt)),inheritedAllergens:allergenResolver(s,c).recipe(r.id)}:null;}
   async convert(actor,input) {
     authorize(actor);
     let context;
@@ -172,7 +174,7 @@ class DomainService {
     authorize(actor);const c=this.context(input),m=s.menuItems.find(r=>r.id===menuItemId);if(!m)return null;
     const price=latest(s.sellingPrices.filter(r=>r.menuItemId===m.id),c.at,c.knownAt),mapping=latest(s.menuMappings.filter(r=>r.menuItemId===m.id),c.at,c.knownAt);
     const output={id:m.id,name:m.name,active:m.active,sellingPrice:price?{amount:price.amount,currency:price.currency}:null,
-      recipe:mapping?{recipeId:mapping.recipeId,quantity:mapping.quantity,unit:mapping.unit}:null};
+      recipe:mapping?{recipeId:mapping.recipeId,quantity:mapping.quantity,unit:mapping.unit}:null,inheritedAllergens:mapping?allergenResolver(s,c).recipe(mapping.recipeId):[]};
     if(can(actor,'internal_cost.read')&&mapping) {
       const r=s.recipes.find(r=>r.id===mapping.recipeId);
       output.internalCost=costView(costIngredient(s,{...c,ingredientId:r.outputIngredientId,quantity:mapping.quantity,unit:mapping.unit}));

@@ -1,0 +1,34 @@
+✔ ingredient swap: context selects every direct recipe and preview preserves all production state (24.976583ms)
+✔ ingredient swap: exclusions stay visible and retain independently adjusted hypothetical quantities (10.219209ms)
+✔ ingredient swap: confirmed selected apply appends revisions, preserves excluded recipes and historical evidence (5.507375ms)
+✔ ingredient swap: inherit and new measurements use exact existing conversion resolution (4.783958ms)
+✔ ingredient swap: existing replacement measurements are revised without deleting their history (3.209167ms)
+✔ ingredient swap: unresolved selling prices and zero price percentages stay unavailable (5.458875ms)
+✔ ingredient swap: later recipe failure rolls back replacement creation, measurements, prices, earlier revisions and audit (6.878375ms)
+✔ ingredient swap: stale state, stale revisions and omitted recipes reject without mutations (3.700041ms)
+✔ ingredient swap: concurrent confirmed applies have one winner and no partial duplicate replacement (4.185ms)
+✔ ingredient swap: role, confirmation, selection and ingredient identity checks fail before commit (2.563625ms)
+✔ ingredient swap: existing replacement use elsewhere is disclosed before confirmation (5.855041ms)
+✔ ingredient swap: replacement calculations retain existing recipe labor allocations (4.870625ms)
+✔ ingredient swap: choosing a selected recipe output rejects circular substitution before commit (2.515125ms)
+✔ ingredient swap: a scheduled price activation invalidates comparison without a stored-state change (5.324ms)
+✔ ingredient swap: a scheduled measurement activation invalidates comparison without a stored-state change (5.801375ms)
+✔ ingredient swap: replacement-cost disclosure includes nested and source-yield recipe users (8.540792ms)
+✔ service import preserves exact original measurement and stable source identities per line (1505.638083ms)
+✔ service display uses decimals and units; descriptive drafts remain editable but cannot publish (2.800958ms)
+✔ overrides, reordered lines, publication and historical recovery preserve costing and source snapshots (32.383208ms)
+✔ forged original measurements are rejected without altering source or costing (2.446667ms)
+✔ legacy service documents remain valid without new metadata (0.181792ms)
+✔ new service recipes contain four independent empty components and blank oz ingredient rows (1.791417ms)
+✔ incomplete new ingredient rows survive draft save and reload but cannot publish (7.096958ms)
+✔ Recipe Book exposes ordered categories and filters each while retaining legacy recipes in All (39.160333ms)
+✔ new service rows bind only unique exact catalog names and retain imported measurement identities (20.983ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1891.999416
+{"supervised": true, "exitCode": 0, "peakAggregateRSSBytes": 271155200, "heapMiB": 512, "nurseryMiB": 16, "maximumFileConcurrency": 2, "detachedDescendantsIncluded": true}

@@ -1,0 +1,39 @@
+Wahi coordinated backend update — November 19, 2026
+
+Implemented in the registered isolated checkout:
+/Volumes/AvaOne-Development-Retained/sessions/AVA-WAHI-COORDINATED-20261119/source
+Branch: codex/ava-wahi-coordinated-20261119
+Git state: implementation and evidence staged; no new commit created.
+Recorded release baseline: e49745ef3f0d99e2618fc72c3d1d660b4e8b0e76
+
+Changes
+1. Ingredients support the requested Big 8 allergen declarations independently of descriptive tags. Current recipes, source-yield items, menu items and linked Service Recipes derive a unique inherited union on reads. Ingredient edits update the next projections without rewriting recipe/publication history. Empty declarations mean no identified allergens. New service ingredient rows provide catalog suggestions; unique exact names bind on save, while ambiguous/other names remain unlinked. Imported measurement identities stay intact.
+2. Inventory & Costing now includes Ingredient Swap. It loads active direct costing formulas, selects all initially, retains excluded rows and quantity adjustments, and compares current/hypothetical quantities, costs, selling prices, food-cost percentages and gross margins with the existing exact arithmetic engine. New/existing replacements, purchase packages and inherited/new measurements are supported. Preview creates no persistent writes. Confirmed Apply commits selected formula revisions and replacement configuration together, retains history, rejects stale snapshots and scheduled-fact changes, and rolls back failures atomically. Existing replacement pricing can affect recipes already using it; confirmation discloses direct/indirect users, including source-yield dependents. Unselected formula records remain intact.
+3. Bartender dropdown order is All, Cocktails, Shareables, Mocktails, The Dive, Specials, Old Specials. Legacy on_menu records display as Cocktails; legacy off_menu records remain unchanged and accessible under All.
+4. New Service Recipes initialize Ingredients, Preparation, Garnish and Glassware. Other components remain available.
+5. Ingredients exposes + Ingredient directly, including when empty, and omits Add instruction.
+6. New rows start with blank quantity, oz and blank ingredient. Incomplete drafts save; publication still validates complete rows.
+7. Primary sidebar sections expand indented submenus in place, highlight the active parent/child, preserve permissions/routes and mobile drawer behavior, and replace the horizontal submenu strip and duplicate Inventory Overview links.
+
+Validation
+PASS: 243 checks across 16 selected backend/browser test files; zero failures/skips in the final selected runs. This is focused validation, not a claim that the entire repository suite was run.
+Coverage includes exact conversion/cost/margin arithmetic, repeated ingredient lines, both measurement modes, exclusions/reselection, concurrent/stale swaps, scheduled fact boundaries, late failure rollback, PostgreSQL persistence/history constraints, Big 8 inheritance/removal/deduplication, draft/publication rules, every menu category, permissions, protected media/offline leases, and migrated-data preservation.
+The browser verified all seven areas end to end, confirmed that preview/confirmation do not write, confirmed selected-only PostgreSQL updates, and exercised sidebar layout/drawer/Escape at 1440, 768 and 390 pixels. A delayed-response regression checks that an old swap preview cannot activate Apply during a new selection load. Screenshots were visually inspected.
+Evidence: backend/review/validation/coordinated-regressions-20261119.json and coordinated-{browser,swap,service}-20261119.txt.
+Screenshots: /Volumes/AvaOne-Development-Retained/sessions/AVA-WAHI-COORDINATED-20261119/d/tmp/screens-l8DIdY
+
+Boundaries and deployment
+Swaps operate on current active costing formulas and their real ingredient references. Published Service Recipe documents are independently authored copies, with their own draft/publish history and sometimes free-text rows lacking costing data. They are not silently changed or republished by a costing swap; the tool explains this. Extending swaps into those copies would require choosing how to update drafts versus publications. This is the remaining product-scope boundary.
+No production database writes, account changes, push, deployment, paid inference or new backup destination occurred. The original workspace and its pre-existing changes remain intact.
+Use the established recipe-book/release/PROCEDURE.txt and deploy/README.md before production work: recheck the actual live release and ledger, capture the existing paired database/media recovery checkpoint in established custody, rehearse restore in isolation, then deploy the exact authorized release. The recorded baseline is not a fresh production-state verification.
+Migrations 040/041 are additive; applied historical migrations were not edited. Do not deploy a bare older runtime against the expanded strict migration ledger. A recovery build must retain both new migration files, and recovery must preserve newer records; no destructive schema rollback is provided.
+
+Migration SHA-256
+040_ingredient_allergens.sql: 0624d5ddec1cdbff56fe75954d366cc10e2f81206acf16403574224ddc662dda
+041_recipe_menu_categories.sql: b876c15a67076e71fd44522c739aa46fc1ab8be7bc9998258895275e49c7efdc
+
+Confinement
+The owner confirmed that installed November 19 removal of storage ceilings supersedes the pasted limits. The owner separately authorized extending only backend/service.js, backend/auth.js, backend/domain, backend/repository and backend/recipe-book in the existing Wahi launcher allowlist. All original guard functions remain unchanged. Confinement qualification and actual scoped-write/adjacent-parent/original-source denial probes passed. The shared regression lock, 512 MiB heap, 16 MiB nursery, two-file concurrency and 1536 MiB aggregate RSS limits remained in effect. All implementation writes and tests used the installed confined launcher. Tests used disposable fixtures; protected existing PostgreSQL and original project objects were not modified. This is not a machine-wide enforcement claim about legacy host writers.
+
+Local commit blocker
+The ordinary confined git commit was rejected by the installed pre-commit gate: session() calls volume inventory, which attempts /usr/sbin/diskutil after the inherited profile has prohibited that executable. The live admission/ancestry check itself passed. No hook, confinement check or verification was bypassed or weakened. The implementation remains staged and reviewable. Repair/requalification of that separate commit-gate path remains outstanding; it does not change the passing application validations above.

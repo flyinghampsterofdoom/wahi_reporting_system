@@ -20,7 +20,7 @@
    for(const child of c.children||[])if(child.type!=='recipe')visit(child);
   }
   for(const c of d.components)visit(c);
-  return `<article class="service-recipe"><h2>${escape(d.title)}</h2>${Object.values(sections).flat().join('')}</article>`;
+  return `<article class="service-recipe"><h2>${escape(d.title)}</h2>${Array.isArray(d.allergens)&&d.allergens.length?`<p class="recipe-allergens"><strong>Identified allergens:</strong> ${[...new Set(d.allergens)].map(a=>`<span class="recipe-allergen">${escape(a)}</span>`).join(' ')}</p>`:''}${Object.values(sections).flat().join('')}</article>`;
  }
  const api={render,unit};if(typeof module!=='undefined')module.exports=api;else root.WahiRecipeRenderer=api;
 })(typeof window==='undefined'?{}:window);

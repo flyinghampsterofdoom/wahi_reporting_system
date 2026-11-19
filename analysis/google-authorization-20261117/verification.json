@@ -1,0 +1,123 @@
+{
+  "ui": {
+    "commit": "69d7308",
+    "deployed": false,
+    "focusedTests": {
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "passed": true,
+      "checks": 12,
+      "results": [
+        "desktop: Recipe Book navigation and refresh have no Google warning or status request",
+        "desktop: classic Reviews warning stays inside page, reconnect link, back navigation and refresh work",
+        "desktop: knowledge Reviews warning survives filters, internal navigation and refresh",
+        "desktop: healthy connection clears warning",
+        "desktop: delayed Google status cannot leak into Recipe Book",
+        "mobile: Recipe Book navigation and refresh have no Google warning or status request",
+        "mobile: classic Reviews warning stays inside page, reconnect link, back navigation and refresh work",
+        "mobile: knowledge Reviews warning survives filters, internal navigation and refresh",
+        "mobile: healthy connection clears warning",
+        "mobile: delayed Google status cannot leak into Recipe Book",
+        "MANAGER: no Admin-only connection request or warning",
+        "RECIPE_ONLY: no Admin-only connection request or warning"
+      ],
+      "syntheticOnly": true,
+      "googleCalls": 0,
+      "productionWrites": 0,
+      "pageErrors": 0
+    }
+  },
+  "investigation": {
+    "readOnly": {
+      "readOnly": true,
+      "providerSettingsUnchangedDuringInvestigation": true,
+      "reviewCountsUnchanged": true,
+      "counts": {
+        "reviews": 565,
+        "results": 440
+      },
+      "schedule": {
+        "sync_enabled": true,
+        "analysis_enabled": true,
+        "timezone": "America/Los_Angeles",
+        "daily_time": "10:00:00",
+        "next_due_at": "2026-11-18T18:00:00.000Z"
+      },
+      "productionChanges": 0,
+      "googleRequests": 0,
+      "reconnects": 0,
+      "deployments": 0
+    },
+    "latestSuccess": {
+      "sequence": "8",
+      "ordinal": 11,
+      "recorded_at": "2026-11-04T18:00:16.946Z",
+      "completed_at": "2026-11-04T18:00:24.377Z",
+      "distinct_count": 565
+    },
+    "firstAuthorizationInvalidation": {
+      "recordedAt": "2026-11-05T18:00:37.488Z",
+      "actor": "review-oauth-worker",
+      "event": "provider_disconnected",
+      "inferredOAuthError": "HTTP400 invalid_grant",
+      "rawResponseRetained": false
+    },
+    "grantIssuedAt": "2026-10-29T15:35:25.080Z",
+    "probableCause": "Google seven-day refresh expiry for external Testing apps; publishing status unverified",
+    "applicationDeadline": null,
+    "deadlineCorrectionStillInstalled": true,
+    "liveDeployment": {
+      "id": "dep-dbjs94rbc2fs73dnrqkg",
+      "status": "live",
+      "commit": "56074c6cd0e753158dc21c715e3c55a228a39a5b",
+      "createdAt": "2026-11-01T23:00:36.055946Z",
+      "finishedAt": "2026-11-01T23:02:25.814703Z"
+    },
+    "environmentAndEncryptionKeyMatchNov1": true,
+    "credentials": {
+      "transactionReadOnly": true,
+      "latestAuthenticatedPageCheckpoint": {
+        "sequence": "8",
+        "ordinal": 11,
+        "recorded_at": "2026-11-04T18:00:16.946Z",
+        "completed_at": "2026-11-04T18:00:24.377Z",
+        "distinct_count": 565
+      },
+      "installedSchemaChecksumsMatch": true,
+      "google": {
+        "clientIdMatchesNov1": true,
+        "clientSecretMatchesNov1": true,
+        "decryptionWorks": true,
+        "currentHasRefreshToken": false,
+        "currentHasAccessToken": false,
+        "nov1HasRefreshToken": true,
+        "nov1AccessExpiresAt": "2026-11-01T19:00:00.642Z",
+        "currentConnectionExpiry": null,
+        "nov1ConnectionExpiry": null,
+        "currentVersion": 9,
+        "nov1Version": 8,
+        "currentGeneration": 12,
+        "nov1Generation": 11,
+        "currentHasBusinessMapping": false,
+        "nov1HasBusinessMapping": true
+      },
+      "openai": {
+        "nov1HasSavedKey": true,
+        "currentHasSavedKey": false,
+        "configUnchanged": true,
+        "modelUnchanged": true,
+        "budgetsUnchanged": true
+      }
+    },
+    "limitations": [
+      "No independently logged Google wire-response time",
+      "No per-success token-refresh audit",
+      "Google consent-screen publishing state not inspected",
+      "Raw OAuth error description/subtype not retained"
+    ],
+    "recommendedBackendChangesApplied": false
+  }
+}

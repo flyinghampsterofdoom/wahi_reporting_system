@@ -12,7 +12,7 @@ const definitions={
   recipeCategories:{...identity,name:'TEXT NOT NULL',sortOrder:'INTEGER NOT NULL',active:'BOOLEAN NOT NULL'},
   recipeCategoryAssignments:{...revision,recipeId:ref('recipes'),categoryId:ref('recipe_categories',false)},
   ...require('./inventory-schema'),
-  ingredients:{...identity,name:'TEXT NOT NULL',description:'TEXT NOT NULL',category:'TEXT NOT NULL',tags:'JSONB NOT NULL',active:'BOOLEAN NOT NULL'},
+  ingredients:{...identity,name:'TEXT NOT NULL',description:'TEXT NOT NULL',category:'TEXT NOT NULL',tags:'JSONB NOT NULL',allergens:'JSONB NOT NULL',active:'BOOLEAN NOT NULL'},
   suppliers:{...identity,name:'TEXT NOT NULL',contact:'TEXT NOT NULL',active:'BOOLEAN NOT NULL'},
   purchaseOptions:{...identity,ingredientId:ref('ingredients'),supplierId:ref('suppliers',false),sku:'TEXT NOT NULL',label:'TEXT NOT NULL',contentQuantity:quantity+' NOT NULL',contentUnit:'TEXT NOT NULL',active:'BOOLEAN NOT NULL'},
   recipes:{...identity,name:'TEXT NOT NULL',outputIngredientId:ref('ingredients')+' UNIQUE',active:'BOOLEAN NOT NULL'},

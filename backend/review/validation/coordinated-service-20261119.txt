@@ -1,0 +1,29 @@
+✔ builder migration applies and remains idempotent (1571.229417ms)
+✔ builder imports missing-preparation sources and preserves nested immutable revision references (14.361167ms)
+✔ builder common library and ingredient lookup create independently editable snapshots (4.275583ms)
+✔ builder photo decoder validates JPEG PNG WebP, byte size, actual content, pixels and animation (130.220416ms)
+✔ builder replacement and removal preserve historical published photos and prevent station draft access (150.02875ms)
+✔ builder duplicate, concurrency, archive, restore and publication validation respect existing permissions (20.071667ms)
+✔ builder HTTP upload requires management, CSRF, same origin; protected originals are not served (321.369792ms)
+✔ publication HTTP errors identify the ingredient and unit instead of a generic request failure (31.449208ms)
+✔ builder operations preserve all protected domain tables, costing and BOH baseline code (20.7835ms)
+✔ builder shared renderer shows ingredient titles and decimals and saved authored instructions (0.845666ms)
+✔ builder upgrade from exact Phase 3 manifest retains existing draft/publication/media and checksums (167.274208ms)
+✔ service list: alphabetical complete-index search and independent menu filters (7.779709ms)
+✔ offline validity: hard expiry, twelve-hour cap and clock rollback rejection (0.409666ms)
+✔ fixture adapter: derivative integrity, missing asset and path traversal protection (7.544708ms)
+✔ protected media: no station access to draft/foreign/historical/archived/unapproved images (1748.226375ms)
+✔ disposable media adapter is never accepted by hosted runtime (0.263083ms)
+✔ offline receipt: clock skew cannot reject a fresh grant or extend any expiry bound (0.205625ms)
+✔ offline receipt: twelve-hour cap and invalid/expired grants remain fail closed (0.098708ms)
+✔ offline shell includes every current script and stylesheet, including fingerprinted URLs (2.11375ms)
+✔ cached service rows are labeled refreshing and fresh allergens replace them without a new publication (5.856083ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2758.65675
+{"supervised": true, "exitCode": 0, "peakAggregateRSSBytes": 373358592, "heapMiB": 512, "nurseryMiB": 16, "maximumFileConcurrency": 2, "detachedDescendantsIncluded": true}

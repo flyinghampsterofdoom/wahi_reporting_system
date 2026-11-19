@@ -1,0 +1,36 @@
+✔ coordinated backend UI: builder, menu categories, allergens and responsive sidebar (8257.239083ms)
+ℹ Builder: four defaults; direct Ingredients controls; blank/oz row; incomplete draft persisted; publication rejected; import preserves defaults and saved allergen tags.
+ℹ Recipe Book: exact category order; every category filters correctly; legacy records remain in All; inherited allergens render once.
+ℹ Allergens: all Big 8 options; editing an ingredient updates costing recipe and published service item without rewriting publications.
+ℹ Ingredient Swap race: delayed old preview cannot re-enable Apply or overwrite a loading replacement; edits during loading cannot submit old-context previews.
+ℹ Ingredient Swap: live exact costs; package and quantity changes; measurement modes; deselect/reselect and select-all preserve adjustments; previews and confirmation do not mutate; confirmed apply revises only the selected recipe and retains history/prices.
+ℹ Sidebar: primary expands in place; indented preserved routes; parent/child highlight; no horizontal submenu; desktop/tablet/mobile drawer and Escape work. Screenshots: /Volumes/AvaOne-Development-Retained/sessions/AVA-WAHI-COORDINATED-20261119/d/tmp/screens-l8DIdY
+✔ recipe migration: exact namespace, idempotence, station DB protections and unchanged underlying recipe schema (1603.518125ms)
+✔ recipe lifecycle: drafts stay private; publishing requires confirmation and missing photos are allowed (20.219916ms)
+✔ recipe publication: immutable document and event history; edited draft cannot change selected publication (20.758166ms)
+✔ recipe concurrency: racing draft writes have one winner and stale preview publication is rejected (12.220833ms)
+✔ recipe publication: concurrent publish has one winner and menu classification remains independent (20.60975ms)
+✔ recipe recovery: Admin-only service archive and prior-version draft recovery retain history (15.926666ms)
+✔ recipe atomicity: required publication audit failure rolls back version, pointer and concurrency revision (13.36225ms)
+✔ recipe sources and costing: nested snapshots freeze copied names/instructions and all service writes leave the entire domain unchanged (94.447125ms)
+✔ recipe validation: bounded nesting, ancestor cycles, duplicate IDs and source/revision pairs (4.798875ms)
+✔ recipe validation: missing quantities stay in drafts but cannot publish; forged references and unapproved media rejected (8.16625ms)
+✔ recipe authorization: role capabilities and database role recheck deny stale elevated principals (5.24275ms)
+✔ recipe renderer: shared quantity markup, escaping, indentation rules and always-visible recipe content (5.136792ms)
+✔ recipe offline contract: twelve-hour account/environment/generation scope capped by authenticated session expiry (3.783875ms)
+✔ recipe station HTTP: two independent named sessions, complete unrelated API denial, forged roles and navigation redirect (257.59125ms)
+✔ recipe station account controls: Admin-only provisioning and immutable designated usernames (6.599209ms)
+✔ recipe amendment: ingredient-only source is usable; management authors instructions in service drafts without changing costing (42.394708ms)
+✔ recipe amendment: fixture media stays associated with its publication when a draft replaces or removes the photo (42.353833ms)
+✔ one-way copy: edits, nesting, publication, later source revisions and reimports remain isolated (86.002084ms)
+✔ ingredient-only publication errors identify a nested ingredient and preserve optional content/history (8.874834ms)
+✔ ambiguous nested measurements block publication without changing source, prior publication or immutable history (54.389625ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8549.245417
+{"supervised": true, "exitCode": 0, "peakAggregateRSSBytes": 626868224, "heapMiB": 512, "nurseryMiB": 16, "maximumFileConcurrency": 2, "detachedDescendantsIncluded": true}

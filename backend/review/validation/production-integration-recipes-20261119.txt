@@ -1,0 +1,38 @@
+✔ recipe migration: exact namespace, idempotence, station DB protections and unchanged underlying recipe schema (1635.107541ms)
+✔ recipe lifecycle: drafts stay private; publishing requires confirmation and missing photos are allowed (20.297083ms)
+✔ recipe publication: immutable document and event history; edited draft cannot change selected publication (23.1135ms)
+✔ recipe concurrency: racing draft writes have one winner and stale preview publication is rejected (10.269ms)
+✔ recipe publication: concurrent publish has one winner and menu classification remains independent (19.309125ms)
+✔ recipe recovery: Admin-only service archive and prior-version draft recovery retain history (14.748167ms)
+✔ recipe atomicity: required publication audit failure rolls back version, pointer and concurrency revision (14.304291ms)
+✔ recipe sources and costing: nested snapshots freeze copied names/instructions and all service writes leave the entire domain unchanged (80.46875ms)
+✔ recipe validation: bounded nesting, ancestor cycles, duplicate IDs and source/revision pairs (4.573416ms)
+✔ recipe validation: missing quantities stay in drafts but cannot publish; forged references and unapproved media rejected (6.015459ms)
+✔ recipe authorization: role capabilities and database role recheck deny stale elevated principals (4.3975ms)
+✔ recipe renderer: shared quantity markup, escaping, indentation rules and always-visible recipe content (3.915167ms)
+✔ recipe offline contract: twelve-hour account/environment/generation scope capped by authenticated session expiry (3.401209ms)
+✔ recipe station HTTP: two independent named sessions, complete unrelated API denial, forged roles and navigation redirect (226.912416ms)
+✔ recipe station account controls: Admin-only provisioning and immutable designated usernames (6.063625ms)
+✔ recipe amendment: ingredient-only source is usable; management authors instructions in service drafts without changing costing (39.322958ms)
+✔ recipe amendment: fixture media stays associated with its publication when a draft replaces or removes the photo (35.590209ms)
+✔ one-way copy: edits, nesting, publication, later source revisions and reimports remain isolated (71.762625ms)
+✔ ingredient-only publication errors identify a nested ingredient and preserve optional content/history (6.498375ms)
+✔ ambiguous nested measurements block publication without changing source, prior publication or immutable history (49.767834ms)
+✔ service import preserves exact original measurement and stable source identities per line (1633.8675ms)
+✔ service display uses decimals and units; descriptive drafts remain editable but cannot publish (2.943334ms)
+✔ overrides, reordered lines, publication and historical recovery preserve costing and source snapshots (32.003625ms)
+✔ forged original measurements are rejected without altering source or costing (2.791792ms)
+✔ legacy service documents remain valid without new metadata (0.223ms)
+✔ new service recipes contain four independent empty components and blank oz ingredient rows (2.035125ms)
+✔ incomplete new ingredient rows survive draft save and reload but cannot publish (7.710666ms)
+✔ Recipe Book exposes ordered categories and filters each while retaining legacy recipes in All (42.462875ms)
+✔ new service rows bind only unique exact catalog names and retain imported measurement identities (21.2795ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2551.974125
+{"supervised": true, "exitCode": 0, "peakAggregateRSSBytes": 486522880, "heapMiB": 512, "nurseryMiB": 16, "maximumFileConcurrency": 2, "detachedDescendantsIncluded": true}

@@ -1,0 +1,70 @@
+✔ coordinated backend UI: builder, menu categories, allergens and responsive sidebar (8437.501417ms)
+ℹ Builder: four defaults; direct Ingredients controls; blank/oz row; incomplete draft persisted; publication rejected; import preserves defaults and saved allergen tags.
+ℹ Recipe Book: exact category order; every category filters correctly; legacy records remain in All; inherited allergens render once.
+ℹ Allergens: all Big 8 options; editing an ingredient updates costing recipe and published service item without rewriting publications.
+ℹ Ingredient Swap race: delayed old preview cannot re-enable Apply or overwrite a loading replacement; edits during loading cannot submit old-context previews.
+ℹ Ingredient Swap: live exact costs; package and quantity changes; measurement modes; deselect/reselect and select-all preserve adjustments; previews and confirmation do not mutate; confirmed apply revises only the selected recipe and retains history/prices.
+ℹ Sidebar: primary expands in place; indented preserved routes; parent/child highlight; no horizontal submenu; desktop/tablet/mobile drawer and Escape work. Screenshots: /Volumes/AvaOne-Development-Retained/sessions/AVA-WAHI-COORDINATED-20261119/d/tmp/screens-IlvQby
+✔ PostgreSQL migration is explicit, transactional, idempotent and isolated (1401.970833ms)
+✔ PostgreSQL stores exact prices, recipe lines/steps, partial costs and transactional audit (50.34875ms)
+✔ PostgreSQL rolls back domain changes if audit insertion fails (13.514167ms)
+✔ PostgreSQL serializes independent writers to prevent mixed dependency cycles (13.244125ms)
+✔ PostgreSQL prevents history mutation and foreign reference corruption (16.902917ms)
+✔ PostgreSQL persists historical measurements, labor, menu prices and operational projections (35.7405ms)
+✔ Phase 1 connection factory refuses remote database configuration and legacy fallback (0.574083ms)
+✔ PostgreSQL concurrent price updates retain history and reject same-effective ambiguity (30.240834ms)
+✔ PostgreSQL concurrent yield updates retain history and reject same-effective ambiguity (29.988916ms)
+✔ PostgreSQL concurrent recipe updates retain history and reject same-effective ambiguity (40.756375ms)
+✔ PostgreSQL concurrent basis updates retain history and reject same-effective ambiguity (35.611208ms)
+✔ PostgreSQL archive lifecycle persists while immutable package and recipe facts remain protected (42.507375ms)
+✔ PostgreSQL rejects invalid physical NUMERIC values directly, including NaN and infinity (96.760041ms)
+✔ PostgreSQL directly enforces revision scope collisions and preserves explicit supersession (50.758208ms)
+✔ PostgreSQL grouped source/basis/audit transaction rolls back completely on audit failure (30.856917ms)
+✔ PostgreSQL inventory: two employees count different locations simultaneously with exact derived total (54.449667ms)
+✔ PostgreSQL inventory: concurrent distinct entries survive; competing edits of one entry conflict (66.656833ms)
+✔ PostgreSQL inventory: concurrent manager corrections reject a stale version and retain both original and winner (46.777458ms)
+✔ PostgreSQL inventory: location archival racing correction keeps all historical observations (58.313667ms)
+✔ PostgreSQL inventory: audit insertion failure rolls back correction and preserves effective count (51.233834ms)
+✔ PostgreSQL inventory: fractional conversion evidence and history survive repository reopening and conversion changes (58.012416ms)
+✔ PostgreSQL inventory: constraints reject invalid numeric counts, destructive history and changed base units (50.115541ms)
+✔ PostgreSQL inventory: submission audit failure leaves draft unsubmitted and excluded from overall (71.135166ms)
+✔ PostgreSQL recipe category lifecycle persists audit and immutable assignment history (56.595583ms)
+✔ PostgreSQL migration replacement rolls back DDL and prior data when imported state fails validation (173.235833ms)
+✔ PostgreSQL imported real item supports normal edits and inventory configuration across repository reload (218.917917ms)
+✔ integration: encrypted secret storage, safe metadata/audit and normal repository isolation (7.970458ms)
+✔ integration: replacement changes secret, omitted secret preserves it (3.920583ms)
+✔ integration: stale or invalid replacement preserves prior config and encrypted secret (3.087125ms)
+✔ integration: audit failure rolls back configuration and replacement atomically (4.041708ms)
+✔ integration: Manager Staff Lead cannot read or save even when calling service directly (2.165083ms)
+✔ integration: environment separation prevents cross-environment reads and writes (3.056833ms)
+✔ integration: invalid host, missing secret, unknown fields and malformed restaurant GUID fail safely (2.311167ms)
+✔ integration: missing key refuses saves, authentication tag protects secret and context (1.465959ms)
+✔ integration: disable is audited and prevents future service credential consumption (2.376625ms)
+✔ integration HTTP: real PostgreSQL secret submission/read and failure responses never expose secret (116.693333ms)
+✔ hosted PostgreSQL sessions survive store recreation and logout; login limits persist (7.622458ms)
+✔ hosted importer rejects wrong database before inserting into any schema (8.045375ms)
+✔ hosted batched importer uses canonical mappings, preserves exact facts and rolls back safely (190.869833ms)
+✔ current SQL snapshot is one bounded exact read, without audit/import/history reconstruction (31.877709ms)
+✔ current SQL selects supersession and future boundaries identically to historical authority (27.427209ms)
+✔ current projections use fresh SQL after price mutation and restoration; history remains exact (34.700375ms)
+✔ current SQL vendor eligibility retains future-only and historical source evidence without returning history (26.378416ms)
+✔ password activation revokes every same-user HTTP session, rejects old password and preserves other users (256.413375ms)
+✔ credential activation and audit roll back if session revocation fails (4.640667ms)
+✔ audit failure rolls back credential activation and session deletion (1.584334ms)
+✔ concurrent login insertion cannot survive credential activation with an old generation (4.873708ms)
+✔ unchanged activation preserves existing sessions and adopts pre-fix sessions once; removal revokes access (1.301041ms)
+✔ recipe resolution: scoped item read returns transitive dependent selectors in one query, no histories (28.038791ms)
+✔ recipe creation: PostgreSQL concurrent duplicate saves serialize without duplicate output identities (29.099292ms)
+✔ PostgreSQL waste: exact entry survives reopening, retry, archive; database prevents historical mutation (42.107375ms)
+✔ PostgreSQL waste: Drink category entry restriction preserves historical reporting and follows effective assignments (149.985666ms)
+✔ PostgreSQL waste revisions: concurrent retries persist exact frozen corrections and append-only audit after reopen (49.497041ms)
+✔ PostgreSQL menu waste: mapped and unmapped existing menu IDs persist without new ingredient identities (50.376583ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 55
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8711.888875
+{"supervised": true, "exitCode": 0, "peakAggregateRSSBytes": 933511168, "heapMiB": 512, "nurseryMiB": 16, "maximumFileConcurrency": 2, "detachedDescendantsIncluded": true}

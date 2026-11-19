@@ -1,7 +1,7 @@
 'use strict';
 const {emptyState,COLLECTIONS}=require('../domain/state');
 const {definitions,snake}=require('./schema');
-const jsonFields=new Set(['tags','provenance','previous','next','snapshot','conversion','sourceValues','issues','entityIds']);
+const jsonFields=new Set(['tags','allergens','provenance','previous','next','snapshot','conversion','sourceValues','issues','entityIds']);
 function localPool() {
   const connectionString=process.env.WAHI_DATABASE_URL;
   if(!connectionString)throw new Error('WAHI_DATABASE_URL is required; legacy DATABASE_URL is never used');
@@ -26,7 +26,7 @@ async function readState(client) {
 }
 async function insert(client,name,row) {
   const keys=Object.keys(definitions[name]);
-  const values=keys.map(k=>jsonFields.has(k)&&row[k]!==null?JSON.stringify(row[k]):row[k]);
+  const values=keys.map(k=>{const value=name==='ingredients'&&k==='allergens'?(row[k]||[]):row[k];return jsonFields.has(k)&&value!==null?JSON.stringify(value):value;});
   await client.query(`INSERT INTO wahi_v2.${snake(name)} (${keys.map(snake).join(',')}) VALUES (${keys.map((_,i)=>'$'+(i+1)).join(',')})`,values);
   if(name==='recipeRevisions') {
     for(const [position,l] of row.lines.entries())await client.query('INSERT INTO wahi_v2.recipe_lines (id,recipe_revision_id,position,ingredient_id,quantity,unit,notes) VALUES ($1,$2,$3,$4,$5,$6,$7)',[l.id,row.id,position,l.ingredientId,l.quantity,l.unit,l.notes||'']);
@@ -57,7 +57,7 @@ class PostgresRepository {
           else if(JSON.stringify(old.get(row.id))!==JSON.stringify(row)) {
             if(!['ingredients','menuItems','suppliers','purchaseOptions','recipes','inventoryLocations','inventoryAssignments','countSessions','recipeCategories'].includes(name))throw new Error('Only ingredient/menu descriptive metadata may update in place');
             const keys=Object.keys(definitions[name]).filter(k=>k!=='id');
-            await c.query(`UPDATE wahi_v2.${snake(name)} SET ${keys.map((k,i)=>snake(k)+'=$'+(i+1)).join(',')} WHERE id=$${keys.length+1}`,[...keys.map(k=>jsonFields.has(k)?JSON.stringify(row[k]):row[k]),row.id]);
+            await c.query(`UPDATE wahi_v2.${snake(name)} SET ${keys.map((k,i)=>snake(k)+'=$'+(i+1)).join(',')} WHERE id=$${keys.length+1}`,[...keys.map(k=>jsonFields.has(k)?JSON.stringify(name==='ingredients'&&k==='allergens'?(row[k]||[]):row[k]):row[k]),row.id]);
           }
         }
         if(draft[name].length<before[name].length)throw new Error('Domain records cannot be deleted');
